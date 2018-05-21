@@ -4,7 +4,7 @@ import {
     USER_UPDATE,
     REMEMBER_LOGIN_REDIRECT,
     PAGE_LOADING_UPDATE
-} from '../../mutation-type'
+} from '../mutation-type'
 
 function setUser(state, user) {
     window.localStorage.setItem('user', JSON.stringify(user));

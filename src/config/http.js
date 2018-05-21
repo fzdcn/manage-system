@@ -3,8 +3,8 @@
  */
 import axios from 'axios'
 import {API_BASE, DEBUG} from './config'
-import store from '../../store/index'
-import router from '../../router/index'
+import store from '../store/index'
+import router from '../router/index'
 import {showAlert} from '../functions/index'
 
 let config = {

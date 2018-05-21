@@ -97,7 +97,8 @@
                                             <el-button size="medium" type="primary" @click="onSubmit">提交</el-button>
                                         </el-col>
                                         <el-col :span="16">
-                                            <el-button icon="iconfont icon-tishi" type="danger" disabled="disabled">
+                                            <el-button class="introduce" icon="iconfont icon-tishi" type="info"
+                                                       disabled="disabled">
                                                 无需开通网银即可完成支付
                                             </el-button>
                                         </el-col>
@@ -131,8 +132,9 @@
                                     <el-button type="primary">去银行页面充值</el-button>
                                 </el-col>
                                 <el-col :span="12">
-                                    <el-button icon="iconfont icon-tishi" type="danger" disabled="disabled">
-                                        无需开通网银即可完成支付
+                                    <el-button class="introduce" icon="iconfont icon-tishi" type="info"
+                                               disabled="disabled">
+                                        企业网银付款流程较为复杂，具体问题可咨询发卡行或联系我们
                                     </el-button>
                                 </el-col>
                             </div>
@@ -159,25 +161,18 @@
                 bank: '中国工商银行',
                 form: {
                     // 银行卡
-                    bankList: [{
-                        value: 'Beijing',
-                        label: '北京'
-                    }, {
-                        value: 'Shanghai',
-                        label: '上海'
-                    }, {
-                        value: 'Nanjing',
-                        label: '南京'
-                    }, {
-                        value: 'Chengdu',
-                        label: '成都'
-                    }, {
-                        value: 'Shenzhen',
-                        label: '深圳'
-                    }, {
-                        value: 'Guangzhou',
-                        label: '广州'
-                    }],
+                    bankList: [
+                        {
+                            value: '中国工商银行',
+                            label: '中国工商银行'
+                        }, {
+                            value: '中国农业银行',
+                            label: '中国农业银行'
+                        }, {
+                            value: '中国银行',
+                            label: '中国银行'
+                        }
+                    ],
                     // 被选中的银行
                     selectedBank: '',
                     // 银行卡号
@@ -233,11 +228,13 @@
                     margin auto
                     .submit-button
                         margin-top 50px
+                        .introduce
+                            color #333
             .tab-company-payment
                 .choice
                     font-size 15px
                     color red
-                    margin-bottom 30px
+                    margin 30px 0 30px 20px
                 .bank-list
                     display flex
                     flex-flow row wrap
@@ -247,6 +244,8 @@
                         margin 30px 20px 30px
                         width 200px
                     .submit-payment
-                        margin-left 20px
+                        margin 50px 0 20px 20px
+                        .introduce
+                            color #333
 
 </style>

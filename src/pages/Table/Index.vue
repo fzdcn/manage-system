@@ -129,6 +129,7 @@
                 if (process.env.NODE_ENV === 'development') {
                     this.url = '/ms/table/list';
                 }
+                ;
                 this.$axios.post(this.url, {
                     page: this.cur_page
                 }).then((res) => {
@@ -165,7 +166,7 @@
                 for (let i = 0; i < length; i++) {
                     str += this.multipleSelection[i].name + ' ';
                 }
-                this.$message.error('删除了' + str);
+                this.$message({showClose: true, message: '删除了' + str, type: 'error'});
                 this.multipleSelection = [];
             },
             handleSelectionChange(val) {
@@ -175,12 +176,12 @@
             saveEdit() {
                 this.$set(this.tableData, this.idx, this.form);
                 this.editVisible = false;
-                this.$message.success(`修改第 ${this.idx + 1} 行成功`);
+                this.$message({showClose: true, message: `修改第 ${this.idx + 1} 行成功`, type: 'success'});
             },
             // 确定删除
             deleteRow() {
                 this.tableData.splice(this.idx, 1);
-                this.$message.success('删除成功');
+                this.$message({showClose: true, message: `删除成功`, type: 'success'});
                 this.delVisible = false;
             }
         }
