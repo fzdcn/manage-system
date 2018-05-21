@@ -25,40 +25,13 @@
 </template>
 
 <script>
-    import bus from '../common/bus';
+    // import bus from '../common/bus';
 
     export default {
         data() {
             return {
                 collapse: false,
-                items: [
-                    {
-                        icon: 'el-icon-setting',
-                        index: 'index',
-                        title: '首页'
-                    },
-                    {
-                        icon: 'el-icon-date',
-                        index: '1',
-                        title: '测试支付链接',
-                        subs: [
-                            {
-                                index: 'payment',
-                                title: '测试支付'
-                            }
-                        ]
-                    },
-                    {
-                        icon: 'el-icon-tickets',
-                        index: 'table',
-                        title: '表格'
-                    },
-                    {
-                        icon: 'el-icon-warning',
-                        index: 'permission',
-                        title: '角色管理'
-                    }
-                ]
+                items: this.$store.getters.menu
             }
         },
         computed: {

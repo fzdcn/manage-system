@@ -13,14 +13,14 @@
                 <div class="login-btn">
                     <el-button type="primary" @click="submitForm('ruleForm')">登录</el-button>
                 </div>
-                <p style="font-size:12px;line-height:30px;color:#999;">Tips : 用户名和密码随便填。</p>
+                <p style="font-size:12px;line-height:30px;color:#999;">Tips :i 用户名和密码随便填。</p>
             </el-form>
         </div>
     </div>
 </template>
 
 <script>
-    import bus from '../../components/common/bus'
+    // mport bus from '../../components/common/bus'
 
     export default {
         data() {
@@ -44,6 +44,17 @@
                         title: '首页'
                     },
                     {
+                        icon: 'el-icon-date',
+                        index: '1',
+                        title: '测试支付链接',
+                        subs: [
+                            {
+                                index: 'payment',
+                                title: '测试支付'
+                            }
+                        ]
+                    },
+                    {
                         icon: 'el-icon-tickets',
                         index: 'table',
                         title: '表格'
@@ -62,6 +73,7 @@
                     if (valid) {
                         localStorage.setItem('ms_username', this.ruleForm.username);
                         this.$router.push('/');
+                        this.$store.dispatch('setNavigationMenu', JSON.stringify(this.items))
                     } else {
                         console.log('error submit!!');
                         return false;
