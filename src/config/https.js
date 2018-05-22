@@ -4,13 +4,13 @@ import {API_BASE, DEBUG} from './config'
 import router from "../router";
 import store from '../store/index'
 
-axios.defaults.timeout = 5000;
+axios.defaults.timeout = 100000;
 axios.defaults.baseURL = API_BASE;
 
 //http request 拦截器
 axios.interceptors.request.use(
     config => {
-        const accessToken = this.store.getters.accessToken;
+        const accessToken = store.getters.accessToken;
         config.data = qs.stringify(config.data);
         config.headers = {
             'Content-Type': 'application/x-www-form-urlencoded'
@@ -113,11 +113,11 @@ export function get(url, params = {}) {
 export function post(url, data = {}) {
     store.dispatch('pageLoadingUpdate', true);
     return new Promise((resolve, reject) => {
-        axios.post(url, data).then(response => {
-            resolve(response.data);
+        axios.post(url, data).then(({data}) => {
+            resolve(data,resolve);
             store.dispatch('pageLoadingUpdate', false);
-        }, err => {
-            reject(err)
+        }).catch(({data}) => {
+            reject(data,reject)
             store.dispatch('pageLoadingUpdate', false);
         })
     })
