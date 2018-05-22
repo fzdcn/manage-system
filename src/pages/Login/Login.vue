@@ -20,7 +20,6 @@
 </template>
 
 <script>
-    // mport bus from '../../components/common/bus'
 
     export default {
         data() {
@@ -71,19 +70,22 @@
             submitForm(formName) {
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
-                        localStorage.setItem('ms_username', this.ruleForm.username);
+                        localStorage.setItem('username', this.ruleForm.username);
+                        this.$store.dispatch('setNavigationMenu', JSON.stringify(this.items));
+                        // if (this.$route.query.redirect) {
+                        //     let redirect = this.$route.query.redirect;
+                        //     this.$router.push({path: redirect});
+                        // } else {
+                        //     this.$router.push('/');
+                        // }
                         this.$router.push('/');
-                        this.$store.dispatch('setNavigationMenu', JSON.stringify(this.items))
                     } else {
                         console.log('error submit!!');
                         return false;
                     }
                 });
             },
-        },
-        /*beforeDestroy() {
-            bus.$emit('msg', this.items);
-        }*/
+        }
     }
 </script>
 

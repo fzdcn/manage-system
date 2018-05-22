@@ -25,7 +25,7 @@
 </template>
 
 <script>
-    // import bus from '../common/bus';
+    import bus from '../common/bus';
 
     export default {
         data() {
@@ -45,16 +45,7 @@
             bus.$on('collapse', msg => {
                 this.collapse = msg;
             });
-            /*bus.$on('msg', item => {
-                vm.items = item;
-            });*/
         },
-        /*beforeDestroy() {
-            var vm = this;
-            bus.$off('msg', item => {
-                vm.items = item;
-            })
-        }*/
     }
 </script>
 

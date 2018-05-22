@@ -12,23 +12,23 @@ const routes = [
     {
         path: '/',
         component: resolve => require(['../components/common/Home.vue'], resolve),
-        meta: {title: '自述文件'},
+        meta: {title: '公共部分'},
         children: [
             {
                 path: '/index',
                 component: resolve => require(['../pages/Index/Index.vue'], resolve),
-                meta: {title: '首页'}
+                meta: {title: '首页', permission: false}
             },
             {
                 path: '/payment',
                 component: resolve => require(['../pages/Payment/Payment.vue'], resolve),
-                meta: {title: '企业网银支付'}
+                meta: {title: '企业网银支付', permission: false}
             },
 
             {
                 path: '/table',
                 component: resolve => require(['../pages/Table/Index.vue'], resolve),
-                meta: {title: '基础表格'}
+                meta: {title: '基础表格', permission: false}
             },
             {
                 // 权限页面
@@ -40,7 +40,8 @@ const routes = [
     },
     {
         path: '/login',
-        component: resolve => require(['../pages/Login/Login.vue'], resolve)
+        component: resolve => require(['../pages/Login/Login.vue'], resolve),
+        meta: {permission: false}
     },
     {
         path: '/404',
@@ -50,10 +51,10 @@ const routes = [
         path: '/403',
         component: resolve => require(['../pages/Error/403.vue'], resolve)
     },
-    {
-        path: '*',
-        redirect: '/404'
-    }
+    // {
+    //     path: '*',
+    //     redirect: '/404'
+    // }
 ]
 
 let router = new Router({
@@ -69,14 +70,16 @@ let router = new Router({
 })
 
 //使用钩子函数对路由进行权限跳转
-router.beforeEach((to, from, next) => {
+router.beforeEach(({meta, name, fullPath}, from, next) => {
     store.dispatch('pageLoadingUpdate', true);
-    const role = localStorage.getItem('ms_username');
-    if (!role && to.path !== '/login') {
-        next('/login');
-    } else if (to.meta.permission) {
-        // 如果是管理员权限则可进入，这里只是简单的模拟管理员权限而已
+    let {permission = true} = meta;
+    let role = localStorage.getItem('username');
+    if (permission) {
         role === 'admin' ? next() : next('/403');
+    } else if (!permission) {
+        if (!role && name !== '/login') {
+            next('/login');
+        }
     } else {
         // 简单的判断IE10及以下不进入富文本编辑器，该组件不兼容
         if (navigator.userAgent.indexOf('MSIE') > -1 && to.path === '/editor') {
