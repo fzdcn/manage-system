@@ -57,7 +57,7 @@
         },
         computed: {
             username() {
-                let username = localStorage.getItem('username');
+                let username = JSON.parse(localStorage.getItem('user')).username;
                 return username ? username : this.name;
             }
         },
@@ -65,9 +65,14 @@
             // 用户名下拉菜单选择事件
             handleCommand(command) {
                 if (command == 'loginout') {
-                    localStorage.removeItem('username');
-                    this.$store.dispatch('DeleteNavigationMenu');
-                    this.$router.push('/login');
+                    this.$httpGet('/admin/login/logout').then(({data}) => {
+                        this.$message({message: '退出成功', type: 'success'});
+                        this.$store.dispatch('userSignOut');
+                        this.$store.dispatch('DeleteNavigationMenu');
+                        this.$router.push('/login');
+                    }).catch((error) => {
+                        console.log(error);
+                    });
                 }
             },
             // 侧边栏折叠

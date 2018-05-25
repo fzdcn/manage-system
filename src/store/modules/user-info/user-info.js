@@ -8,20 +8,20 @@ import {
 
 function setUser(state, user) {
     window.localStorage.setItem('user', JSON.stringify(user));
-    window.localStorage.setItem('accessToken', user.access_token);
+    window.localStorage.setItem('loginType', user.loginType);
     state.user = user;
-    state.accessToken = user.access_token
+    state.loginType = user.loginType
 }
 export default {
     state: {
         user: JSON.parse(window.localStorage.getItem('user')),
-        accessToken: window.localStorage.getItem('accessToken'),
+        loginType: window.localStorage.getItem('loginType'),
         loginRedirect: window.sessionStorage.getItem('loginRedirect'),
         pageLoading: false
     },
     getters: {
         user: (state) => state.user,
-        accessToken: (state) => state.accessToken,
+        loginType: (state) => state.loginType,
         loginRedirect: state => state.loginRedirect,
         pageLoading: state => state.pageLoading
     },
@@ -31,9 +31,9 @@ export default {
         },
         [USER_SIGN_OUT](state) {
             state.user = null;
-            state.accessToken = null;
+            state.loginType = null;
             window.localStorage.removeItem('user');
-            window.localStorage.removeItem('accessToken');
+            window.localStorage.removeItem('loginType');
         },
         [USER_UPDATE](state, user) {
             setUser(state, user)

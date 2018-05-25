@@ -6,9 +6,19 @@ import {API_BASE, DEBUG} from './config'
 import store from '../store/index'
 import router from '../router/index'
 import {showAlert} from '../functions/index'
+import qs from 'qs';
 
 let config = {
     baseURL: API_BASE,
+    withCredentials: true,
+    headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+    },
+    transformRequest: [function (data) {
+
+        data = qs.stringify(data);
+        return data;
+    }],
 }
 const instance = axios.create(config)
 
@@ -25,33 +35,37 @@ function bindAccessToken(params) {
 function resolveResponse(data, resolve, invalidTokenRedirect = true) {
     switch (data.status) {
         case 401:
-            store.dispatch('userSignOut')
-            if (invalidTokenRedirect) {
-                showAlert('登录失效，需重新登录')
-                router.push({name: 'login'})
+            showAlert('登录失效，需重新登录');
+            if (router.currentRoute.name != 'login') {  //这里必须限制为非login页面
+                router.replace({
+                    path: '/login',
+                    query: {redirect: router.currentRoute.fullPath}
+                })
             }
+            store.dispatch('userSignOut');
+            store.dispatch('DeleteNavigationMenu');
             break
         case 422:
-            showAlert(data.errors[0].message)
+            showAlert(data.errors);
             break
         case 500:
-            !DEBUG ? showAlert('系统繁忙') : showAlert('系统错误:' + data.message)
+            !DEBUG ? showAlert('系统繁忙') : showAlert('系统错误:' + data.error);
             break
         default:
-            resolve(data)
+            resolve(data);
             break
     }
 }
 
 function rejectResponse(data, reject) {
-    !DEBUG ? showAlert('网络繁忙') : showAlert('系统错误:' + data)
+    !DEBUG ? showAlert('网络繁忙') : showAlert('系统错误:' + data);
     reject(data)
 }
 
 class HttpResource {
     static install(Vue) {
-        Vue.prototype.$httpGet = HttpResource.httpGet
-        Vue.prototype.$httpPost = HttpResource.httpPost
+        Vue.prototype.$httpGet = HttpResource.httpGet;
+        Vue.prototype.$httpPost = HttpResource.httpPost;
     }
 
     /**
@@ -81,17 +95,8 @@ class HttpResource {
     static httpPost(url, params, invalidTokenRedirect = true) {
         store.dispatch('pageLoadingUpdate', true)
         bindAccessToken(params)
-        let formData = params
-
-        if (!(params instanceof FormData)) {
-            formData = new FormData()
-            for (let key of Object.keys(params)) {
-                // 过滤掉 null
-                formData.append(key, params[key] !== null ? params[key] : '')
-            }
-        }
         return new Promise((resolve, reject) => {
-            instance.post(url, formData)
+            instance.post(url, params)
                 .then(({data}) => {
                     resolveResponse(data, resolve, invalidTokenRedirect)
                     store.dispatch('pageLoadingUpdate', false)

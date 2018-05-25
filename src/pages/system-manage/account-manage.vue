@@ -131,8 +131,9 @@
                 }
                 this.$axios.post(this.url, {
                     page: this.cur_page
-                }).then((res) => {
-                    this.tableData = res.data.list;
+                }).then((data) => {
+                    console.log(data);
+                    this.tableData = data.list;
                 })
             },
             search() {

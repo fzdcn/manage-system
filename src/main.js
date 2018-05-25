@@ -1,7 +1,6 @@
 import Vue from 'vue';
 import App from './App';
 import router from './router';
-import axios from 'axios';
 import store from './store';
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';    // 默认主题
@@ -9,13 +8,14 @@ import 'element-ui/lib/theme-chalk/index.css';    // 默认主题
 import 'babel-polyfill';
 import './assets/iconfont/iconfont.css';
 import http from './config/http';
-import {get, post} from './config/https';
+import moment from 'moment';
 
+// Vue.filter('moment', function (value, formatString = 'YYYY-MM-DD HH:mm:ss') {
+//     return moment(value * 1000).format(formatString)
+// })
+Vue.use(moment);
 Vue.use(http);
-Vue.prototype.$get = get;
-Vue.prototype.$post = post;
 Vue.use(ElementUI, {size: 'small'});
-Vue.prototype.$axios = axios;
 
 new Vue({
     el: '#app',

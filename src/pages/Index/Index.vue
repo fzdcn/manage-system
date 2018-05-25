@@ -8,11 +8,11 @@
                             <div class="user-info">
                                 <img src="static/img/img.jpg" class="user-avator" alt="">
                                 <div class="user-info-cont">
-                                    <div class="user-info-name">{{name}}</div>
+                                    <div class="user-info-name">{{username}}</div>
                                     <div>{{role}}</div>
                                 </div>
                             </div>
-                            <div class="user-info-list">上次登录时间：<span>2018-01-01</span></div>
+                            <div class="user-info-list">上次登录时间：<span>{{ loginDate }}</span></div>
                             <div class="user-info-list">上次登录地点：<span>东莞</span></div>
                         </el-card>
                         <el-card shadow="hover">
@@ -103,7 +103,9 @@
     export default {
         data() {
             return {
-                name: localStorage.getItem('username'),
+                username: JSON.parse(localStorage.getItem('user')).username,
+                managerLevel: localStorage.getItem('loginType'),
+                loginDate: JSON.parse(localStorage.getItem('user')).loginDate,
                 todoList: [
                     {
                         title: '今天要修复100个bug',
@@ -133,7 +135,7 @@
         },
         computed: {
             role() {
-                return this.name === 'admin' ? '超级管理员' : '普通用户';
+                return this.managerLevel === 'admin' ? '超级管理员' : '普通管理员';
             }
         }
     }
