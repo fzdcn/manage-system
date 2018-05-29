@@ -13,10 +13,9 @@ import moment from 'moment';
 // Vue.filter('moment', function (value, formatString = 'YYYY-MM-DD HH:mm:ss') {
 //     return moment(value * 1000).format(formatString)
 // })
-Vue.use(moment);
+Vue.prototype.$moment = moment;
 Vue.use(http);
 Vue.use(ElementUI, {size: 'small'});
-
 new Vue({
     el: '#app',
     router,

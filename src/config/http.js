@@ -5,8 +5,44 @@ import axios from 'axios'
 import {API_BASE, DEBUG} from './config'
 import store from '../store/index'
 import router from '../router/index'
-import {showAlert} from '../functions/index'
-import qs from 'qs';
+import qs from 'qs'
+import {Loading, Message} from 'element-ui'
+
+let needLoadingRequestCount = 0
+let loading = {}
+
+// 显示loading
+function showFullScreenLoading() {
+    if (needLoadingRequestCount === 0) {
+        startLoading()
+    }
+    needLoadingRequestCount++
+}
+
+// 隐藏loading
+function tryHideFullScreenLoading() {
+    if (needLoadingRequestCount <= 0) return
+    needLoadingRequestCount--
+    if (needLoadingRequestCount === 0) {
+        endLoading()
+    }
+}
+
+// 启动loading配置
+function startLoading() {
+    loading = Loading.service({
+        lock: true,
+        text: '加载中……',
+        background: 'rgba(0, 0, 0, 0.8)',
+        fullscreen: true,
+        spinner: 'el-icon-loading'
+    })
+}
+
+// 关闭loading
+function endLoading() {
+    loading.close()
+}
 
 let config = {
     baseURL: API_BASE,
@@ -35,7 +71,7 @@ function bindAccessToken(params) {
 function resolveResponse(data, resolve, invalidTokenRedirect = true) {
     switch (data.status) {
         case 401:
-            showAlert('登录失效，需重新登录');
+            Message.error('登录失效，需重新登录');
             if (router.currentRoute.name != 'login') {  //这里必须限制为非login页面
                 router.replace({
                     path: '/login',
@@ -46,10 +82,10 @@ function resolveResponse(data, resolve, invalidTokenRedirect = true) {
             store.dispatch('DeleteNavigationMenu');
             break
         case 422:
-            showAlert(data.errors);
+            Message.error(data.errors);
             break
         case 500:
-            !DEBUG ? showAlert('系统繁忙') : showAlert('系统错误:' + data.error);
+            !DEBUG ? Message.error('系统错误:' + data.error) : Message.error('系统错误:' + data.error);
             break
         default:
             resolve(data);
@@ -58,7 +94,7 @@ function resolveResponse(data, resolve, invalidTokenRedirect = true) {
 }
 
 function rejectResponse(data, reject) {
-    !DEBUG ? showAlert('网络繁忙') : showAlert('系统错误:' + data);
+    !DEBUG ? Message.error('系统错误:' + data) : Message.error('系统错误:' + data);
     reject(data)
 }
 
@@ -75,13 +111,16 @@ class HttpResource {
      * @returns {Promise}
      */
     static httpGet(url, params, invalidTokenRedirect = true) {
+        showFullScreenLoading()
         bindAccessToken(params)
         return new Promise((resolve, reject) => {
             instance.get(url, {params: params})
                 .then(({data}) => {
                     resolveResponse(data, resolve, invalidTokenRedirect)
+                    tryHideFullScreenLoading()
                 }, (data) => {
                     rejectResponse(data, reject)
+                    tryHideFullScreenLoading()
                 })
         })
     }
@@ -94,15 +133,18 @@ class HttpResource {
      */
     static httpPost(url, params, invalidTokenRedirect = true) {
         store.dispatch('pageLoadingUpdate', true)
+        showFullScreenLoading()
         bindAccessToken(params)
         return new Promise((resolve, reject) => {
             instance.post(url, params)
                 .then(({data}) => {
                     resolveResponse(data, resolve, invalidTokenRedirect)
                     store.dispatch('pageLoadingUpdate', false)
+                    tryHideFullScreenLoading()
                 }, (data) => {
                     rejectResponse(data, reject)
                     store.dispatch('pageLoadingUpdate', false)
+                    tryHideFullScreenLoading()
                 })
         })
     }

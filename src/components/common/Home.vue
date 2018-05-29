@@ -5,10 +5,11 @@
         <div class="content-box" :class="{'content-collapse':collapse}">
             <v-tags></v-tags>
             <div class="content">
+                <breadcrumb class="breadcrumb-container"></breadcrumb>
                 <transition name="move" mode="out-in">
-                    <keep-alive>
-                        <router-view></router-view>
-                    </keep-alive>
+                    <!--<keep-alive>-->
+                    <router-view></router-view>
+                    <!--</keep-alive>-->
                 </transition>
             </div>
         </div>
@@ -20,6 +21,7 @@
     import vSidebar from './Sidebar.vue';
     import vTags from './Tags.vue';
     import bus from '../common/bus';
+    import Breadcrumb from './Breadcrumb.vue';
 
     export default {
         data() {
@@ -28,7 +30,7 @@
             }
         },
         components: {
-            vHead, vSidebar, vTags
+            vHead, vSidebar, vTags, Breadcrumb
         },
         created() {
             bus.$on('collapse', msg => {
@@ -37,3 +39,7 @@
         }
     }
 </script>
+<style lang="stylus" scoped>
+    /*.breadcrumb-container*/
+    /*float left*/
+</style>

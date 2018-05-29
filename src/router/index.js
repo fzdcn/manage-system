@@ -34,6 +34,12 @@ const routes = [
                 meta: {title: '后台账户管理', permission: false}
             },
             {
+                path: '/role-manage',
+                name: 'role-manage',
+                component: resolve => require(['../pages/system-manage/RoleManage.vue'], resolve),
+                meta: {title: '后台角色管理', permission: false}
+            },
+            {
                 // 权限页面
                 path: '/permission',
                 name: 'permission',

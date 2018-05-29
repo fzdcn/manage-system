@@ -86,13 +86,17 @@
                     },
                     {
                         icon: 'el-icon-date',
-                        index: '2',
+                        index: '3',
                         title: '系统设置',
                         subs: [
                             {
                                 index: 'account-manage',
                                 title: '后台账户管理'
-                            }
+                            },
+                            {
+                                index: 'role-manage',
+                                title: '后台角色管理'
+                            },
                         ]
                     },
                     {
