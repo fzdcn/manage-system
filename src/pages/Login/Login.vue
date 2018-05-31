@@ -4,16 +4,16 @@
         <div class="ms-login">
             <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="0px" class="demo-ruleForm">
                 <el-form-item prop="username">
-                    <el-input v-model.trim="ruleForm.username" placeholder="username"></el-input>
+                    <el-input v-model.trim="ruleForm.username" placeholder="请输入用户名"></el-input>
                 </el-form-item>
                 <el-form-item prop="password">
-                    <el-input type="password" placeholder="password" v-model.trim="ruleForm.password"
+                    <el-input type="password" placeholder="请输入密码" v-model.trim="ruleForm.password"
                               @keyup.enter.native="submitForm('ruleForm')"></el-input>
                 </el-form-item>
                 <el-form-item prop="verificationCode">
                     <el-row :gutter="30">
                         <el-col :span="12">
-                            <el-input type="text" placeholder="请输入验证码"
+                            <el-input @keyup.enter.native="submitForm('ruleForm')" type="text" placeholder="请输入验证码"
                                       v-model.trim="ruleForm.verificationCode"></el-input>
                         </el-col>
                         <el-col :span="10" class="image-code">
@@ -85,18 +85,17 @@
                         ]
                     },
                     {
-                        icon: 'el-icon-date',
-                        index: '3',
+                        icon: 'el-icon-setting',
+                        index: '2',
                         title: '系统设置',
                         subs: [
                             {
                                 index: 'account-manage',
                                 title: '后台账户管理'
-                            },
-                            {
+                            }, {
                                 index: 'role-manage',
                                 title: '后台角色管理'
-                            },
+                            }
                         ]
                     },
                     {

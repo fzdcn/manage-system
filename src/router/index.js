@@ -17,33 +17,37 @@ const routes = [
             {
                 path: '/index',
                 name: 'index',
-                component: resolve => require(['../pages/Index/Index.vue'], resolve),
+                component: resolve => require(['../pages/index/Index.vue'], resolve),
                 meta: {title: '首页', permission: false}
             },
             {
                 path: '/payment',
                 name: 'payment',
-                component: resolve => require(['../pages/Payment/Payment.vue'], resolve),
+                component: resolve => require(['../pages/payment/Payment.vue'], resolve),
                 meta: {title: '企业网银支付', permission: false}
             },
-
             {
                 path: '/account-manage',
                 name: 'account-manage',
-                component: resolve => require(['../pages/system-manage/AccountManage.vue'], resolve),
+                component: resolve => require(['../pages/system-manage/account-manage/AccountManage.vue'], resolve),
                 meta: {title: '后台账户管理', permission: false}
             },
             {
                 path: '/role-manage',
                 name: 'role-manage',
-                component: resolve => require(['../pages/system-manage/RoleManage.vue'], resolve),
-                meta: {title: '后台角色管理', permission: false}
+                component: resolve => require(['../pages/system-manage/role-manage/RoleManage.vue'], resolve),
+                meta: {title: '后台角色管理', permission: false},
+            }, {
+                path: '/role-manage/modify-role-permissions/:id',
+                name: 'modify-role-permissions',
+                component: resolve => require(['../pages/system-manage/role-manage/ModifyRolePermissions.vue'], resolve),
+                meta: {title: '后台角色权限修改', permission: false},
             },
             {
                 // 权限页面
                 path: '/permission',
                 name: 'permission',
-                component: resolve => require(['../pages/Permission/Index.vue'], resolve),
+                component: resolve => require(['../pages/permission/Index.vue'], resolve),
                 meta: {title: '角色管理', permission: true}
             }
         ]
@@ -51,18 +55,18 @@ const routes = [
     {
         path: '/login',
         name: 'login',
-        component: resolve => require(['../pages/Login/Login.vue'], resolve),
+        component: resolve => require(['../pages/login/Login.vue'], resolve),
         meta: {permission: false}
     },
     {
         path: '/404',
         name: '404',
-        component: resolve => require(['../pages/Error/404.vue'], resolve)
+        component: resolve => require(['../pages/error/404.vue'], resolve)
     },
     {
         path: '/403',
         name: '403',
-        component: resolve => require(['../pages/Error/403.vue'], resolve)
+        component: resolve => require(['../pages/error/403.vue'], resolve)
     },
     {
         path: '*',

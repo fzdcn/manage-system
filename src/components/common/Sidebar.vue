@@ -1,7 +1,8 @@
 <template>
     <div class="sidebar">
-        <el-menu class="sidebar-el-menu" :default-active="onRoutes" :collapse="collapse" background-color="#324157"
-                 text-color="#bfcbd9" active-text-color="#20a0ff" unique-opened router>
+        <el-menu @select="handleSelect" class="sidebar-el-menu" :default-active="onRoutes" :collapse="collapse"
+                 background-color="#324157"
+                 text-color="#bfcbd9" active-text-color="#20a0ff" unique-opened>
             <template v-for="item in items">
                 <template style="line-height: 66px;height: 66px;" v-if="item.subs">
                     <el-submenu :index="item.index" :key="item.index">
@@ -38,6 +39,11 @@
             onRoutes() {
                 return this.$route.path.replace('/', '');
             }
+        },
+        methods: {
+            handleSelect(key, keyPath) {
+                this.$router.push({name: key})
+            },
         },
         created() {
             let vm = this;

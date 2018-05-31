@@ -9,6 +9,7 @@
 	|-- src                              // 源码目录
 	|   |-- components                   // 组件
 	|       |-- common                   // 公共组件
+	|           |-- Breadcrumb.vue       // 公共面包屑
 	|           |-- bus.js           	 // Event Bus
 	|           |-- Header.vue           // 公共头部
 	|           |-- Home.vue           	 // 公共路由入口
@@ -33,11 +34,13 @@
 
 	git clone xxx     // 把模板下载到本地
 	cd manage-system    // 进入模板目录
+	## npm or yarn install ##
 	npm install         // 安装项目依赖，等待安装完成之后
+	yarn install         // 安装项目依赖，等待安装完成之后
 
 ## 本地开发 ##
 
-	// 开启服务器，浏览器访问 http://localhost:8080
+	// 开启服务器，浏览器访问 http://localhost:8080 或者 http://ip:8080
 	npm run dev
 
 ## 构建生产 ##
