@@ -1,7 +1,7 @@
 <template>
     <div class="table">
         <div class="container">
-            <div class="add">
+            <div class="add" style="margin-bottom: 30px;">
                 <el-button type="primary" size="medium" icon="el-icon-plus" @click="add">增加</el-button>
             </div>
             <div class="handle-box">
@@ -36,25 +36,26 @@
                     <el-button type="primary" icon="el-icon-search" @click="search">搜索</el-button>
                 </div>
             </div>
-            <el-table :data="accountData" border style="width: 100%" header-align="center">
-                <el-table-column prop="id" label="ID">
+            <el-table :data="accountData" border style="width: 100%;text-align: center;">
+                <el-table-column prop="id" label="ID" header-align="center">
                 </el-table-column>
-                <el-table-column prop="username" label="用户名">
+                <el-table-column prop="username" label="用户名" header-align="center">
                 </el-table-column>
-                <el-table-column prop="roleName" label="角色">
+                <el-table-column prop="roleName" label="角色" header-align="center">
                 </el-table-column>
-                <el-table-column prop="name" label="姓名">
+                <el-table-column prop="name" label="姓名" header-align="center">
                 </el-table-column>
-                <el-table-column prop="phone" label="手机号码">
+                <el-table-column prop="phone" label="手机号码" header-align="center">
                 </el-table-column>
-                <el-table-column prop="loginDate" label="最后登录时间" sortable :formatter="loginDateFormatter">
+                <el-table-column prop="loginDate" label="最后登录时间" sortable :formatter="loginDateFormatter"
+                                 header-align="center">
                 </el-table-column>
-                <el-table-column prop="status" label="状态" :formatter="statusFormatter">
+                <el-table-column prop="status" label="状态" :formatter="statusFormatter" header-align="center">
                 </el-table-column>
-                <el-table-column prop="lockedOrNo" label="是否被锁" :formatter="lockedOrNoFormatter">
+                <el-table-column prop="lockedOrNo" label="是否被锁" :formatter="lockedOrNoFormatter" header-align="center">
                 </el-table-column>
-                <el-table-column label="操作" width="295px">
-                    <template slot-scope="scope">
+                <el-table-column label="操作" width="295px" header-align="center">
+                    <template v-if="accountData.length > 0" slot-scope="scope">
                         <el-button @click="handleEdit(scope.row)" type="primary" icon="el-icon-edit" size="small">编辑
                         </el-button>
                         <el-button @click="handleModifyPassword(scope.row)" type="primary" icon="el-icon-setting"
@@ -202,7 +203,7 @@
         data() {
             return {
                 accountData: [
-                    {
+                    /*{
                         email: "",
                         id: '',
                         lockedOrNo: '',
@@ -214,7 +215,7 @@
                         status: '',
                         username: "",
                         loginDate: ""
-                    }
+                    }*/
                 ],
                 searchUserAccountForm: {
                     username: '',
@@ -396,14 +397,9 @@
             },
             cancelShowAccount() {
                 this.isShowAccount = false;
-                this.addUserAccountForm.username = '';
-                this.addUserAccountForm.password = '';
-                this.addUserAccountForm.confirmPassword = '';
-                this.addUserAccountForm.name = '';
-                this.addUserAccountForm.telephone = '';
-                this.addUserAccountForm.email = '';
-                this.addUserAccountForm.selectedRole = '';
-                this.addUserAccountForm.uTypeShield = '';
+                for (let key in this.addUserAccountForm) {
+                    delete this.addUserAccountForm[key];
+                }
             },
             accountVerification() {
                 let vm = this;
@@ -458,14 +454,9 @@
                 }).then(({data}) => {
                     vm.$message.success('添加后台账户成功！');
                     vm.isShowAccount = false;
-                    this.addUserAccountForm.username = '';
-                    this.addUserAccountForm.password = '';
-                    this.addUserAccountForm.confirmPassword = '';
-                    this.addUserAccountForm.name = '';
-                    this.addUserAccountForm.telephone = '';
-                    this.addUserAccountForm.email = '';
-                    this.addUserAccountForm.selectedRole = '';
-                    this.addUserAccountForm.uTypeShield = '';
+                    for (let key in this.addUserAccountForm) {
+                        delete this.addUserAccountForm[key];
+                    }
                     vm.$httpGet('/admin/admin/index', {
                         pageNo: 1,
                         pageSize: 10,
@@ -591,10 +582,6 @@
 </script>
 
 <style scoped>
-    .add {
-        margin-bottom: 30px;
-    }
-
     .handle-box {
         margin-bottom: 20px;
         display: flex;

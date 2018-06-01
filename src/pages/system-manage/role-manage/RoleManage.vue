@@ -1,18 +1,19 @@
 <template>
     <div class="table">
         <div class="container">
-            <div class="add">
+            <div class="add" style="margin-bottom: 30px;">
                 <el-button type="primary" size="medium" icon="el-icon-plus" @click="add">增加</el-button>
             </div>
-            <el-table :data="roleData" border style="width: 100%">
-                <el-table-column prop="id" label="ID">
+            <el-table :data="roleData" border style="width: 100%;text-align: center;">
+                <el-table-column prop="id" label="ID" header-align="center">
                 </el-table-column>
-                <el-table-column prop="name" label="角色">
+                <el-table-column prop="name" label="角色" header-align="center">
                 </el-table-column>
-                <el-table-column prop="defaultOrNo" label="是否默认" :formatter="defaultOrNoFormatter">
+                <el-table-column prop="defaultOrNo" label="是否默认" :formatter="defaultOrNoFormatter"
+                                 header-align="center">
                 </el-table-column>
-                <el-table-column label="操作" width="295px">
-                    <template slot-scope="scope">
+                <el-table-column label="操作" width="295px" header-align="center">
+                    <template v-if="roleData.length > 0" slot-scope="scope">
                         <el-button @click="handleEdit(scope.row)" type="primary" icon="el-icon-edit" size="small">编辑
                         </el-button>
                         <el-button @click="handleModifyPermissions(scope.row)" type="primary" icon="el-icon-setting"
@@ -68,11 +69,11 @@
         data() {
             return {
                 roleData: [
-                    {
+                    /*{
                         "defaultOrNo": '',
                         "id": '',
-                        "name": ""
-                    }
+                        "name": ''
+                    }*/
                 ],
                 // 当前页
                 cur_page: 1,
@@ -220,10 +221,6 @@
 </script>
 
 <style scoped>
-    .add {
-        margin-bottom: 30px;
-    }
-
     .form-content {
         margin: 0 auto;
         width: 90%;

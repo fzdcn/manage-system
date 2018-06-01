@@ -95,7 +95,11 @@
                             }, {
                                 index: 'role-manage',
                                 title: '后台角色管理'
-                            }
+                            }, {
+                                index: 'menu-manage',
+                                title: '后台菜单管理'
+                            },
+
                         ]
                     },
                     {

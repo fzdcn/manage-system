@@ -1,17 +1,18 @@
 <template>
     <div class="table">
         <div class="container">
-            <el-table :data="permissionsData" ref="itemTable" border style="width: 100%"
+            <el-table :data="permissionsData" ref="itemTable" border style="width: 100%;text-align: center;"
                       @selection-change="handleSelectionChange">
                 <el-table-column @selection-change="handleSelectionChange" type="selection"
-                                 width="55"></el-table-column>
-                <el-table-column prop="id" label="ID">
+                                 width="55" header-align="center">
                 </el-table-column>
-                <el-table-column prop="name" label="菜单">
+                <el-table-column prop="id" label="ID" header-align="center">
                 </el-table-column>
-                <el-table-column prop="permission" label="权限key">
+                <el-table-column prop="name" label="菜单" header-align="center">
                 </el-table-column>
-                <el-table-column prop="url" label="URL">
+                <el-table-column prop="permission" label="权限key" header-align="center">
+                </el-table-column>
+                <el-table-column prop="url" label="URL" header-align="center">
                 </el-table-column>
             </el-table>
             <el-row style="margin: 50px auto">
