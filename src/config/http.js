@@ -71,7 +71,7 @@ function bindAccessToken(params) {
 function resolveResponse(data, resolve, invalidTokenRedirect = true) {
     switch (data.status) {
         case 401:
-            Message.error('登录失效，需重新登录');
+            Message.error(data.error);
             if (router.currentRoute.name != 'login') {  //这里必须限制为非login页面
                 router.replace({
                     path: '/login',
@@ -82,7 +82,7 @@ function resolveResponse(data, resolve, invalidTokenRedirect = true) {
             store.dispatch('DeleteNavigationMenu');
             break
         case 422:
-            Message.error(data.errors);
+            Message.error(data.error);
             break
         case 500:
             !DEBUG ? Message.error('系统错误:' + data.error) : Message.error('系统错误:' + data.error);

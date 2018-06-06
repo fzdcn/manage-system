@@ -23,7 +23,7 @@ new Vue({
     template: '<App/>',
     components: {App},
     mounted() {
-        const childElem = document.getElementById('loader')
-        childElem.parentNode.removeChild(childElem)
+        const childElem = document.getElementById('loader');
+        childElem.parentNode.removeChild(childElem);
     },
 })

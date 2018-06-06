@@ -120,7 +120,7 @@
                         });
                         vm.getData();
                     }).catch((data) => {
-                        console.log(data.error)
+                        console.log(data)
                     })
                 }).catch(() => {
                     vm.$message({
@@ -138,7 +138,7 @@
                     vm.roleData = data.page.list;
                     vm.total = data.page.total;
                 }).catch((data) => {
-                    console.log(data.error)
+                    console.log(data)
                 })
             },
             defaultOrNoFormatter(row, column) {
@@ -175,10 +175,10 @@
                         vm.roleData = data.page.list;
                         vm.total = data.page.total;
                     }).catch((data) => {
-                        console.log(data.error)
+                        console.log(data)
                     })
                 }).catch((data) => {
-                    console.log(data.error)
+                    console.log(data)
                 })
             },
             handleModifyPermissions(row) {
@@ -209,7 +209,7 @@
                     vm.isShowEdit = false;
                     vm.getData();
                 }).catch((data) => {
-                    console.log(data.error)
+                    console.log(data)
                 })
             }
         },

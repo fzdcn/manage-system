@@ -114,10 +114,10 @@ export function post(url, data = {}) {
     store.dispatch('pageLoadingUpdate', true);
     return new Promise((resolve, reject) => {
         axios.post(url, data).then(({data}) => {
-            resolve(data,resolve);
+            resolve(data, resolve);
             store.dispatch('pageLoadingUpdate', false);
         }).catch(({data}) => {
-            reject(data,reject)
+            reject(data, reject)
             store.dispatch('pageLoadingUpdate', false);
         })
     })

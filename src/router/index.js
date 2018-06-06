@@ -43,10 +43,15 @@ const routes = [
                 component: resolve => require(['../pages/system-manage/role-manage/ModifyRolePermissions.vue'], resolve),
                 meta: {title: '后台角色权限修改', permission: false},
             }, {
-                path: 'menu-manage',
+                path: '/menu-manage',
                 name: 'menu-manage',
                 component: resolve => require(['../pages/system-manage/menu-manage/MenuManage.vue'], resolve),
                 meta: {title: '后台菜单管理', permission: false},
+            }, {
+                path: '/salesman-manage',
+                name: 'salesman-manage',
+                component: resolve => require(['../pages/system-manage/salesman-manage/SalesmanManage.vue'], resolve),
+                meta: {title: '后台业务员管理', permission: false},
             },
             {
                 // 权限页面

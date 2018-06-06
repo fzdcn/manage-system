@@ -4,20 +4,20 @@
                  background-color="#324157"
                  text-color="#bfcbd9" active-text-color="#20a0ff" unique-opened>
             <template v-for="item in items">
-                <template style="line-height: 66px;height: 66px;" v-if="item.subs">
-                    <el-submenu :index="item.index" :key="item.index">
+                <template v-if="item.subs">
+                    <el-submenu :index="item.url" :key="item.url">
                         <template slot="title">
-                            <i :class="item.icon"></i><span slot="title">{{ item.title }}</span>
+                            <i :class="item.icon"></i><span slot="title">{{ item.name }}</span>
                         </template>
-                        <el-menu-item v-for="(subItem,i) in item.subs" :key="i" :index="subItem.index">
-                            {{ subItem.title }}
+                        <el-menu-item v-for="(subItem,i) in item.subs" :key="i" :index="subItem.url">
+                            <i :class="subItem.icon"></i>
+                            {{ subItem.name }}
                         </el-menu-item>
                     </el-submenu>
                 </template>
                 <template v-else>
-                    <el-menu-item :index="item.index" :key="item.index">
-                        <i :class="item.icon"></i><span slot="title">{{ item.title }}</span>
-                        <img src="" alt="">
+                    <el-menu-item :index="item.url" :key="item.url">
+                        <i :class="item.icon"></i><span slot="title">{{ item.name }}</span>
                     </el-menu-item>
                 </template>
             </template>

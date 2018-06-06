@@ -301,7 +301,7 @@
                 this.$httpGet('/admin/admin/getAdminRoleList', {}).then(({data}) => {
                     vm.roleList = data;
                 }).catch((data) => {
-                    console.log(data.error)
+                    console.log(data)
                 })
             },
             // 分页导航
@@ -326,7 +326,7 @@
                         });
                         vm.getData();
                     }).catch((data) => {
-                        console.log(data.error)
+                        console.log(data)
                     })
                 }).catch(() => {
                     vm.$message({
@@ -347,7 +347,7 @@
                     vm.accountData = data.page.list;
                     vm.total = data.page.total;
                 }).catch((data) => {
-                    console.log(data.error)
+                    console.log(data)
                 })
             },
             statusFormatter(row, column) {
@@ -389,7 +389,7 @@
                     vm.accountData = data.page.list;
                     vm.total = data.page.total;
                 }).catch((data) => {
-                    console.log(data.error)
+                    console.log(data)
                 })
             },
             add() {
@@ -467,10 +467,10 @@
                         vm.accountData = data.page.list;
                         vm.total = data.page.total;
                     }).catch((data) => {
-                        console.log(data.error)
+                        console.log(data)
                     })
                 }).catch((data) => {
-                    console.log(data.error)
+                    console.log(data)
                 })
             },
             handleModifyPassword(row) {
@@ -510,7 +510,7 @@
                     this.modifyUserAccountForm.password = '';
                     this.modifyUserAccountForm.confirmPassword = '';
                 }).catch((data) => {
-                    console.log(data.error)
+                    console.log(data)
                 })
             },
             handleEdit(row) {
@@ -521,7 +521,7 @@
                 }).then(({data}) => {
                     vm.editUserAccountForm = data;
                 }).catch((data) => {
-                    console.log(data.error);
+                    console.log(data);
                 })
             },
             cancelShowEdit() {
@@ -567,7 +567,7 @@
                     vm.isShowEdit = false;
                     vm.getData();
                 }).catch((data) => {
-                    console.log(data.error)
+                    console.log(data)
                 })
             }
         }

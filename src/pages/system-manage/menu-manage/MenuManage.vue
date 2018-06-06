@@ -4,19 +4,27 @@
             <div class="add" style="margin-bottom: 30px;">
                 <el-button type="primary" size="medium" icon="el-icon-plus" @click="add">增加</el-button>
             </div>
-            <el-table :data="menuData" ref="itemTable" border style="width: 100%;text-align: center;">
-                <el-table-column prop="name" label="名称" header-align="center">
+            <el-table :data="menuData" ref="itemTable" border style="width: 100%;">
+                <el-table-column prop="name" label="名称">
+                    <template slot-scope="scope">
+                        <span v-if="scope.row.grade == 1"
+                              style="color: dodgerblue">{{ scope.row.name }}</span>
+                        <span v-if="scope.row.grade == 2" style="color: cadetblue">&nbsp;&nbsp;&nbsp;&nbsp;{{ scope.row.name }}</span>
+                        <span v-if="scope.row.grade == 3" style="color: lightskyblue">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ scope.row.name }}</span>
+                    </template>
                 </el-table-column>
-                <el-table-column label="类型" header-align="center">
+                <el-table-column label="类型">
                     <template slot-scope="scope">{{ scope.row.type ===1 ? '菜单' : '按钮' }}</template>
                 </el-table-column>
-                <el-table-column prop="permission" label="权限key" header-align="center">
+                <el-table-column prop="permission" label="权限key">
                 </el-table-column>
-                <el-table-column prop="url" label="URL" header-align="center">
+                <el-table-column prop="url" label="URL">
                 </el-table-column>
-                <el-table-column prop="orders" label="排序" header-align="center">
+                <el-table-column prop="icon" label="ICON">
                 </el-table-column>
-                <el-table-column label="操作" width="185px" header-align="center">
+                <el-table-column prop="orders" label="排序">
+                </el-table-column>
+                <el-table-column label="操作" width="185px">
                     <template v-if="menuData.length > 0" slot-scope="scope">
                         <el-button @click="handleEdit(scope.row)" type="primary" icon="el-icon-edit" size="small">编辑
                         </el-button>
@@ -34,8 +42,11 @@
                     <el-form-item label="菜单名：">
                         <el-input v-model.trim="addMenuForm.name" placeholder="如：首页"></el-input>
                     </el-form-item>
+                    <el-form-item label="ICON：">
+                        <el-input v-model.trim="addMenuForm.icon" placeholder="如：el-icon-setting"></el-input>
+                    </el-form-item>
                     <el-form-item label="类型：">
-                        <el-select v-model.trim="addMenuForm.selectedType" placeholder="类型">
+                        <el-select v-model.trim="addMenuForm.type" placeholder="类型">
                             <el-option
                                 v-for="item in typeList"
                                 :key="item.id"
@@ -45,7 +56,7 @@
                         </el-select>
                     </el-form-item>
                     <el-form-item label="权限key：">
-                        <el-input v-model.trim="addMenuForm.permissionKey" placeholder="如common:index"></el-input>
+                        <el-input v-model.trim="addMenuForm.permission" placeholder="如common:index"></el-input>
                     </el-form-item>
                     <el-form-item label="链接：">
                         <el-input type="tel" v-model.trim="addMenuForm.url" placeholder="如common:index"></el-input>
@@ -57,11 +68,19 @@
                                 :key="item.id"
                                 :label="item.name"
                                 :value="item.id">
+                                <span v-if="item.grade == 0"
+                                      style="float: left;color: blue;">{{ item.name }}</span>
+                                <span v-if="item.grade == 1"
+                                      style="float: left;color: dodgerblue;">&nbsp;&nbsp;{{ item.name }}</span>
+                                <span v-if="item.grade == 2"
+                                      style="float: left;color: cadetblue;">&nbsp;&nbsp;&nbsp;&nbsp;{{ item.name }}</span>
+                                <span v-if="item.grade == 3"
+                                      style="float: left;color: lightskyblue">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ item.name }}</span>
                             </el-option>
                         </el-select>
                     </el-form-item>
                     <el-form-item label="排序：">
-                        <el-input v-model.trim="addMenuForm.sort"></el-input>
+                        <el-input v-model.trim="addMenuForm.orders"></el-input>
                     </el-form-item>
                 </el-form>
             </div>
@@ -76,6 +95,9 @@
                 <el-form ref="editMenuForm" :model="editMenuForm" label-width="100px">
                     <el-form-item label="菜单名：">
                         <el-input v-model.trim="editMenuForm.name" placeholder="如：首页"></el-input>
+                    </el-form-item>
+                    <el-form-item label="ICON：">
+                        <el-input v-model.trim="editMenuForm.icon" placeholder="如：el-icon-setting"></el-input>
                     </el-form-item>
                     <el-form-item label="类型：">
                         <el-select v-model.trim="editMenuForm.type" placeholder="类型">
@@ -102,6 +124,14 @@
                                 :key="item.id"
                                 :label="item.name"
                                 :value="item.id">
+                                <span v-if="item.grade == 0"
+                                      style="float: left;color: blue;">{{ item.name }}</span>
+                                <span v-if="item.grade == 1"
+                                      style="float: left;color: dodgerblue;">&nbsp;&nbsp;{{ item.name }}</span>
+                                <span v-if="item.grade == 2"
+                                      style="float: left;color: cadetblue;">&nbsp;&nbsp;&nbsp;&nbsp;{{ item.name }}</span>
+                                <span v-if="item.grade == 3"
+                                      style="float: left;color: lightskyblue">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ item.name }}</span>
                             </el-option>
                         </el-select>
                     </el-form-item>
@@ -141,10 +171,11 @@
                 ],
                 addMenuForm: {
                     name: '',
-                    selectedType: 1,
-                    permissionKey: '',
+                    icon: '',
+                    type: '',
+                    permission: '',
                     url: '',
-                    selectedMenu: 1,
+                    parentId: '',
                     sort: ''
                 },
                 typeList: [
@@ -161,6 +192,7 @@
                 editMenuForm: {
                     /*id: "",
                     name: "",
+                    icon:"",
                     permission: "",
                     url: "",
                     parentId: "",
@@ -176,7 +208,7 @@
                 this.$httpGet('/admin/permission/index', {}).then(({data}) => {
                     vm.menuData = data;
                 }).catch((data) => {
-                    console.log(data.error)
+                    console.log(data)
                 })
             },
             getMenuList() {
@@ -184,19 +216,18 @@
                 this.$httpGet('/admin/permission/getSuperPermissionList', {}).then(({data}) => {
                     vm.menuList = data;
                 }).catch((data) => {
-                    console.log(data.error)
+                    console.log(data)
                 })
             },
             handleEdit(row) {
                 let vm = this;
-                console.log(row);
                 this.isShowEditMenu = true;
                 this.$httpGet('/admin/permission/edit', {
                     id: row.id
                 }).then(({data}) => {
                     vm.editMenuForm = data;
                 }).catch((data) => {
-                    console.log(data.error)
+                    console.log(data)
                 })
             },
             cancel() {
@@ -208,12 +239,13 @@
                     this.$message.warning('菜单名不能为空！');
                     return false;
                 }
-                if (!this.editMenuForm.permissionKey) {
+                if (!this.editMenuForm.permission) {
                     this.$message.warning('权限key不能为空！');
                     return false;
                 }
                 this.$httpPost('/admin/permission/update', {
                     id: this.editMenuForm.id,
+                    icon: this.editMenuForm.icon,
                     name: this.editMenuForm.name,
                     permission: this.editMenuForm.permission,
                     url: this.editMenuForm.url,
@@ -225,7 +257,7 @@
                     vm.isShowEditMenu = false;
                     vm.getMenuData();
                 }).catch((data) => {
-                    console.log(data.error)
+                    console.log(data)
                 })
             },
             handleDelete(row) {
@@ -241,7 +273,7 @@
                         vm.$message.success(data);
                         this.getMenuData();
                     }).catch((data) => {
-                        console.log(data.error)
+                        console.log(data)
                     })
                 }).catch(() => {
                     vm.$message({
@@ -259,50 +291,41 @@
                     this.$message.warning('菜单名不能为空！');
                     return false;
                 }
-                if (!this.addMenuForm.permissionKey) {
+                if (!this.addMenuForm.permission) {
                     this.$message.warning('权限key不能为空！');
                     return false;
                 }
                 this.$httpPost('/admin/permission/save', {
                     name: this.addMenuForm.name,
-                    permission: this.addMenuForm.permissionKey,
+                    icon: this.addMenuForm.icon,
+                    permission: this.addMenuForm.permission,
                     url: this.addMenuForm.url,
-                    parentId: this.addMenuForm.selectedMenu,
-                    type: this.addMenuForm.selectedType,
-                    orders: this.addMenuForm.sort
+                    parentId: this.addMenuForm.parentId,
+                    type: this.addMenuForm.type,
+                    orders: this.addMenuForm.orders
                 }).then(({data}) => {
                     vm.$message.success(data);
                     vm.isShowMenu = false;
                     this.getMenuData();
                     for (let key in this.addMenuForm) {
-                        if (key == "selectedType") {
-                            this.addMenuForm[key] = "1";
-                        } else if (key == "selectedMenu") {
-                            this.addMenuForm[key] = 1;
-                        } else {
-                            delete this.addMenuForm[key];
-                        }
+                        delete this.addMenuForm[key];
                     }
                 }).catch((data) => {
-                    console.log(data.error)
+                    console.log(data)
                 })
             },
             back() {
                 this.isShowMenu = false;
                 for (let key in this.addMenuForm) {
-                    if (key == "selectedType") {
-                        this.addMenuForm[key] = "1";
-                    } else if (key == "selectedMenu") {
-                        this.addMenuForm[key] = 1;
-                    } else {
-                        delete this.addMenuForm[key];
-                    }
+                    delete this.addMenuForm[key];
                 }
             }
         },
         mounted() {
             this.getMenuData();
             this.getMenuList();
+            // console.log(this.$router.match('men-manage'));
+            console.log(this.$router);
         }
     }
 
