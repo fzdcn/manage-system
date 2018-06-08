@@ -4,15 +4,15 @@
             <div class="add" style="margin-bottom: 30px;">
                 <el-button type="primary" size="medium" icon="el-icon-plus" @click="add">增加</el-button>
             </div>
-            <el-table :data="roleData" border style="width: 100%;text-align: center;">
-                <el-table-column prop="id" label="ID" header-align="center">
+            <el-table :data="roleData" border style="width: 100%;">
+                <el-table-column prop="id" label="ID">
                 </el-table-column>
-                <el-table-column prop="name" label="角色" header-align="center">
+                <el-table-column prop="name" label="角色">
                 </el-table-column>
                 <el-table-column prop="defaultOrNo" label="是否默认" :formatter="defaultOrNoFormatter"
-                                 header-align="center">
+                >
                 </el-table-column>
-                <el-table-column label="操作" width="295px" header-align="center">
+                <el-table-column label="操作" width="300px">
                     <template v-if="roleData.length > 0" slot-scope="scope">
                         <el-button @click="handleEdit(scope.row)" type="primary" icon="el-icon-edit" size="small">编辑
                         </el-button>
@@ -41,8 +41,8 @@
                 </el-form>
             </div>
             <span slot="footer" class="dialog-footer">
-                <el-button @click="cancelShowRole">取 消</el-button>
                 <el-button type="primary" @click="roleVerification">确 定</el-button>
+                <el-button @click="cancelShowRole">取 消</el-button>
             </span>
         </el-dialog>
 
@@ -56,8 +56,8 @@
                 </el-form>
             </div>
             <span slot="footer" class="dialog-footer">
-                <el-button @click="cancelShowEdit">取 消</el-button>
                 <el-button type="primary" @click="editUserInfo">确 定</el-button>
+                <el-button @click="cancelShowEdit">取 消</el-button>
             </span>
         </el-dialog>
     </div>
@@ -192,8 +192,7 @@
             },
             cancelShowEdit() {
                 this.isShowEdit = false;
-                this.editUserRoleForm.id = '';
-                this.editUserRoleForm.name = '';
+                this.editUserRoleForm = {};
             },
             editUserInfo() {
                 let vm = this;

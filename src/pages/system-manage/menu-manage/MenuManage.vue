@@ -24,7 +24,7 @@
                 </el-table-column>
                 <el-table-column prop="orders" label="排序">
                 </el-table-column>
-                <el-table-column label="操作" width="185px">
+                <el-table-column label="操作" width="200px">
                     <template v-if="menuData.length > 0" slot-scope="scope">
                         <el-button @click="handleEdit(scope.row)" type="primary" icon="el-icon-edit" size="small">编辑
                         </el-button>
@@ -49,9 +49,9 @@
                         <el-select v-model.trim="addMenuForm.type" placeholder="类型">
                             <el-option
                                 v-for="item in typeList"
-                                :key="item.id"
+                                :key="item.type"
                                 :label="item.name"
-                                :value="item.id">
+                                :value="item.type">
                             </el-option>
                         </el-select>
                     </el-form-item>
@@ -103,12 +103,10 @@
                         <el-select v-model.trim="editMenuForm.type" placeholder="类型">
                             <el-option
                                 v-for="item in typeList"
-                                :key="item.id"
+                                :key="item.type"
                                 :label="item.name"
-                                :value="item.id">
+                                :value="item.type">
                             </el-option>
-                            <!--<el-option label="菜单" value="1"></el-option>-->
-                            <!--<el-option label="按钮" value="2"></el-option>-->
                         </el-select>
                     </el-form-item>
                     <el-form-item label="权限key：">
@@ -181,23 +179,23 @@
                 typeList: [
                     {
                         name: '菜单',
-                        id: 1
+                        type: 1
                     }, {
 
                         name: '按钮',
-                        id: 2
+                        type: 2
                     },
 
                 ],
                 editMenuForm: {
-                    /*id: "",
+                    id: "",
                     name: "",
-                    icon:"",
+                    icon: "",
                     permission: "",
                     url: "",
                     parentId: "",
                     type: "",
-                    orders: ""*/
+                    orders: ""
                 },
                 menuList: []
             }
@@ -222,13 +220,21 @@
             handleEdit(row) {
                 let vm = this;
                 this.isShowEditMenu = true;
-                this.$httpGet('/admin/permission/edit', {
+                /*this.$httpGet('/admin/permission/edit', {
                     id: row.id
                 }).then(({data}) => {
                     vm.editMenuForm = data;
                 }).catch((data) => {
                     console.log(data)
-                })
+                })*/
+                vm.editMenuForm.id = row.id;
+                vm.editMenuForm.name = row.name;
+                vm.editMenuForm.icon = row.icon;
+                vm.editMenuForm.permission = row.permission;
+                vm.editMenuForm.url = row.url;
+                vm.editMenuForm.parentId = row.parentId;
+                vm.editMenuForm.type = row.type;
+                vm.editMenuForm.orders = row.orders;
             },
             cancel() {
                 this.isShowEditMenu = false;
@@ -324,8 +330,6 @@
         mounted() {
             this.getMenuData();
             this.getMenuList();
-            // console.log(this.$router.match('men-manage'));
-            console.log(this.$router);
         }
     }
 

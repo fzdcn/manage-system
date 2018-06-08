@@ -94,8 +94,19 @@ function resolveResponse(data, resolve, invalidTokenRedirect = true) {
 }
 
 function rejectResponse(data, reject) {
-    !DEBUG ? Message.error('系统错误:' + data) : Message.error('系统错误:' + data);
-    reject(data)
+    switch (data.response.status) {
+        case 500:
+            !DEBUG ? Message.error('系统错误:' + data) : Message.error('系统错误:' + data);
+            router.replace({
+                path: '/403'
+            });
+            // store.dispatch('userSignOut');
+            // store.dispatch('DeleteNavigationMenu');
+            break
+        default:
+            reject(data)
+            break
+    }
 }
 
 class HttpResource {

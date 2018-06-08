@@ -36,25 +36,25 @@
                     <el-button type="primary" icon="el-icon-search" @click="search">搜索</el-button>
                 </div>
             </div>
-            <el-table :data="accountData" border style="width: 100%;text-align: center;">
-                <el-table-column prop="id" label="ID" header-align="center">
+            <el-table :data="accountData" border style="width: 100%;">
+                <el-table-column prop="id" label="ID">
                 </el-table-column>
-                <el-table-column prop="username" label="用户名" header-align="center">
+                <el-table-column prop="username" label="用户名">
                 </el-table-column>
-                <el-table-column prop="roleName" label="角色" header-align="center">
+                <el-table-column prop="roleName" label="角色">
                 </el-table-column>
-                <el-table-column prop="name" label="姓名" header-align="center">
+                <el-table-column prop="name" label="姓名">
                 </el-table-column>
-                <el-table-column prop="phone" label="手机号码" header-align="center">
+                <el-table-column prop="phone" label="手机号码">
                 </el-table-column>
                 <el-table-column prop="loginDate" label="最后登录时间" sortable :formatter="loginDateFormatter"
-                                 header-align="center">
+                >
                 </el-table-column>
-                <el-table-column prop="status" label="状态" :formatter="statusFormatter" header-align="center">
+                <el-table-column prop="status" label="状态" :formatter="statusFormatter">
                 </el-table-column>
-                <el-table-column prop="lockedOrNo" label="是否被锁" :formatter="lockedOrNoFormatter" header-align="center">
+                <el-table-column prop="lockedOrNo" label="是否被锁" :formatter="lockedOrNoFormatter">
                 </el-table-column>
-                <el-table-column label="操作" width="295px" header-align="center">
+                <el-table-column label="操作" width="300px">
                     <template v-if="accountData.length > 0" slot-scope="scope">
                         <el-button @click="handleEdit(scope.row)" type="primary" icon="el-icon-edit" size="small">编辑
                         </el-button>
@@ -111,8 +111,8 @@
                 </el-form>
             </div>
             <span slot="footer" class="dialog-footer">
-                <el-button @click="cancelShowAccount">取 消</el-button>
                 <el-button type="primary" @click="accountVerification">确 定</el-button>
+                <el-button @click="cancelShowAccount">取 消</el-button>
             </span>
         </el-dialog>
 
@@ -132,13 +132,13 @@
                 </el-form>
             </div>
             <span slot="footer" class="dialog-footer">
-                <el-button @click="cancelShowModifyPassword">取 消</el-button>
                 <el-button type="primary" @click="modifyPassword">修改密码</el-button>
+                <el-button @click="cancelShowModifyPassword">取 消</el-button>
             </span>
         </el-dialog>
 
         <!--编辑后台账户-->
-        <el-dialog title="修改后台账户" :visible.sync="isShowEdit" width="500px" center>
+        <el-dialog title="编辑后台账户" :visible.sync="isShowEdit" width="500px" center>
             <div class="form-content">
                 <el-form ref="editUserAccountForm" :model="editUserAccountForm" label-width="100px">
                     <el-form-item label="用户名：">
@@ -189,8 +189,8 @@
                 </el-form>
             </div>
             <span slot="footer" class="dialog-footer">
-                <el-button @click="cancelShowEdit">取 消</el-button>
                 <el-button type="primary" @click="editUserInfo">确 定</el-button>
+                <el-button @click="cancelShowEdit">取 消</el-button>
             </span>
         </el-dialog>
     </div>
@@ -516,13 +516,22 @@
             handleEdit(row) {
                 let vm = this;
                 this.isShowEdit = true;
-                this.$httpGet('/admin/admin/getAdminById', {
+                /*this.$httpGet('/admin/admin/getAdminById', {
                     id: row.id
                 }).then(({data}) => {
                     vm.editUserAccountForm = data;
                 }).catch((data) => {
                     console.log(data);
-                })
+                })*/
+                vm.editUserAccountForm.id = row.id;
+                vm.editUserAccountForm.username = row.username;
+                vm.editUserAccountForm.name = row.name;
+                vm.editUserAccountForm.phone = row.phone;
+                vm.editUserAccountForm.email = row.email;
+                vm.editUserAccountForm.roleId = row.roleId;
+                vm.editUserAccountForm.status = row.status;
+                vm.editUserAccountForm.lockedOrNo = row.lockedOrNo;
+                vm.editUserAccountForm.passId = row.passId;
             },
             cancelShowEdit() {
                 this.isShowEdit = false;

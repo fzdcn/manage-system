@@ -3,7 +3,7 @@
         <div class="container">
             <el-table :data="permissionsData" ref="itemTable" border style="width: 100%;"
                       @selection-change="handleSelectionAllChange" @select="handleSelectionChange">
-                <el-table-column type="selection" width="55">
+                <el-table-column :filter-multiple="true" type="selection" width="55">
                 </el-table-column>
                 <el-table-column prop="name" label="菜单">
                     <template slot-scope="scope">
@@ -56,13 +56,13 @@
                 goBack();
             },
             submit() {
+                let vm = this;
                 this.$httpPost('/admin/role/assignUpdate', {
                     id: this.$route.params.id,
                     pids: this.pids.join(',')
                 }).then(({data}) => {
-                    this.$message.success(data);
-                    this.getMenuList();
-                    goBack();
+                    vm.$message.success(data);
+                    vm.getMenuList();
                 }).catch((data) => {
                     console.log(data)
                 })
@@ -74,6 +74,7 @@
                     id: JSON.parse(window.localStorage.getItem("user")).id
                 }).then(({data}) => {
                     vm.$store.dispatch('setNavigationMenu', JSON.stringify(data[0].subs));
+                    window.location.href = window.location.origin + '/role-manage';
                 }).catch((data) => {
                     console.log(data);
                 })
@@ -81,11 +82,6 @@
             // 单选
             handleSelectionChange(val, row) {
                 this.pids = [];
-                let arrary = [];
-                // for (let values of this.permissionsData) {
-                //     arrary.push(values.name);
-                // }
-                // if (arrary.includes(row.name)) {
                 if (row.grade == 1) {
                     for (var i = row.index; i < this.permissionsData.length; i++) {
                         if (i + 1 < this.permissionsData.length) {
@@ -95,9 +91,26 @@
                                 break;
                             }
                         }
-
                     }
                 } else if (row.grade == 2) {
+                    for (var i = row.index; i < this.permissionsData.length; i++) {
+                        if (i + 1 < this.permissionsData.length) {
+                            if (this.permissionsData[i + 1].grade >= 3) {
+                                let nameArray = [];
+                                for (let values of val) {
+                                    nameArray.push(values.name);
+                                }
+                                if (nameArray.includes(this.permissionsData[i + 1].name)) {
+                                    this.$refs.itemTable.toggleRowSelection(this.permissionsData[i + 1]);
+                                } else {
+                                    this.$refs.itemTable.toggleRowSelection(this.permissionsData[i + 1], false);
+                                }
+                            } else {
+                                break;
+                            }
+                        }
+                    }
+                } else if (row.grade == 3) {
                     for (var i = row.index; i < this.permissionsData.length; i++) {
                         if (i + 1 < this.permissionsData.length) {
                             if (this.permissionsData[i + 1].grade >= 3) {
@@ -138,6 +151,7 @@
                         vm.permissionsData.forEach((item) => {
                             if (item.rid) {
                                 vm.$refs.itemTable.toggleRowSelection(item);
+                                vm.pids.push(item.id);
                             }
                         })
                     });

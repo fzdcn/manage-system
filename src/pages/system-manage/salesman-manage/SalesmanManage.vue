@@ -4,26 +4,26 @@
             <div class="add" style="margin-bottom: 30px;">
                 <el-button type="primary" size="medium" icon="el-icon-plus" @click="add">增加</el-button>
             </div>
-            <el-table :data="salesmanData" border style="width: 100%;text-align: center;">
-                <el-table-column prop="name" label="名字" header-align="center">
+            <el-table :data="salesmanData" border style="width: 100%;">
+                <el-table-column prop="name" label="名字">
                 </el-table-column>
-                <el-table-column prop="phone" label="电话" header-align="center">
+                <el-table-column prop="phone" label="电话">
                 </el-table-column>
-                <el-table-column prop="email" label="邮箱" header-align="center">
+                <el-table-column prop="email" label="邮箱">
                 </el-table-column>
-                <el-table-column prop="type" label="业务员类型" header-align="center">
+                <el-table-column prop="type" label="业务员类型">
                     <template slot-scope="scope">
                         <span v-if="scope.row.type==1">销售</span>
                         <span v-if="scope.row.type==2">客服</span>
                     </template>
                 </el-table-column>
-                <el-table-column prop="status" label="状态" header-align="center">
+                <el-table-column prop="status" label="状态">
                     <template slot-scope="scope">
                         <span v-if="scope.row.status==1">开通</span>
                         <span v-if="scope.row.status==2">关闭</span>
                     </template>
                 </el-table-column>
-                <el-table-column label="操作" width="190px" header-align="center">
+                <el-table-column label="操作" width="200px">
                     <template v-if="salesmanData.length > 0" slot-scope="scope">
                         <el-button @click="handleEdit(scope.row)" type="primary" icon="el-icon-edit" size="small">编辑
                         </el-button>
@@ -70,8 +70,8 @@
                 </el-form>
             </div>
             <span slot="footer" class="dialog-footer">
-                <el-button @click="cancelShowSalesman">取 消</el-button>
                 <el-button type="primary" @click="entry">确 定</el-button>
+                <el-button @click="cancelShowSalesman">取 消</el-button>
             </span>
         </el-dialog>
 
@@ -115,8 +115,8 @@
                 </el-form>
             </div>
             <span slot="footer" class="dialog-footer">
-                <el-button @click="cancelShowEdit">取 消</el-button>
                 <el-button type="primary" @click="editUserInfo">确 定</el-button>
+                <el-button @click="cancelShowEdit">取 消</el-button>
             </span>
         </el-dialog>
     </div>
@@ -156,31 +156,31 @@
                 salesmanTypeList: [
                     {
                         type: 1,
-                        name: '销售'
+                        name: "销售"
                     },
                     {
                         type: 2,
-                        name: '客服'
+                        name: "客服"
                     },
                 ],
                 salesmanStatusList: [
                     {
                         status: 1,
-                        name: '开通'
+                        name: "开通"
                     },
                     {
                         status: 2,
-                        name: '关闭'
+                        name: "关闭"
                     },
                 ],
                 // 编辑后台角色参数
                 editSalesmanForm: {
-                    /*code: '',
+                    code: '',
                     name: '',
                     phone: '',
                     email: '',
                     type: '',
-                    status: ''*/
+                    status: ''
                 },
             }
         },
@@ -289,19 +289,22 @@
             handleEdit(row) {
                 let vm = this;
                 this.isShowEdit = true;
-                this.$httpGet('/admin/epay/salesman/findByCode', {
+                /*this.$httpGet('/admin/epay/salesman/findByCode', {
                     code: row.code
                 }).then(({data}) => {
                     vm.editSalesmanForm = data;
                 }).catch((data) => {
                     console.log(data)
-                })
+                })*/
+                vm.editSalesmanForm.code = row.code;
+                vm.editSalesmanForm.name = row.name;
+                vm.editSalesmanForm.phone = row.phone;
+                vm.editSalesmanForm.email = row.email;
+                vm.editSalesmanForm.type = row.type;
+                vm.editSalesmanForm.status = row.status;
             },
             cancelShowEdit() {
                 this.isShowEdit = false;
-                for (let key in vm.editSalesmanForm) {
-                    delete vm.editSalesmanForm[key];
-                }
             },
             editUserInfo() {
                 let vm = this;

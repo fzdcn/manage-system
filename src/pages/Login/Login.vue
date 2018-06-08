@@ -4,7 +4,8 @@
         <div class="ms-login">
             <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="0px" class="demo-ruleForm">
                 <el-form-item prop="username">
-                    <el-input v-model.trim="ruleForm.username" placeholder="请输入用户名"></el-input>
+                    <el-input @keyup.enter.native="submitForm('ruleForm')" v-model.trim="ruleForm.username"
+                              placeholder="请输入用户名"></el-input>
                 </el-form-item>
                 <el-form-item prop="password">
                     <el-input type="password" placeholder="请输入密码" v-model.trim="ruleForm.password"
@@ -25,7 +26,7 @@
                     <el-form-item>
                         <el-row>
                             <el-col :span="24">
-                                <el-button type="primary" @click="submitForm('ruleForm')" v-loading="loading">登录
+                                <el-button type="primary" @click="submitForm('ruleForm')">登录
                                 </el-button>
                             </el-col>
                         </el-row>
@@ -49,7 +50,6 @@
     export default {
         data() {
             return {
-                loading: false,
                 imgUrl: '',
                 ruleForm: {
                     username: '',
@@ -125,13 +125,11 @@
                 let vm = this;
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
-                        this.loading = true;
                         this.$httpPost('/admin/login/submit', {
                             username: this.ruleForm.username,
                             password: this.ruleForm.password,
                             captcha: this.ruleForm.verificationCode
                         }).then(({data}) => {
-                            vm.loading = false;
                             vm.$message({message: '登陆成功', type: 'success'});
                             vm.$store.dispatch('userSignIn', data.admin);
                             vm.$store.dispatch('setNavigationMenu', JSON.stringify(data.adminMenuList[0].subs));
