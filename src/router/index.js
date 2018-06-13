@@ -54,6 +54,18 @@ const routes = [
                 meta: {title: '后台业务员管理', permission: false},
             },
             {
+                path: '/bankcard-manage',
+                name: 'bankcard-manage',
+                component: resolve => require(['../pages/system-manage/bankcard-manage/BankCardManage.vue'], resolve),
+                meta: {title: '银行卡管理', permission: false},
+            },
+            {
+                path: '/bank-number-manage',
+                name: 'bank-number-manage',
+                component: resolve => require(['../pages/system-manage/bank-number-manage/BankNumberManage.vue'], resolve),
+                meta: {title: '银行号管理', permission: false},
+            },
+            {
                 // 权限页面
                 path: '/permission',
                 name: 'permission',

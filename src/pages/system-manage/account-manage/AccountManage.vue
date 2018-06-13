@@ -4,13 +4,14 @@
             <div class="add" style="margin-bottom: 30px;">
                 <el-button type="primary" size="medium" icon="el-icon-plus" @click="add">增加</el-button>
             </div>
-            <div class="handle-box">
-                <div>
+            <div class="handle-box" style="margin-bottom: 20px;display: flex;flex-flow: row wrap;">
+                <div style="margin: 0px 20px 10px 0;">
                     <span>用户名：</span>
                     <el-input style="width: 150px;" class="username" v-model.trim="searchUserAccountForm.username"
-                              clearable></el-input>
+                              clearable placeholder="请填写用户名">
+                    </el-input>
                 </div>
-                <div>
+                <div style="margin: 0px 20px 10px 0;">
                     <span>状态：</span>
                     <el-select style="width: 150px;" v-model="searchUserAccountForm.status" placeholder="请选择状态">
                         <el-option
@@ -21,7 +22,7 @@
                         </el-option>
                     </el-select>
                 </div>
-                <div>
+                <div style="margin: 0px 20px 10px 0;">
                     <span>角色：</span>
                     <el-select style="width: 150px;" v-model="searchUserAccountForm.role" placeholder="请选择角色">
                         <el-option
@@ -36,7 +37,7 @@
                     <el-button type="primary" icon="el-icon-search" @click="search">搜索</el-button>
                 </div>
             </div>
-            <el-table :data="accountData" border style="width: 100%;">
+            <el-table :data="getDataList" border style="width: 100%;">
                 <el-table-column prop="id" label="ID">
                 </el-table-column>
                 <el-table-column prop="username" label="用户名">
@@ -47,18 +48,19 @@
                 </el-table-column>
                 <el-table-column prop="phone" label="手机号码">
                 </el-table-column>
-                <el-table-column prop="loginDate" label="最后登录时间" sortable :formatter="loginDateFormatter"
-                >
+                <el-table-column prop="email" label="邮箱">
+                </el-table-column>
+                <el-table-column prop="loginDate" label="最后登录时间" sortable :formatter="loginDateFormatter">
                 </el-table-column>
                 <el-table-column prop="status" label="状态" :formatter="statusFormatter">
                 </el-table-column>
                 <el-table-column prop="lockedOrNo" label="是否被锁" :formatter="lockedOrNoFormatter">
                 </el-table-column>
                 <el-table-column label="操作" width="300px">
-                    <template v-if="accountData.length > 0" slot-scope="scope">
+                    <template v-if="getDataList.length > 0" slot-scope="scope">
                         <el-button @click="handleEdit(scope.row)" type="primary" icon="el-icon-edit" size="small">编辑
                         </el-button>
-                        <el-button @click="handleModifyPassword(scope.row)" type="primary" icon="el-icon-setting"
+                        <el-button @click="handleModify(scope.row)" type="primary" icon="el-icon-setting"
                                    size="small">修改密码
                         </el-button>
                         <el-button @click="handleDelete(scope.row)" type="danger" icon="el-icon-delete" size="small">
@@ -67,36 +69,37 @@
                     </template>
                 </el-table-column>
             </el-table>
-            <div class="pagination">
-                <el-pagination background @current-change="handleCurrentChange" layout="prev, pager, next"
+            <div class="pagination" style="overflow: hidden;">
+                <el-pagination background @current-change="handleCurrentChange"
+                               layout="total, prev, pager, next, jumper"
                                :page-size="10" :pager-count="11" :total="total">
                 </el-pagination>
             </div>
         </div>
         <!--增加后台账户-->
-        <el-dialog title="增加后台账户" :visible.sync="isShowAccount" :before-close="cancelShowAccount" width="500px" center>
-            <div class="form-content">
-                <el-form ref="addUserAccountForm" :model="addUserAccountForm" label-width="100px">
+        <el-dialog title="增加后台账户" :visible.sync="isShowAdd" :before-close="cancelAdd" width="500px" center>
+            <div class="form-content" style="margin: 0 auto;width: 90%;">
+                <el-form ref="addDataForm" :model="addDataForm" label-width="100px">
                     <el-form-item label="用户名：">
-                        <el-input v-model.trim="addUserAccountForm.username"></el-input>
+                        <el-input v-model.trim="addDataForm.username"></el-input>
                     </el-form-item>
                     <el-form-item label="密码：">
-                        <el-input type="password" v-model.trim="addUserAccountForm.password"></el-input>
+                        <el-input type="password" v-model.trim="addDataForm.password"></el-input>
                     </el-form-item>
                     <el-form-item label="确认密码：">
-                        <el-input type="password" v-model.trim="addUserAccountForm.confirmPassword"></el-input>
+                        <el-input type="password" v-model.trim="addDataForm.confirmPassword"></el-input>
                     </el-form-item>
                     <el-form-item label="姓名：">
-                        <el-input v-model.trim="addUserAccountForm.name"></el-input>
+                        <el-input v-model.trim="addDataForm.name"></el-input>
                     </el-form-item>
                     <el-form-item label="手机号码：">
-                        <el-input type="tel" v-model.trim="addUserAccountForm.telephone"></el-input>
+                        <el-input type="tel" v-model.trim="addDataForm.telephone"></el-input>
                     </el-form-item>
                     <el-form-item label="邮箱：">
-                        <el-input type="email" v-model.trim="addUserAccountForm.email"></el-input>
+                        <el-input type="email" v-model.trim="addDataForm.email"></el-input>
                     </el-form-item>
                     <el-form-item label="角色：">
-                        <el-select v-model="addUserAccountForm.selectedRole" placeholder="角色">
+                        <el-select v-model="addDataForm.selectedRole" placeholder="角色">
                             <el-option
                                 v-for="item in roleList"
                                 :key="item.id"
@@ -106,55 +109,55 @@
                         </el-select>
                     </el-form-item>
                     <el-form-item label="U盾值：">
-                        <el-input v-model.trim="addUserAccountForm.uTypeShield"></el-input>
+                        <el-input v-model.trim="addDataForm.uTypeShield"></el-input>
                     </el-form-item>
                 </el-form>
             </div>
             <span slot="footer" class="dialog-footer">
-                <el-button type="primary" @click="accountVerification">确 定</el-button>
-                <el-button @click="cancelShowAccount">取 消</el-button>
+                <el-button type="primary" @click="submitAdd">确 定</el-button>
+                <el-button @click="cancelAdd">取 消</el-button>
             </span>
         </el-dialog>
 
         <!--修改密码-->
-        <el-dialog title="修改密码" :visible.sync="isShowModifyPassword" width="500px" center>
-            <div class="form-content">
-                <el-form ref="modifyUserAccountForm" :model="modifyUserAccountForm" label-width="100px">
+        <el-dialog title="修改密码" :visible.sync="isShowModify" :before-close="cancelModify" width="500px" center>
+            <div class="form-content" style="margin: 0 auto;width: 90%;">
+                <el-form ref="modifyDataForm" :model="modifyDataForm" label-width="100px">
                     <el-form-item label="用户名：">
-                        <el-input v-model.trim="username" :disabled="true"></el-input>
+                        <el-input v-model.trim="modifyDataForm.username" :disabled="true"></el-input>
                     </el-form-item>
                     <el-form-item label="密码：">
-                        <el-input type="password" v-model.trim="modifyUserAccountForm.password"></el-input>
+                        <el-input type="password" v-model.trim="modifyDataForm.password"></el-input>
                     </el-form-item>
                     <el-form-item label="确认密码：">
-                        <el-input type="password" v-model.trim="modifyUserAccountForm.confirmPassword"></el-input>
+                        <el-input type="password" v-model.trim="modifyDataForm.confirmPassword"></el-input>
                     </el-form-item>
                 </el-form>
             </div>
             <span slot="footer" class="dialog-footer">
-                <el-button type="primary" @click="modifyPassword">修改密码</el-button>
-                <el-button @click="cancelShowModifyPassword">取 消</el-button>
+                <el-button type="primary" @click="submitModify">修改密码</el-button>
+                <el-button @click="cancelModify">取 消</el-button>
             </span>
         </el-dialog>
 
         <!--编辑后台账户-->
-        <el-dialog title="编辑后台账户" :visible.sync="isShowEdit" width="500px" center>
-            <div class="form-content">
-                <el-form ref="editUserAccountForm" :model="editUserAccountForm" label-width="100px">
+        <el-dialog title="编辑后台账户" :visible.sync="isShowEdit" :before-close="cancelEdit" width="500px" center>
+            <div class="form-content" style="margin: 0 auto;width: 90%;">
+                <el-form ref="editDataForm" :model="editDataForm" label-width="100px">
                     <el-form-item label="用户名：">
-                        <el-input v-model.trim="editUserAccountForm.username" :disabled="true"></el-input>
+                        <el-input v-model.trim="editDataForm.username" :disabled="true"></el-input>
                     </el-form-item>
                     <el-form-item label="姓名：">
-                        <el-input v-model.trim="editUserAccountForm.name"></el-input>
+                        <el-input v-model.trim="editDataForm.name"></el-input>
                     </el-form-item>
                     <el-form-item label="手机号码：">
-                        <el-input type="tel" v-model.trim="editUserAccountForm.phone"></el-input>
+                        <el-input type="tel" v-model.trim="editDataForm.phone"></el-input>
                     </el-form-item>
                     <el-form-item label="邮箱：">
-                        <el-input type="email" v-model.trim="editUserAccountForm.email"></el-input>
+                        <el-input type="email" v-model.trim="editDataForm.email"></el-input>
                     </el-form-item>
                     <el-form-item label="角色：">
-                        <el-select v-model="editUserAccountForm.roleId" placeholder="角色">
+                        <el-select v-model="editDataForm.roleId" placeholder="角色">
                             <el-option
                                 v-for="item in roleList"
                                 :key="item.id"
@@ -164,7 +167,7 @@
                         </el-select>
                     </el-form-item>
                     <el-form-item label="状态：">
-                        <el-select v-model="editUserAccountForm.status" placeholder="状态">
+                        <el-select v-model="editDataForm.status" placeholder="状态">
                             <el-option
                                 v-for="item in roleStatus"
                                 :key="item.status"
@@ -174,7 +177,7 @@
                         </el-select>
                     </el-form-item>
                     <el-form-item label="锁定状态：">
-                        <el-select v-model="editUserAccountForm.lockedOrNo" placeholder="锁定状态">
+                        <el-select v-model="editDataForm.lockedOrNo" placeholder="锁定状态">
                             <el-option
                                 v-for="item in roleLockedOrNo"
                                 :key="item.lockedOrNo"
@@ -184,25 +187,25 @@
                         </el-select>
                     </el-form-item>
                     <el-form-item label="U盾值：">
-                        <el-input v-model.trim="editUserAccountForm.passId"></el-input>
+                        <el-input v-model.trim="editDataForm.passId"></el-input>
                     </el-form-item>
                 </el-form>
             </div>
             <span slot="footer" class="dialog-footer">
-                <el-button type="primary" @click="editUserInfo">确 定</el-button>
-                <el-button @click="cancelShowEdit">取 消</el-button>
+                <el-button type="primary" @click="submitEdit">确 定</el-button>
+                <el-button @click="cancelEdit">取 消</el-button>
             </span>
         </el-dialog>
     </div>
 </template>
 
 <script>
-    import {regTel, regEmail, regIdCode} from '../../../functions/index';
+    import {regTel, regEmail} from '../../../functions/index';
 
     export default {
         data() {
             return {
-                accountData: [
+                getDataList: [
                     /*{
                         email: "",
                         id: '',
@@ -251,34 +254,15 @@
                 cur_page: 1,
                 // 所有数量
                 total: null,
-                // 是否显示增加后台账户弹框
-                isShowAccount: false,
-                // 是否显示修改密码弹框
-                isShowModifyPassword: false,
-                // 是否显示编辑弹框
+                isShowAdd: false,
+                isShowModify: false,
                 isShowEdit: false,
-                userId: '',
-                username: '',
                 // 增加后台账户参数
-                addUserAccountForm: {
-                    username: '',
-                    password: '',
-                    confirmPassword: '',
-                    name: '',
-                    telephone: '',
-                    email: '',
-                    // 被选中的角色
-                    selectedRole: '',
-                    // U盾
-                    uTypeShield: ''
-                },
+                addDataForm: {},
                 // 修改后台账户参数
-                modifyUserAccountForm: {
-                    password: '',
-                    confirmPassword: ''
-                },
+                modifyDataForm: {},
                 // 编辑后台账户参数
-                editUserAccountForm: {
+                editDataForm: {
                     id: '',
                     username: '',
                     name: '',
@@ -340,11 +324,11 @@
                 this.$httpGet('/admin/admin/index', {
                     pageNo: this.cur_page,
                     pageSize: 10,
-                    userName: '',
-                    status: '',
-                    roleId: ''
+                    userName: this.searchUserAccountForm.username,
+                    status: this.searchUserAccountForm.status,
+                    roleId: this.searchUserAccountForm.role
                 }).then(({data}) => {
-                    vm.accountData = data.page.list;
+                    vm.getDataList = data.page.list;
                     vm.total = data.page.total;
                 }).catch((data) => {
                     console.log(data)
@@ -367,7 +351,7 @@
             lockedOrNoFormatter(row, column) {
                 let lockedOrNo = row.lockedOrNo;
                 if (lockedOrNo) {
-                    return '被锁';
+                    return '已被锁';
                 } else if (lockedOrNo === false) {
                     return '未被锁';
                 }
@@ -386,77 +370,73 @@
                     status: this.searchUserAccountForm.status,
                     roleId: this.searchUserAccountForm.role
                 }).then(({data}) => {
-                    vm.accountData = data.page.list;
+                    vm.getDataList = data.page.list;
                     vm.total = data.page.total;
                 }).catch((data) => {
                     console.log(data)
                 })
             },
             add() {
-                this.isShowAccount = true;
+                this.isShowAdd = true;
             },
-            cancelShowAccount() {
-                this.isShowAccount = false;
-                for (let key in this.addUserAccountForm) {
-                    delete this.addUserAccountForm[key];
-                }
+            cancelAdd() {
+                this.isShowAdd = false;
+                this.addDataForm = {};
             },
-            accountVerification() {
+            submitAdd() {
                 let vm = this;
-                if (!this.addUserAccountForm.username) {
+                if (!this.addDataForm.username) {
                     this.$message.warning('用户名不能为空！');
                     return false;
                 }
-                if (!this.addUserAccountForm.password) {
+                if (!this.addDataForm.password) {
                     this.$message.warning('密码不能为空！');
                     return false;
                 }
-                if (!this.addUserAccountForm.confirmPassword) {
+                if (!this.addDataForm.confirmPassword) {
                     this.$message.warning('确认密码不能为空！');
                     return false;
                 }
-                if (this.addUserAccountForm.password != this.addUserAccountForm.confirmPassword) {
+                if (this.addDataForm.password != this.addDataForm.confirmPassword) {
                     this.$message.warning('两次输入密码不一致！');
                     return false;
                 }
-                if (!this.addUserAccountForm.name) {
+                if (!this.addDataForm.name) {
                     this.$message.warning('姓名不能为空！');
                     return false;
                 }
-                if (!this.addUserAccountForm.telephone) {
+                if (!this.addDataForm.telephone) {
                     this.$message.warning('手机号码不能为空！');
                     return false;
                 }
-                if (!regTel.test(this.addUserAccountForm.telephone)) {
+                if (!regTel.test(this.addDataForm.telephone)) {
                     this.$message.warning('手机号码格式不正确！');
                     return false;
                 }
-                if (!this.addUserAccountForm.email) {
+                if (!this.addDataForm.email) {
                     this.$message.warning('邮箱不能为空！');
                     return false;
                 }
-                if (!regEmail.test(this.addUserAccountForm.email)) {
+                if (!regEmail.test(this.addDataForm.email)) {
                     this.$message.warning('邮箱格式不正确！');
                     return false;
                 }
-                if (!this.addUserAccountForm.selectedRole) {
+                if (!this.addDataForm.selectedRole) {
                     this.$message.warning('角色不能为空！');
                     return false;
                 }
                 this.$httpPost('/admin/admin/save', {
-                    username: this.addUserAccountForm.username,
-                    pwd: this.addUserAccountForm.password,
-                    name: this.addUserAccountForm.name,
-                    phone: this.addUserAccountForm.telephone,
-                    email: this.addUserAccountForm.email,
-                    roleId: this.addUserAccountForm.selectedRole,
-                    passId: this.addUserAccountForm.uTypeShield
+                    username: this.addDataForm.username,
+                    pwd: this.addDataForm.password,
+                    name: this.addDataForm.name,
+                    phone: this.addDataForm.telephone,
+                    email: this.addDataForm.email,
+                    roleId: this.addDataForm.selectedRole,
+                    passId: this.addDataForm.uTypeShield
                 }).then(({data}) => {
-                    vm.$message.success('添加后台账户成功！');
-                    vm.isShowAccount = false;
-                    for (let key in this.addUserAccountForm) {
-                        delete this.addUserAccountForm[key];
-                    }
+                    vm.$message.success(data);
+                    vm.isShowAdd = false;
+                    vm.addDataForm = {};
                     vm.$httpGet('/admin/admin/index', {
                         pageNo: 1,
                         pageSize: 10,
@@ -464,7 +444,7 @@
                         status: '',
                         roleId: ''
                     }).then(({data}) => {
-                        vm.accountData = data.page.list;
+                        vm.getDataList = data.page.list;
                         vm.total = data.page.total;
                     }).catch((data) => {
                         console.log(data)
@@ -473,106 +453,92 @@
                     console.log(data)
                 })
             },
-            handleModifyPassword(row) {
-                this.isShowModifyPassword = true;
-                this.userId = row.id;
-                this.username = row.username;
+            handleModify(row) {
+                this.isShowModify = true;
+                this.modifyDataForm.id = row.id;
+                this.modifyDataForm.username = row.username;
             },
-            cancelShowModifyPassword() {
-                this.isShowModifyPassword = false;
-                this.userId = '';
-                this.username = '';
-                this.modifyUserAccountForm.password = '';
-                this.modifyUserAccountForm.confirmPassword = '';
+            cancelModify() {
+                this.isShowModify = false;
+                this.modifyDataForm = {};
             },
-            modifyPassword() {
+            submitModify() {
                 let vm = this;
-                if (!this.modifyUserAccountForm.password) {
+                if (!this.modifyDataForm.password) {
                     this.$message.warning('密码不能为空！');
                     return false;
                 }
-                if (!this.modifyUserAccountForm.confirmPassword) {
+                if (!this.modifyDataForm.confirmPassword) {
                     this.$message.warning('确认密码不能为空！');
                     return false;
                 }
-                if (this.modifyUserAccountForm.password != this.modifyUserAccountForm.confirmPassword) {
+                if (this.modifyDataForm.password != this.modifyDataForm.confirmPassword) {
                     this.$message.warning('两次输入密码不一致！');
                     return false;
                 }
                 this.$httpPost('/admin/admin/updatePwd', {
-                    id: this.userId,
-                    newPwd: this.modifyUserAccountForm.confirmPassword
+                    id: this.modifyDataForm.id,
+                    newPwd: this.modifyDataForm.confirmPassword
                 }).then(({data}) => {
-                    vm.$message.success('修改密码成功！');
-                    vm.isShowModifyPassword = false;
-                    this.userId = '';
-                    this.username = '';
-                    this.modifyUserAccountForm.password = '';
-                    this.modifyUserAccountForm.confirmPassword = '';
+                    vm.$message.success(data);
+                    vm.isShowModify = false;
+                    vm.modifyDataForm = {};
                 }).catch((data) => {
                     console.log(data)
                 })
             },
             handleEdit(row) {
-                let vm = this;
                 this.isShowEdit = true;
-                /*this.$httpGet('/admin/admin/getAdminById', {
-                    id: row.id
-                }).then(({data}) => {
-                    vm.editUserAccountForm = data;
-                }).catch((data) => {
-                    console.log(data);
-                })*/
-                vm.editUserAccountForm.id = row.id;
-                vm.editUserAccountForm.username = row.username;
-                vm.editUserAccountForm.name = row.name;
-                vm.editUserAccountForm.phone = row.phone;
-                vm.editUserAccountForm.email = row.email;
-                vm.editUserAccountForm.roleId = row.roleId;
-                vm.editUserAccountForm.status = row.status;
-                vm.editUserAccountForm.lockedOrNo = row.lockedOrNo;
-                vm.editUserAccountForm.passId = row.passId;
+                this.editDataForm.id = row.id;
+                this.editDataForm.username = row.username;
+                this.editDataForm.name = row.name;
+                this.editDataForm.phone = row.phone;
+                this.editDataForm.email = row.email;
+                this.editDataForm.roleId = row.roleId;
+                this.editDataForm.status = row.status;
+                this.editDataForm.lockedOrNo = row.lockedOrNo;
+                this.editDataForm.passId = row.passId;
             },
-            cancelShowEdit() {
+            cancelEdit() {
                 this.isShowEdit = false;
             },
-            editUserInfo() {
+            submitEdit() {
                 let vm = this;
-                if (!this.editUserAccountForm.name) {
+                if (!this.editDataForm.name) {
                     this.$message.warning('姓名不能为空！');
                     return false;
                 }
-                if (!this.editUserAccountForm.phone) {
+                if (!this.editDataForm.phone) {
                     this.$message.warning('手机号码不能为空！');
                     return false;
                 }
-                if (!regTel.test(this.editUserAccountForm.phone)) {
+                if (!regTel.test(this.editDataForm.phone)) {
                     this.$message.warning('手机号码格式不正确！');
                     return false;
                 }
-                if (!this.editUserAccountForm.email) {
+                if (!this.editDataForm.email) {
                     this.$message.warning('邮箱不能为空！');
                     return false;
                 }
-                if (!regEmail.test(this.editUserAccountForm.email)) {
+                if (!regEmail.test(this.editDataForm.email)) {
                     this.$message.warning('邮箱格式不正确！');
                     return false;
                 }
-                if (!this.editUserAccountForm.roleId) {
+                if (!this.editDataForm.roleId) {
                     this.$message.warning('角色不能为空！');
                     return false;
                 }
                 this.$httpPost('/admin/admin/update', {
-                    id: this.editUserAccountForm.id,
-                    name: this.editUserAccountForm.name,
-                    phone: this.editUserAccountForm.phone,
-                    email: this.editUserAccountForm.email,
-                    roleId: this.editUserAccountForm.roleId,
-                    status: this.editUserAccountForm.status,
-                    lockedOrNo: this.editUserAccountForm.lockedOrNo,
-                    passId: this.editUserAccountForm.passId,
+                    id: this.editDataForm.id,
+                    name: this.editDataForm.name,
+                    phone: this.editDataForm.phone,
+                    email: this.editDataForm.email,
+                    roleId: this.editDataForm.roleId,
+                    status: this.editDataForm.status,
+                    lockedOrNo: this.editDataForm.lockedOrNo,
+                    passId: this.editDataForm.passId,
                 }).then(({data}) => {
-                    vm.$message.success('修改成功！');
+                    vm.$message.success(data);
                     vm.isShowEdit = false;
                     vm.getData();
                 }).catch((data) => {
@@ -591,22 +557,5 @@
 </script>
 
 <style scoped>
-    .handle-box {
-        margin-bottom: 20px;
-        display: flex;
-        flex-flow: row wrap;
-    }
 
-    .handle-box > div {
-        margin: 0px 20px 10px 0;
-    }
-
-    .username {
-        width: 150px;
-    }
-
-    .form-content {
-        margin: 0 auto;
-        width: 90%;
-    }
 </style>

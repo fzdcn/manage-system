@@ -4,7 +4,7 @@
             <div class="add" style="margin-bottom: 30px;">
                 <el-button type="primary" size="medium" icon="el-icon-plus" @click="add">增加</el-button>
             </div>
-            <el-table :data="roleData" border style="width: 100%;">
+            <el-table :data="getDataList" border style="width: 100%;">
                 <el-table-column prop="id" label="ID">
                 </el-table-column>
                 <el-table-column prop="name" label="角色">
@@ -13,10 +13,10 @@
                 >
                 </el-table-column>
                 <el-table-column label="操作" width="300px">
-                    <template v-if="roleData.length > 0" slot-scope="scope">
+                    <template v-if="getDataList.length > 0" slot-scope="scope">
                         <el-button @click="handleEdit(scope.row)" type="primary" icon="el-icon-edit" size="small">编辑
                         </el-button>
-                        <el-button @click="handleModifyPermissions(scope.row)" type="primary" icon="el-icon-setting"
+                        <el-button @click="handleModify(scope.row)" type="primary" icon="el-icon-setting"
                                    size="small">修改权限
                         </el-button>
                         <el-button @click="handleDelete(scope.row)" type="danger" icon="el-icon-delete" size="small">
@@ -25,39 +25,40 @@
                     </template>
                 </el-table-column>
             </el-table>
-            <div class="pagination">
-                <el-pagination background @current-change="handleCurrentChange" layout="prev, pager, next"
+            <div class="pagination" style="overflow: hidden;">
+                <el-pagination background @current-change="handleCurrentChange"
+                               layout="total, prev, pager, next, jumper"
                                :page-size="10" :pager-count="11" :total="total">
                 </el-pagination>
             </div>
         </div>
         <!--增加后台账户-->
-        <el-dialog title="增加后台角色" :visible.sync="isShowRole" :before-close="cancelShowRole" width="500px" center>
-            <div class="form-content">
-                <el-form ref="addUserRoleForm" :model="addUserRoleForm" label-width="100px">
+        <el-dialog title="增加后台角色" :visible.sync="isShowAdd" :before-close="cancelAdd" width="500px" center>
+            <div class="form-content" style="margin: 0 auto;width: 90%;">
+                <el-form ref="addDataForm" :model="addDataForm" label-width="100px">
                     <el-form-item label="角色名称：">
-                        <el-input v-model.trim="addUserRoleForm.name"></el-input>
+                        <el-input v-model.trim="addDataForm.name"></el-input>
                     </el-form-item>
                 </el-form>
             </div>
             <span slot="footer" class="dialog-footer">
-                <el-button type="primary" @click="roleVerification">确 定</el-button>
-                <el-button @click="cancelShowRole">取 消</el-button>
+                <el-button type="primary" @click="submitAdd">确 定</el-button>
+                <el-button @click="cancelAdd">取 消</el-button>
             </span>
         </el-dialog>
 
         <!--编辑后台角色-->
-        <el-dialog title="编辑后台角色" :visible.sync="isShowEdit" width="500px" center>
-            <div class="form-content">
-                <el-form ref="editUserRoleForm" :model="editUserRoleForm" label-width="100px">
+        <el-dialog title="编辑后台角色" :visible.sync="isShowEdit" :before-close="cancelEdit" width="500px" center>
+            <div class="form-content" style="margin: 0 auto;width: 90%;">
+                <el-form ref="editDataForm" :model="editDataForm" label-width="100px">
                     <el-form-item label="角色名称：">
-                        <el-input v-model.trim="editUserRoleForm.name"></el-input>
+                        <el-input v-model.trim="editDataForm.name"></el-input>
                     </el-form-item>
                 </el-form>
             </div>
             <span slot="footer" class="dialog-footer">
-                <el-button type="primary" @click="editUserInfo">确 定</el-button>
-                <el-button @click="cancelShowEdit">取 消</el-button>
+                <el-button type="primary" @click="submitEdit">确 定</el-button>
+                <el-button @click="cancelEdit">取 消</el-button>
             </span>
         </el-dialog>
     </div>
@@ -68,7 +69,7 @@
     export default {
         data() {
             return {
-                roleData: [
+                getDataList: [
                     /*{
                         "defaultOrNo": '',
                         "id": '',
@@ -80,7 +81,7 @@
                 // 所有数量
                 total: null,
                 // 是否显示增加弹框
-                isShowRole: false,
+                isShowAdd: false,
                 // 是否显示编辑弹框
                 isShowEdit: false,
                 // 编辑时的id
@@ -88,14 +89,11 @@
                 // 编辑时的name
                 editName: '',
                 // 增加后台账户参数
-                addUserRoleForm: {
+                addDataForm: {
                     name: '',
                 },
                 // 编辑后台角色参数
-                editUserRoleForm: {
-                    id: '',
-                    name: ''
-                },
+                editDataForm: {},
             }
         },
         methods: {
@@ -135,7 +133,7 @@
                     pageNo: this.cur_page,
                     pageSize: 10
                 }).then(({data}) => {
-                    vm.roleData = data.page.list;
+                    vm.getDataList = data.page.list;
                     vm.total = data.page.total;
                 }).catch((data) => {
                     console.log(data)
@@ -150,29 +148,29 @@
                 }
             },
             add() {
-                this.isShowRole = true;
+                this.isShowAdd = true;
             },
-            cancelShowRole() {
-                this.isShowRole = false;
-                this.addUserRoleForm.name = '';
+            cancelAdd() {
+                this.isShowAdd = false;
+                this.addDataForm.name = '';
             },
-            roleVerification() {
+            submitAdd() {
                 let vm = this;
-                if (!this.addUserRoleForm.name) {
+                if (!this.addDataForm.name) {
                     this.$message.warning('角色名称不能为空！');
                     return false;
                 }
                 this.$httpPost('/admin/role/save', {
-                    name: this.addUserRoleForm.name
+                    name: this.addDataForm.name
                 }).then(({data}) => {
-                    vm.$message.success('添加后台角色成功！');
-                    vm.isShowRole = false;
-                    this.addUserRoleForm.name = '';
+                    vm.$message.success(data);
+                    vm.isShowAdd = false;
+                    vm.addDataForm.name = '';
                     vm.$httpGet('/admin/role/index', {
                         pageNo: 1,
                         pageSize: 10
                     }).then(({data}) => {
-                        vm.roleData = data.page.list;
+                        vm.getDataList = data.page.list;
                         vm.total = data.page.total;
                     }).catch((data) => {
                         console.log(data)
@@ -181,31 +179,31 @@
                     console.log(data)
                 })
             },
-            handleModifyPermissions(row) {
+            handleModify(row) {
                 this.$router.push({name: 'modify-role-permissions', params: {id: row.id}});
             },
             handleEdit(row) {
-                let vm = this;
                 this.isShowEdit = true;
-                this.editUserRoleForm.id = row.id;
-                this.editUserRoleForm.name = row.name;
+                this.editDataForm.id = row.id;
+                this.editDataForm.name = row.name;
             },
-            cancelShowEdit() {
+            cancelEdit() {
                 this.isShowEdit = false;
-                this.editUserRoleForm = {};
+                this.editDataForm = {};
             },
-            editUserInfo() {
+            submitEdit() {
                 let vm = this;
-                if (!this.editUserRoleForm.name) {
+                if (!this.editDataForm.name) {
                     this.$message.warning('角色名称不能为空！');
                     return false;
                 }
                 this.$httpPost('/admin/role/update', {
-                    id: this.editUserRoleForm.id,
-                    name: this.editUserRoleForm.name
+                    id: this.editDataForm.id,
+                    name: this.editDataForm.name
                 }).then(({data}) => {
-                    vm.$message.success('修改成功！');
+                    vm.$message.success(data);
                     vm.isShowEdit = false;
+                    vm.editDataForm = {};
                     vm.getData();
                 }).catch((data) => {
                     console.log(data)
@@ -220,8 +218,5 @@
 </script>
 
 <style scoped>
-    .form-content {
-        margin: 0 auto;
-        width: 90%;
-    }
+
 </style>

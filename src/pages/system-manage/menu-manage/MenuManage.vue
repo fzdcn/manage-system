@@ -4,7 +4,7 @@
             <div class="add" style="margin-bottom: 30px;">
                 <el-button type="primary" size="medium" icon="el-icon-plus" @click="add">增加</el-button>
             </div>
-            <el-table :data="menuData" ref="itemTable" border style="width: 100%;">
+            <el-table :data="getDataList" ref="itemTable" border style="width: 100%;">
                 <el-table-column prop="name" label="名称">
                     <template slot-scope="scope">
                         <span v-if="scope.row.grade == 1"
@@ -25,7 +25,7 @@
                 <el-table-column prop="orders" label="排序">
                 </el-table-column>
                 <el-table-column label="操作" width="200px">
-                    <template v-if="menuData.length > 0" slot-scope="scope">
+                    <template v-if="getDataList.length > 0" slot-scope="scope">
                         <el-button @click="handleEdit(scope.row)" type="primary" icon="el-icon-edit" size="small">编辑
                         </el-button>
                         <el-button @click="handleDelete(scope.row)" type="danger" icon="el-icon-delete" size="small">
@@ -36,17 +36,17 @@
             </el-table>
         </div>
         <!--增加后台菜单-->
-        <el-dialog title="增加后台菜单" :visible.sync="isShowMenu" :before-close="back" width="500px" center>
-            <div class="form-content">
-                <el-form ref="addMenuForm" :model="addMenuForm" label-width="100px">
+        <el-dialog title="增加后台菜单" :visible.sync="isShowAdd" :before-close="cancelAdd" width="500px" center>
+            <div class="form-content" style="margin: 0 auto;width: 90%;">
+                <el-form ref="addDataForm" :model="addDataForm" label-width="100px">
                     <el-form-item label="菜单名：">
-                        <el-input v-model.trim="addMenuForm.name" placeholder="如：首页"></el-input>
+                        <el-input v-model.trim="addDataForm.name" placeholder="如：首页"></el-input>
                     </el-form-item>
                     <el-form-item label="ICON：">
-                        <el-input v-model.trim="addMenuForm.icon" placeholder="如：el-icon-setting"></el-input>
+                        <el-input v-model.trim="addDataForm.icon" placeholder="如：el-icon-setting"></el-input>
                     </el-form-item>
                     <el-form-item label="类型：">
-                        <el-select v-model.trim="addMenuForm.type" placeholder="类型">
+                        <el-select v-model.trim="addDataForm.type" placeholder="类型">
                             <el-option
                                 v-for="item in typeList"
                                 :key="item.type"
@@ -56,13 +56,13 @@
                         </el-select>
                     </el-form-item>
                     <el-form-item label="权限key：">
-                        <el-input v-model.trim="addMenuForm.permission" placeholder="如common:index"></el-input>
+                        <el-input v-model.trim="addDataForm.permission" placeholder="如common:index"></el-input>
                     </el-form-item>
                     <el-form-item label="链接：">
-                        <el-input type="tel" v-model.trim="addMenuForm.url" placeholder="如common:index"></el-input>
+                        <el-input type="tel" v-model.trim="addDataForm.url" placeholder="如common:index"></el-input>
                     </el-form-item>
                     <el-form-item label="父节点：">
-                        <el-select v-model.trim="addMenuForm.parentId" placeholder="请选择">
+                        <el-select v-model.trim="addDataForm.parentId" placeholder="请选择">
                             <el-option
                                 v-for="item in menuList"
                                 :key="item.id"
@@ -80,27 +80,27 @@
                         </el-select>
                     </el-form-item>
                     <el-form-item label="排序：">
-                        <el-input v-model.trim="addMenuForm.orders"></el-input>
+                        <el-input v-model.trim="addDataForm.orders"></el-input>
                     </el-form-item>
                 </el-form>
             </div>
             <span slot="footer" class="dialog-footer">
-                <el-button type="primary" @click="submit">添加</el-button>
-                <el-button @click="back">取消</el-button>
+                <el-button type="primary" @click="submitAdd">添加</el-button>
+                <el-button @click="cancelAdd">取消</el-button>
             </span>
         </el-dialog>
         <!--编辑后台菜单-->
-        <el-dialog title="编辑后台菜单" :visible.sync="isShowEditMenu" :before-close="cancel" width="500px" center>
-            <div class="form-content">
-                <el-form ref="editMenuForm" :model="editMenuForm" label-width="100px">
+        <el-dialog title="编辑后台菜单" :visible.sync="isShowEdit" :before-close="cancelEdit" width="500px" center>
+            <div class="form-content" style="margin: 0 auto;width: 90%;">
+                <el-form ref="editDataForm" :model="editDataForm" label-width="100px">
                     <el-form-item label="菜单名：">
-                        <el-input v-model.trim="editMenuForm.name" placeholder="如：首页"></el-input>
+                        <el-input v-model.trim="editDataForm.name" placeholder="如：首页"></el-input>
                     </el-form-item>
                     <el-form-item label="ICON：">
-                        <el-input v-model.trim="editMenuForm.icon" placeholder="如：el-icon-setting"></el-input>
+                        <el-input v-model.trim="editDataForm.icon" placeholder="如：el-icon-setting"></el-input>
                     </el-form-item>
                     <el-form-item label="类型：">
-                        <el-select v-model.trim="editMenuForm.type" placeholder="类型">
+                        <el-select v-model.trim="editDataForm.type" placeholder="类型">
                             <el-option
                                 v-for="item in typeList"
                                 :key="item.type"
@@ -110,13 +110,13 @@
                         </el-select>
                     </el-form-item>
                     <el-form-item label="权限key：">
-                        <el-input v-model.trim="editMenuForm.permission" placeholder="如common:index"></el-input>
+                        <el-input v-model.trim="editDataForm.permission" placeholder="如common:index"></el-input>
                     </el-form-item>
                     <el-form-item label="链接：">
-                        <el-input type="tel" v-model.trim="editMenuForm.url" placeholder="如common:index"></el-input>
+                        <el-input type="tel" v-model.trim="editDataForm.url" placeholder="如common:index"></el-input>
                     </el-form-item>
                     <el-form-item label="父节点：">
-                        <el-select v-model.trim="editMenuForm.parentId" placeholder="请选择">
+                        <el-select v-model.trim="editDataForm.parentId" placeholder="请选择">
                             <el-option
                                 v-for="item in menuList"
                                 :key="item.id"
@@ -134,13 +134,13 @@
                         </el-select>
                     </el-form-item>
                     <el-form-item label="排序：">
-                        <el-input v-model.trim="editMenuForm.orders"></el-input>
+                        <el-input v-model.trim="editDataForm.orders"></el-input>
                     </el-form-item>
                 </el-form>
             </div>
             <span slot="footer" class="dialog-footer">
-                <el-button type="primary" @click="update">更新</el-button>
-                <el-button @click="cancel">取消</el-button>
+                <el-button type="primary" @click="submitEdit">更新</el-button>
+                <el-button @click="cancelEdit">取消</el-button>
             </span>
         </el-dialog>
     </div>
@@ -151,9 +151,9 @@
     export default {
         data() {
             return {
-                isShowMenu: false,
-                isShowEditMenu: false,
-                menuData: [
+                isShowAdd: false,
+                isShowEdit: false,
+                getDataList: [
                     /*{
                         grade: "",
                         id: "",
@@ -167,15 +167,7 @@
                         url: ""
                     }*/
                 ],
-                addMenuForm: {
-                    name: '',
-                    icon: '',
-                    type: '',
-                    permission: '',
-                    url: '',
-                    parentId: '',
-                    sort: ''
-                },
+                addDataForm: {},
                 typeList: [
                     {
                         name: '菜单',
@@ -187,7 +179,7 @@
                     },
 
                 ],
-                editMenuForm: {
+                editDataForm: {
                     id: "",
                     name: "",
                     icon: "",
@@ -204,7 +196,7 @@
             getMenuData() {
                 let vm = this;
                 this.$httpGet('/admin/permission/index', {}).then(({data}) => {
-                    vm.menuData = data;
+                    vm.getDataList = data;
                 }).catch((data) => {
                     console.log(data)
                 })
@@ -218,49 +210,41 @@
                 })
             },
             handleEdit(row) {
-                let vm = this;
-                this.isShowEditMenu = true;
-                /*this.$httpGet('/admin/permission/edit', {
-                    id: row.id
-                }).then(({data}) => {
-                    vm.editMenuForm = data;
-                }).catch((data) => {
-                    console.log(data)
-                })*/
-                vm.editMenuForm.id = row.id;
-                vm.editMenuForm.name = row.name;
-                vm.editMenuForm.icon = row.icon;
-                vm.editMenuForm.permission = row.permission;
-                vm.editMenuForm.url = row.url;
-                vm.editMenuForm.parentId = row.parentId;
-                vm.editMenuForm.type = row.type;
-                vm.editMenuForm.orders = row.orders;
+                this.isShowEdit = true;
+                this.editDataForm.id = row.id;
+                this.editDataForm.name = row.name;
+                this.editDataForm.icon = row.icon;
+                this.editDataForm.permission = row.permission;
+                this.editDataForm.url = row.url;
+                this.editDataForm.parentId = row.parentId;
+                this.editDataForm.type = row.type;
+                this.editDataForm.orders = row.orders;
             },
-            cancel() {
-                this.isShowEditMenu = false;
+            cancelEdit() {
+                this.isShowEdit = false;
             },
-            update() {
+            submitEdit() {
                 let vm = this;
-                if (!this.editMenuForm.name) {
+                if (!this.editDataForm.name) {
                     this.$message.warning('菜单名不能为空！');
                     return false;
                 }
-                if (!this.editMenuForm.permission) {
+                if (!this.editDataForm.permission) {
                     this.$message.warning('权限key不能为空！');
                     return false;
                 }
                 this.$httpPost('/admin/permission/update', {
-                    id: this.editMenuForm.id,
-                    icon: this.editMenuForm.icon,
-                    name: this.editMenuForm.name,
-                    permission: this.editMenuForm.permission,
-                    url: this.editMenuForm.url,
-                    parentId: this.editMenuForm.parentId,
-                    type: this.editMenuForm.type,
-                    orders: this.editMenuForm.orders
+                    id: this.editDataForm.id,
+                    icon: this.editDataForm.icon,
+                    name: this.editDataForm.name,
+                    permission: this.editDataForm.permission,
+                    url: this.editDataForm.url,
+                    parentId: this.editDataForm.parentId,
+                    type: this.editDataForm.type,
+                    orders: this.editDataForm.orders
                 }).then(({data}) => {
                     vm.$message.success(data);
-                    vm.isShowEditMenu = false;
+                    vm.isShowEdit = false;
                     vm.getMenuData();
                 }).catch((data) => {
                     console.log(data)
@@ -277,7 +261,7 @@
                         id: row.id
                     }).then(({data}) => {
                         vm.$message.success(data);
-                        this.getMenuData();
+                        vm.getMenuData();
                     }).catch((data) => {
                         console.log(data)
                     })
@@ -289,42 +273,38 @@
                 });
             },
             add() {
-                this.isShowMenu = true;
+                this.isShowAdd = true;
             },
-            submit() {
+            submitAdd() {
                 let vm = this;
-                if (!this.addMenuForm.name) {
+                if (!this.addDataForm.name) {
                     this.$message.warning('菜单名不能为空！');
                     return false;
                 }
-                if (!this.addMenuForm.permission) {
+                if (!this.addDataForm.permission) {
                     this.$message.warning('权限key不能为空！');
                     return false;
                 }
                 this.$httpPost('/admin/permission/save', {
-                    name: this.addMenuForm.name,
-                    icon: this.addMenuForm.icon,
-                    permission: this.addMenuForm.permission,
-                    url: this.addMenuForm.url,
-                    parentId: this.addMenuForm.parentId,
-                    type: this.addMenuForm.type,
-                    orders: this.addMenuForm.orders
+                    name: this.addDataForm.name,
+                    icon: this.addDataForm.icon,
+                    permission: this.addDataForm.permission,
+                    url: this.addDataForm.url,
+                    parentId: this.addDataForm.parentId,
+                    type: this.addDataForm.type,
+                    orders: this.addDataForm.orders
                 }).then(({data}) => {
                     vm.$message.success(data);
-                    vm.isShowMenu = false;
-                    this.getMenuData();
-                    for (let key in this.addMenuForm) {
-                        delete this.addMenuForm[key];
-                    }
+                    vm.isShowAdd = false;
+                    vm.addDataForm = {};
+                    vm.getMenuData();
                 }).catch((data) => {
                     console.log(data)
                 })
             },
-            back() {
-                this.isShowMenu = false;
-                for (let key in this.addMenuForm) {
-                    delete this.addMenuForm[key];
-                }
+            cancelAdd() {
+                this.isShowAdd = false;
+                this.addDataForm = {};
             }
         },
         mounted() {

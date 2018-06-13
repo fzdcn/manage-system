@@ -4,7 +4,7 @@
             <div class="add" style="margin-bottom: 30px;">
                 <el-button type="primary" size="medium" icon="el-icon-plus" @click="add">增加</el-button>
             </div>
-            <el-table :data="salesmanData" border style="width: 100%;">
+            <el-table :data="getDataList" border style="width: 100%;">
                 <el-table-column prop="name" label="名字">
                 </el-table-column>
                 <el-table-column prop="phone" label="电话">
@@ -24,7 +24,7 @@
                     </template>
                 </el-table-column>
                 <el-table-column label="操作" width="200px">
-                    <template v-if="salesmanData.length > 0" slot-scope="scope">
+                    <template v-if="getDataList.length > 0" slot-scope="scope">
                         <el-button @click="handleEdit(scope.row)" type="primary" icon="el-icon-edit" size="small">编辑
                         </el-button>
                         <el-button @click="handleDelete(scope.row)" type="danger" icon="el-icon-delete" size="small">
@@ -33,32 +33,29 @@
                     </template>
                 </el-table-column>
             </el-table>
-            <div class="pagination">
-                <el-pagination background @current-change="handleCurrentChange" layout="prev, pager, next"
+            <div class="pagination" style="overflow: hidden;">
+                <el-pagination background @current-change="handleCurrentChange"
+                               layout="total, prev, pager, next, jumper"
                                :page-size="10" :pager-count="11" :total="total">
                 </el-pagination>
             </div>
         </div>
         <!--增加后台业务员-->
-        <el-dialog title="增加后台业务员" :visible.sync="isShowSalesman" :before-close="cancelShowSalesman" width="500px"
+        <el-dialog title="增加后台业务员" :visible.sync="isShowAdd" :before-close="cancelAdd" width="500px"
                    center>
-            <div class="form-content">
-                <el-form ref="addSalesmanForm" :model="addSalesmanForm" label-width="100px">
+            <div class="form-content" style="margin: 0 auto;width: 90%;">
+                <el-form ref="addDataForm" :model="addDataForm" label-width="100px">
                     <el-form-item label="名称：">
-                        <el-input v-model.trim="addSalesmanForm.name"></el-input>
+                        <el-input v-model.trim="addDataForm.name"></el-input>
                     </el-form-item>
-                    <el-form ref="addSalesmanForm" :model="addSalesmanForm" label-width="100px">
-                        <el-form-item label="电话：">
-                            <el-input v-model.trim="addSalesmanForm.phone"></el-input>
-                        </el-form-item>
-                    </el-form>
-                    <el-form ref="addSalesmanForm" :model="addSalesmanForm" label-width="100px">
-                        <el-form-item label="邮箱：">
-                            <el-input v-model.trim="addSalesmanForm.email"></el-input>
-                        </el-form-item>
-                    </el-form>
+                    <el-form-item label="电话：">
+                        <el-input v-model.trim="addDataForm.phone"></el-input>
+                    </el-form-item>
+                    <el-form-item label="邮箱：">
+                        <el-input v-model.trim="addDataForm.email"></el-input>
+                    </el-form-item>
                     <el-form-item label="业务员类型：">
-                        <el-select v-model="addSalesmanForm.type" placeholder="业务员类型">
+                        <el-select v-model="addDataForm.type" placeholder="业务员类型">
                             <el-option
                                 v-for="item in salesmanTypeList"
                                 :key="item.type"
@@ -70,30 +67,26 @@
                 </el-form>
             </div>
             <span slot="footer" class="dialog-footer">
-                <el-button type="primary" @click="entry">确 定</el-button>
-                <el-button @click="cancelShowSalesman">取 消</el-button>
+                <el-button type="primary" @click="submitAdd">确 定</el-button>
+                <el-button @click="cancelAdd">取 消</el-button>
             </span>
         </el-dialog>
 
         <!--编辑后台业务员-->
-        <el-dialog title="编辑后台业务员" :visible.sync="isShowEdit" width="500px" center>
-            <div class="form-content">
-                <el-form ref="editSalesmanForm" :model="editSalesmanForm" label-width="100px">
+        <el-dialog title="编辑后台业务员" :visible.sync="isShowEdit" :before-close="cancelEdit" width="500px" center>
+            <div class="form-content" style="margin: 0 auto;width: 90%;">
+                <el-form ref="editDataForm" :model="editDataForm" label-width="100px">
                     <el-form-item label="名称：">
-                        <el-input v-model.trim="editSalesmanForm.name"></el-input>
+                        <el-input v-model.trim="editDataForm.name"></el-input>
                     </el-form-item>
-                    <el-form ref="addSalesmanForm" :model="editSalesmanForm" label-width="100px">
-                        <el-form-item label="电话：">
-                            <el-input v-model.trim="editSalesmanForm.phone"></el-input>
-                        </el-form-item>
-                    </el-form>
-                    <el-form ref="addSalesmanForm" :model="editSalesmanForm" label-width="100px">
-                        <el-form-item label="邮箱：">
-                            <el-input v-model.trim="editSalesmanForm.email"></el-input>
-                        </el-form-item>
-                    </el-form>
+                    <el-form-item label="电话：">
+                        <el-input v-model.trim="editDataForm.phone"></el-input>
+                    </el-form-item>
+                    <el-form-item label="邮箱：">
+                        <el-input v-model.trim="editDataForm.email"></el-input>
+                    </el-form-item>
                     <el-form-item label="业务员类型：">
-                        <el-select v-model="editSalesmanForm.type" placeholder="业务员类型">
+                        <el-select v-model="editDataForm.type" placeholder="业务员类型">
                             <el-option
                                 v-for="item in salesmanTypeList"
                                 :key="item.type"
@@ -103,7 +96,7 @@
                         </el-select>
                     </el-form-item>
                     <el-form-item label="状态：">
-                        <el-select v-model="editSalesmanForm.status" placeholder="状态">
+                        <el-select v-model="editDataForm.status" placeholder="状态">
                             <el-option
                                 v-for="item in salesmanStatusList"
                                 :key="item.status"
@@ -115,20 +108,20 @@
                 </el-form>
             </div>
             <span slot="footer" class="dialog-footer">
-                <el-button type="primary" @click="editUserInfo">确 定</el-button>
-                <el-button @click="cancelShowEdit">取 消</el-button>
+                <el-button type="primary" @click="submitEdit">确 定</el-button>
+                <el-button @click="cancelEdit">取 消</el-button>
             </span>
         </el-dialog>
     </div>
 </template>
 
 <script>
-    import {regTel, regEmail, regIdCode} from '../../../functions/index';
+    import {regTel, regEmail} from '../../../functions/index';
 
     export default {
         data() {
             return {
-                salesmanData: [
+                getDataList: [
                     /*{
                         "code":"00003",
                         "name":"caolsq",
@@ -143,16 +136,11 @@
                 // 所有数量
                 total: null,
                 // 是否显示增加弹框
-                isShowSalesman: false,
+                isShowAdd: false,
                 // 是否显示编辑弹框
                 isShowEdit: false,
                 // 增加后台业务员参数
-                addSalesmanForm: {
-                    name: '',
-                    phone: '',
-                    email: '',
-                    type: ''
-                },
+                addDataForm: {},
                 salesmanTypeList: [
                     {
                         type: 1,
@@ -174,7 +162,7 @@
                     },
                 ],
                 // 编辑后台角色参数
-                editSalesmanForm: {
+                editDataForm: {
                     code: '',
                     name: '',
                     phone: '',
@@ -221,63 +209,59 @@
                     pageNo: this.cur_page,
                     pageSize: 10
                 }).then(({data}) => {
-                    vm.salesmanData = data.list;
+                    vm.getDataList = data.list;
                     vm.total = data.total;
                 }).catch((data) => {
                     console.log(data)
                 })
             },
             add() {
-                this.isShowSalesman = true;
+                this.isShowAdd = true;
             },
-            cancelShowSalesman() {
-                this.isShowSalesman = false;
-                for (let key in this.addSalesmanForm) {
-                    delete this.addSalesmanForm[key];
-                }
+            cancelAdd() {
+                this.isShowAdd = false;
+                this.addDataForm = {};
             },
-            entry() {
+            submitAdd() {
                 let vm = this;
-                if (!this.addSalesmanForm.name) {
+                if (!this.addDataForm.name) {
                     this.$message.warning('名称不能为空！');
                     return false;
                 }
-                if (!this.addSalesmanForm.phone) {
+                if (!this.addDataForm.phone) {
                     this.$message.warning('电话不能为空！');
                     return false;
                 }
-                if (!regTel.test(this.addSalesmanForm.phone)) {
+                if (!regTel.test(this.addDataForm.phone)) {
                     this.$message.warning('电话格式不正确！！');
                     return false;
                 }
-                if (!this.addSalesmanForm.email) {
+                if (!this.addDataForm.email) {
                     this.$message.warning('邮箱不能为空！');
                     return false;
                 }
-                if (!regEmail.test(this.addSalesmanForm.email)) {
+                if (!regEmail.test(this.addDataForm.email)) {
                     this.$message.warning('邮箱格式不正确！');
                     return false;
                 }
-                if (!this.addSalesmanForm.type) {
+                if (!this.addDataForm.type) {
                     this.$message.warning('业务员类型不能为空！');
                     return false;
                 }
                 this.$httpPost('/admin/epay/salesman/save', {
-                    name: this.addSalesmanForm.name,
-                    phone: this.addSalesmanForm.phone,
-                    email: this.addSalesmanForm.email,
-                    type: this.addSalesmanForm.type
+                    name: this.addDataForm.name,
+                    phone: this.addDataForm.phone,
+                    email: this.addDataForm.email,
+                    type: this.addDataForm.type
                 }).then(({data}) => {
                     vm.$message.success(data);
-                    vm.isShowSalesman = false;
-                    for (let key in vm.addSalesmanForm) {
-                        delete vm.addSalesmanForm[key];
-                    }
+                    vm.isShowAdd = false;
+                    vm.addDataForm = {};
                     vm.$httpGet('/admin/epay/salesman/index', {
                         pageNo: 1,
                         pageSize: 10
                     }).then(({data}) => {
-                        vm.salesmanData = data.list;
+                        vm.getDataList = data.list;
                         vm.total = data.total;
                     }).catch((data) => {
                         console.log(data)
@@ -287,62 +271,54 @@
                 })
             },
             handleEdit(row) {
-                let vm = this;
                 this.isShowEdit = true;
-                /*this.$httpGet('/admin/epay/salesman/findByCode', {
-                    code: row.code
-                }).then(({data}) => {
-                    vm.editSalesmanForm = data;
-                }).catch((data) => {
-                    console.log(data)
-                })*/
-                vm.editSalesmanForm.code = row.code;
-                vm.editSalesmanForm.name = row.name;
-                vm.editSalesmanForm.phone = row.phone;
-                vm.editSalesmanForm.email = row.email;
-                vm.editSalesmanForm.type = row.type;
-                vm.editSalesmanForm.status = row.status;
+                this.editDataForm.code = row.code;
+                this.editDataForm.name = row.name;
+                this.editDataForm.phone = row.phone;
+                this.editDataForm.email = row.email;
+                this.editDataForm.type = row.type;
+                this.editDataForm.status = row.status;
             },
-            cancelShowEdit() {
+            cancelEdit() {
                 this.isShowEdit = false;
             },
-            editUserInfo() {
+            submitEdit() {
                 let vm = this;
-                if (!this.editSalesmanForm.name) {
+                if (!this.editDataForm.name) {
                     this.$message.warning('名称不能为空！');
                     return false;
                 }
-                if (!this.editSalesmanForm.phone) {
+                if (!this.editDataForm.phone) {
                     this.$message.warning('电话不能为空！');
                     return false;
                 }
-                if (!regTel.test(this.editSalesmanForm.phone)) {
+                if (!regTel.test(this.editDataForm.phone)) {
                     this.$message.warning('电话格式不正确！！');
                     return false;
                 }
-                if (!this.editSalesmanForm.email) {
+                if (!this.editDataForm.email) {
                     this.$message.warning('邮箱不能为空！');
                     return false;
                 }
-                if (!regEmail.test(this.editSalesmanForm.email)) {
+                if (!regEmail.test(this.editDataForm.email)) {
                     this.$message.warning('邮箱格式不正确！');
                     return false;
                 }
-                if (!this.editSalesmanForm.type) {
+                if (!this.editDataForm.type) {
                     this.$message.warning('业务员类型不能为空！');
                     return false;
                 }
-                if (!this.editSalesmanForm.status) {
+                if (!this.editDataForm.status) {
                     this.$message.warning('状态不能为空！');
                     return false;
                 }
                 this.$httpPost('/admin/epay/salesman/update', {
-                    code: this.editSalesmanForm.code,
-                    name: this.editSalesmanForm.name,
-                    phone: this.editSalesmanForm.phone,
-                    email: this.editSalesmanForm.email,
-                    type: this.editSalesmanForm.type,
-                    status: this.editSalesmanForm.status
+                    code: this.editDataForm.code,
+                    name: this.editDataForm.name,
+                    phone: this.editDataForm.phone,
+                    email: this.editDataForm.email,
+                    type: this.editDataForm.type,
+                    status: this.editDataForm.status
                 }).then(({data}) => {
                     vm.$message.success(data);
                     vm.isShowEdit = false;
@@ -361,8 +337,5 @@
 </script>
 
 <style scoped>
-    .form-content {
-        margin: 0 auto;
-        width: 90%;
-    }
+
 </style>

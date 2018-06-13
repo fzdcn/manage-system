@@ -1,0 +1,318 @@
+<template>
+    <div class="table">
+        <div class="container">
+            <div class="add" style="margin-bottom: 30px;">
+                <el-button type="primary" size="medium" icon="el-icon-plus" @click="add">增加</el-button>
+            </div>
+            <div class="handle-box" style="margin-bottom: 20px;display: flex;flex-flow: row wrap;">
+                <div style="margin: 0px 20px 10px 0;">
+                    <span>银行名称：</span>
+                    <el-input style="width: 150px;" class="bankName" v-model.trim="searchBankNumberForm.bankName"
+                              clearable placeholder="请填写银行名称">
+                    </el-input>
+                </div>
+                <div style="margin: 0px 20px 10px 0;">
+                    <span>联行号：</span>
+                    <el-input style="width: 150px;" class="bankNumber" v-model.trim="searchBankNumberForm.bankNumber"
+                              clearable placeholder="请填写联行号">
+                    </el-input>
+                </div>
+                <div style="margin: 0px 20px 10px 0;">
+                    <span>银行编号：</span>
+                    <el-input style="width: 150px;" class="numbers" v-model.trim="searchBankNumberForm.numbers"
+                              clearable placeholder="请填写银行编号">
+                    </el-input>
+                </div>
+                <div>
+                    <el-button type="primary" icon="el-icon-search" @click="search">搜索</el-button>
+                </div>
+            </div>
+            <el-table :data="getDataList" border style="width: 100%;">
+                <el-table-column prop="bankName" label="银行名称">
+                </el-table-column>
+                <el-table-column prop="bankNumber" label="联行号">
+                </el-table-column>
+                <el-table-column prop="bankCode" label="银行代码">
+                </el-table-column>
+                <el-table-column prop="numbers" label="银行编号">
+                </el-table-column>
+                <el-table-column prop="identity" label="收款方账户所属机构标识">
+                </el-table-column>
+                <el-table-column label="操作" width="100px">
+                    <template v-if="getDataList.length > 0" slot-scope="scope">
+                        <el-button @click="handleEdit(scope.row)" type="primary" icon="el-icon-edit" size="small">编辑
+                        </el-button>
+                        <!--<el-button @click="handleDelete(scope.row)" type="danger" icon="el-icon-delete" size="small">-->
+                        <!--删除-->
+                        <!--</el-button>-->
+                    </template>
+                </el-table-column>
+            </el-table>
+            <div class="pagination" style="overflow: hidden;">
+                <el-pagination background @current-change="handleCurrentChange"
+                               layout="total, prev, pager, next, jumper"
+                               :page-size="10" :pager-count="11" :total="total">
+                </el-pagination>
+            </div>
+        </div>
+        <!--增加银行号-->
+        <el-dialog title="增加银行号" :visible.sync="isShowAdd" :before-close="cancelAdd" width="500px" center>
+            <div class="form-content" style="margin: 0 auto;width: 90%;">
+                <el-form ref="addDataForm" :model="addDataForm" label-width="150px">
+                    <el-form-item label="银行名称：">
+                        <el-input v-model.trim="addDataForm.bankName"></el-input>
+                    </el-form-item>
+                    <el-form-item label="联行号：">
+                        <el-input v-model.trim="addDataForm.bankNumber"></el-input>
+                    </el-form-item>
+                    <el-form-item label="银行代码：">
+                        <el-input v-model.trim="addDataForm.bankCode"></el-input>
+                    </el-form-item>
+                    <el-form-item label="银行编号：">
+                        <el-input v-model.trim="addDataForm.numbers"></el-input>
+                    </el-form-item>
+                    <el-form-item label="收款方账户所属机构标识：">
+                        <el-input v-model.trim="addDataForm.identity"></el-input>
+                    </el-form-item>
+                </el-form>
+            </div>
+            <span slot="footer" class="dialog-footer">
+                <el-button type="primary" @click="submitAdd">确 定</el-button>
+                <el-button @click="cancelAdd">取 消</el-button>
+            </span>
+        </el-dialog>
+
+        <!--编辑银行号-->
+        <el-dialog title="编辑银行号" :visible.sync="isShowEdit" :before-close="cancelEdit" width="500px" center>
+            <div class="form-content" style="margin: 0 auto;width: 90%;">
+                <el-form ref="editDataForm" :model="editDataForm" label-width="100px">
+                    <el-form-item label="银行名称：">
+                        <el-input v-model.trim="editDataForm.bankName"></el-input>
+                    </el-form-item>
+                    <el-form-item label="联行号：">
+                        <el-input v-model.trim="editDataForm.bankNumber"></el-input>
+                    </el-form-item>
+                    <el-form-item label="银行代码：">
+                        <el-input v-model.trim="editDataForm.bankCode"></el-input>
+                    </el-form-item>
+                    <el-form-item label="银行编号：">
+                        <el-input v-model.trim="editDataForm.numbers"></el-input>
+                    </el-form-item>
+                    <el-form-item label="收款方账户所属机构标识：">
+                        <el-input v-model.trim="editDataForm.identity"></el-input>
+                    </el-form-item>
+                </el-form>
+            </div>
+            <span slot="footer" class="dialog-footer">
+                <el-button type="primary" @click="submitEdit">确 定</el-button>
+                <el-button @click="cancelEdit">取 消</el-button>
+            </span>
+        </el-dialog>
+    </div>
+</template>
+
+<script>
+
+    export default {
+        data() {
+            return {
+                getDataList: [],
+                // 当前页
+                cur_page: 1,
+                // 所有数量
+                total: null,
+                // 是否显示增加弹框
+                isShowAdd: false,
+                // 是否显示编辑弹框
+                isShowEdit: false,
+                addDataForm: {},
+                editDataForm: {},
+                searchBankNumberForm: {}
+            }
+        },
+        methods: {
+            // 分页导航
+            handleCurrentChange(val) {
+                this.cur_page = val;
+                this.getData();
+            },
+            handleDelete(row) {
+                let vm = this;
+                this.$confirm('确认删除吗?', '删除', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    vm.$httpGet('/admin/role/deleteAdminRole', {
+                        id: row.id
+                    }).then(({data}) => {
+                        vm.$message({
+                            type: 'success',
+                            message: '删除成功!'
+                        });
+                        vm.getData();
+                    }).catch((data) => {
+                        console.log(data)
+                    })
+                }).catch(() => {
+                    vm.$message({
+                        type: 'info',
+                        message: '已取消删除'
+                    });
+                });
+            },
+            search() {
+                let vm = this;
+                this.$httpGet('/admin/epay/unionBankNumber/index', {
+                    pageNo: 1,
+                    pageSize: 10,
+                    bankName: this.searchBankNumberForm.bankName,
+                    bankNumber: this.searchBankNumberForm.bankNumber,
+                    numbers: this.searchBankNumberForm.numbers
+                }).then(({data}) => {
+                    vm.getDataList = data.list;
+                    vm.total = data.total;
+                }).catch((data) => {
+                    console.log(data)
+                })
+            },
+            getData() {
+                let vm = this;
+                this.$httpGet('/admin/epay/unionBankNumber/index', {
+                    pageNo: this.cur_page,
+                    pageSize: 10,
+                    bankName: this.searchBankNumberForm.bankName,
+                    bankNumber: this.searchBankNumberForm.bankNumber,
+                    numbers: this.searchBankNumberForm.numbers
+                }).then(({data}) => {
+                    vm.getDataList = data.list;
+                    vm.total = data.total;
+                }).catch((data) => {
+                    console.log(data)
+                })
+            },
+            defaultOrNoFormatter(row, column) {
+                let defaultOrNo = row.defaultOrNo;
+                if (defaultOrNo) {
+                    return '是';
+                } else if (defaultOrNo === false) {
+                    return '否';
+                }
+            },
+            add() {
+                this.isShowAdd = true;
+            },
+            cancelAdd() {
+                this.isShowAdd = false;
+                this.addDataForm = {};
+            },
+            submitAdd() {
+                let vm = this;
+                if (!this.addDataForm.bankName) {
+                    this.$message.warning('银行名称不能为空！');
+                    return false;
+                }
+                if (!this.addDataForm.bankNumber) {
+                    this.$message.warning('联行号不能为空！');
+                    return false;
+                }
+                if (!this.addDataForm.bankCode) {
+                    this.$message.warning('银行代码不能为空！');
+                    return false;
+                }
+                if (!this.addDataForm.numbers) {
+                    this.$message.warning('银行编号不能为空！');
+                    return false;
+                }
+                if (!this.addDataForm.identity) {
+                    this.$message.warning('收款方账户所属机构标识不能为空！');
+                    return false;
+                }
+                this.$httpPost('/admin/epay/unionBankNumber/save', {
+                    bankName: this.addDataForm.bankName,
+                    bankNumber: this.addDataForm.bankNumber,
+                    bankCode: this.addDataForm.bankCode,
+                    numbers: this.addDataForm.numbers,
+                    identity: this.addDataForm.identity
+                }).then(({data}) => {
+                    vm.$message.success(data);
+                    vm.isShowAdd = false;
+                    vm.addDataForm = {};
+                    vm.$httpGet('/admin/epay/unionBankNumber/index', {
+                        pageNo: 1,
+                        pageSize: 10
+                    }).then(({data}) => {
+                        vm.getDataList = data.list;
+                        vm.total = data.total;
+                    }).catch((data) => {
+                        console.log(data)
+                    })
+                }).catch((data) => {
+                    console.log(data)
+                })
+            },
+            handleModify(row) {
+                this.$router.push({name: 'modify-role-permissions', params: {id: row.id}});
+            },
+            handleEdit(row) {
+                this.isShowEdit = true;
+                this.editDataForm.id = row.id;
+                this.editDataForm.bankName = row.bankName;
+                this.editDataForm.bankNumber = row.bankNumber;
+                this.editDataForm.bankCode = row.bankCode;
+                this.editDataForm.numbers = row.numbers;
+                this.editDataForm.identity = row.identity;
+            },
+            cancelEdit() {
+                this.isShowEdit = false;
+                this.editDataForm = {};
+            },
+            submitEdit() {
+                let vm = this;
+                if (!this.editDataForm.bankName) {
+                    this.$message.warning('银行名称不能为空！');
+                    return false;
+                }
+                if (!this.editDataForm.bankNumber) {
+                    this.$message.warning('联行号不能为空！');
+                    return false;
+                }
+                if (!this.editDataForm.bankCode) {
+                    this.$message.warning('银行代码不能为空！');
+                    return false;
+                }
+                if (!this.editDataForm.numbers) {
+                    this.$message.warning('银行编号不能为空！');
+                    return false;
+                }
+                if (!this.editDataForm.identity) {
+                    this.$message.warning('收款方账户所属机构标识不能为空！');
+                    return false;
+                }
+                this.$httpPost('/admin/epay/unionBankNumber/update', {
+                    id: this.editDataForm.id,
+                    bankName: this.editDataForm.bankName,
+                    bankNumber: this.editDataForm.bankNumber,
+                    bankCode: this.editDataForm.bankCode,
+                    numbers: this.editDataForm.numbers,
+                    identity: this.editDataForm.identity,
+                }).then(({data}) => {
+                    vm.$message.success(data);
+                    vm.isShowEdit = false;
+                    vm.editDataForm = {};
+                    vm.getData();
+                }).catch((data) => {
+                    console.log(data)
+                })
+            }
+        },
+        created() {
+            this.getData();
+        }
+    }
+
+</script>
+
+<style scoped>
+
+</style>

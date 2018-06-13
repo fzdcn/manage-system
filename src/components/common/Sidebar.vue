@@ -3,7 +3,7 @@
         <el-menu @select="handleSelect" class="sidebar-el-menu" :default-active="onRoutes" :collapse="collapse"
                  background-color="#324157"
                  text-color="#bfcbd9" active-text-color="#20a0ff" unique-opened>
-            <template v-for="item in items">
+            <template v-for="item in menuItems">
                 <template v-if="item.subs">
                     <el-submenu :index="item.url" :key="item.url">
                         <template slot="title">
@@ -32,7 +32,57 @@
         data() {
             return {
                 collapse: false,
-                items: this.$store.getters.menu
+                menuItems: this.$store.getters.menu,
+                // 菜单列表形式
+                /*menuItems: [
+                    {
+                        "name": "首页",
+                        "icon": "iconfont icon-shouye1",
+                        "url": "index",
+                    }, {
+                        "name": "运营管理",
+                        "icon": "iconfont icon-shezhi",
+                        "url": "1",
+                        "subs": [
+                            {
+                                "name": "合同管理",
+                                "icon": "iconfont icon-guanli1",
+                                "url": "",
+                            }, {
+                                "name": "客服管理",
+                                "icon": "iconfont icon-guanli1",
+                                "url": "",
+                            }, {
+                                "name": "业务管理",
+                                "icon": "iconfont icon-guanli1",
+                                "url": "",
+                            }
+                        ]
+                    }, {
+                        "name": "系统设置",
+                        "icon": "iconfont icon-shezhi",
+                        "url": "2",
+                        "subs": [
+                            {
+                                "name": "后台账户管理",
+                                "icon": "iconfont icon-guanli1",
+                                "url": "account-manage",
+                            }, {
+                                "name": "后台角色管理",
+                                "icon": "iconfont icon-guanli1",
+                                "url": "role-manage",
+                            }, {
+                                "name": "后台菜单管理",
+                                "icon": "iconfont icon-guanli1",
+                                "url": "menu-manage",
+                            }, {
+                                "name": "后台业务员管理",
+                                "icon": "iconfont icon-guanli1",
+                                "url": "salesman-manage",
+                            }
+                        ]
+                    }
+                ]*/
             }
         },
         computed: {

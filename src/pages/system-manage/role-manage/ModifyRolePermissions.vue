@@ -1,9 +1,10 @@
 <template>
     <div class="table">
         <div class="container">
-            <el-table :data="permissionsData" ref="itemTable" border style="width: 100%;"
-                      @selection-change="handleSelectionAllChange" @select="handleSelectionChange">
-                <el-table-column :filter-multiple="true" type="selection" width="55">
+            <el-table :data="getDataList" ref="itemTable" border style="width: 100%;"
+                      @selection-change="handleSelectionAllChange" @select="handleSelectionChange"
+                      @select-all="handleSelectionChange">
+                <el-table-column type="selection" width="55">
                 </el-table-column>
                 <el-table-column prop="name" label="菜单">
                     <template slot-scope="scope">
@@ -21,8 +22,8 @@
                 </el-table-column>
             </el-table>
             <el-row style="margin: 50px auto">
-                <el-button @click="submit" size="medium" type="success">提交</el-button>
-                <el-button @click="back" size="medium" type="primary">返回</el-button>
+                <el-button @click="submitAdd" size="medium" type="success">提交</el-button>
+                <el-button @click="cancelAdd" size="medium" type="primary">返回</el-button>
             </el-row>
         </div>
     </div>
@@ -34,7 +35,7 @@
     export default {
         data() {
             return {
-                permissionsData: [
+                getDataList: [
                     {
                         "grade": '',
                         "id": '',
@@ -52,10 +53,10 @@
             }
         },
         methods: {
-            back() {
+            cancelAdd() {
                 goBack();
             },
-            submit() {
+            submitAdd() {
                 let vm = this;
                 this.$httpPost('/admin/role/assignUpdate', {
                     id: this.$route.params.id,
@@ -74,7 +75,10 @@
                     id: JSON.parse(window.localStorage.getItem("user")).id
                 }).then(({data}) => {
                     vm.$store.dispatch('setNavigationMenu', JSON.stringify(data[0].subs));
-                    window.location.href = window.location.origin + '/role-manage';
+                    setTimeout(() => {
+                        window.location.href = window.location.origin + '/role-manage';
+                    }, 1000);
+
                 }).catch((data) => {
                     console.log(data);
                 })
@@ -82,28 +86,28 @@
             // 单选
             handleSelectionChange(val, row) {
                 this.pids = [];
-                if (row.grade == 1) {
-                    for (var i = row.index; i < this.permissionsData.length; i++) {
-                        if (i + 1 < this.permissionsData.length) {
-                            if (this.permissionsData[i + 1].grade >= 2) {
-                                this.$refs.itemTable.toggleRowSelection(this.permissionsData[i + 1]);
+                /*if (row.grade == 1) {
+                    for (var i = row.index; i < this.getDataList.length; i++) {
+                        if (i + 1 < this.getDataList.length) {
+                            if (this.getDataList[i + 1].grade >= 2) {
+                                this.$refs.itemTable.toggleRowSelection(this.getDataList[i + 1]);
                             } else {
                                 break;
                             }
                         }
                     }
                 } else if (row.grade == 2) {
-                    for (var i = row.index; i < this.permissionsData.length; i++) {
-                        if (i + 1 < this.permissionsData.length) {
-                            if (this.permissionsData[i + 1].grade >= 3) {
+                    for (var i = row.index; i < this.getDataList.length; i++) {
+                        if (i + 1 < this.getDataList.length) {
+                            if (this.getDataList[i + 1].grade >= 3) {
                                 let nameArray = [];
                                 for (let values of val) {
                                     nameArray.push(values.name);
                                 }
-                                if (nameArray.includes(this.permissionsData[i + 1].name)) {
-                                    this.$refs.itemTable.toggleRowSelection(this.permissionsData[i + 1]);
+                                if (nameArray.includes(this.getDataList[i + 1].name)) {
+                                    this.$refs.itemTable.toggleRowSelection(this.getDataList[i + 1]);
                                 } else {
-                                    this.$refs.itemTable.toggleRowSelection(this.permissionsData[i + 1], false);
+                                    this.$refs.itemTable.toggleRowSelection(this.getDataList[i + 1], false);
                                 }
                             } else {
                                 break;
@@ -111,16 +115,16 @@
                         }
                     }
                 } else if (row.grade == 3) {
-                    for (var i = row.index; i < this.permissionsData.length; i++) {
-                        if (i + 1 < this.permissionsData.length) {
-                            if (this.permissionsData[i + 1].grade >= 3) {
-                                this.$refs.itemTable.toggleRowSelection(this.permissionsData[i + 1]);
+                    for (var i = row.index; i < this.getDataList.length; i++) {
+                        if (i + 1 < this.getDataList.length) {
+                            if (this.getDataList[i + 1].grade >= 3) {
+                                this.$refs.itemTable.toggleRowSelection(this.getDataList[i + 1]);
                             } else {
                                 break;
                             }
                         }
                     }
-                }
+                }*/
                 for (let values of val) {
                     if (values) {
                         this.pids.push(values.id);
@@ -129,13 +133,10 @@
             },
             // 多选
             handleSelectionAllChange(val) {
-                /*for (let values of val) {
-                    if (values) {
-                        this.pids.push(values.id);
-                    }
+                this.pids = [];
+                for (let i = 0; i < val.length; i++) {
+                    this.pids.push(val[i].id);
                 }
-                console.log(val);
-                console.log(this.pids);*/
             },
             getPermissionsData() {
                 let vm = this;
@@ -146,9 +147,9 @@
                     for (let values of data) {
                         values['index'] = i++;
                     }
-                    vm.permissionsData = data;
+                    vm.getDataList = data;
                     vm.$nextTick(() => {
-                        vm.permissionsData.forEach((item) => {
+                        vm.getDataList.forEach((item) => {
                             if (item.rid) {
                                 vm.$refs.itemTable.toggleRowSelection(item);
                                 vm.pids.push(item.id);

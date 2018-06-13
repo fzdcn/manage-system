@@ -66,57 +66,7 @@
                     verificationCode: [
                         {required: true, message: '请输入验证码', trigger: 'blur'}
                     ]
-                },
-                // 菜单列表形式
-                /*menuItems: [
-                    {
-                        icon: 'iconfont icon-shouye1',
-                        url: 'index',
-                        name: '首页'
-                    },
-                    {
-                        icon: 'iconfont icon-shezhi',
-                        url: '',
-                        name: '测试支付链接',
-                        subs: [
-                            {
-                                icon: 'iconfont icon-guanli1',
-                                url: 'payment',
-                                name: '测试支付'
-                            }
-                        ]
-                    },
-                    {
-                        icon: 'iconfont icon-shezhi',
-                        url: '2',
-                        name: '系统设置',
-                        subs: [
-                            {
-                                icon: 'iconfont icon-guanli1',
-                                url: 'account-manage',
-                                name: '后台账户管理'
-                            }, {
-                                icon: 'iconfont icon-guanli1',
-                                url: 'role-manage',
-                                name: '后台角色管理'
-                            }, {
-                                icon: 'iconfont icon-guanli1',
-                                url: 'menu-manage',
-                                name: '后台菜单管理'
-                            }, {
-                                icon: 'iconfont icon-guanli1',
-                                url: 'salesman-manage',
-                                name: '后台业务员管理'
-                            },
-
-                        ]
-                    },
-                    {
-                        icon: 'iconfont icon-jueseguanli',
-                        url: 'permission',
-                        name: '角色管理'
-                    }
-                ]*/
+                }
             }
         },
         methods: {

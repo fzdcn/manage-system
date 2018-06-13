@@ -51,7 +51,6 @@ let config = {
         'Content-Type': 'application/x-www-form-urlencoded'
     },
     transformRequest: [function (data) {
-
         data = qs.stringify(data);
         return data;
     }],
@@ -66,9 +65,8 @@ function bindAccessToken(params) {
 /**
  * @param data
  * @param resolve
- * @param invalidTokenRedirect 登录失效后是否需要跳转到登录页
  */
-function resolveResponse(data, resolve, invalidTokenRedirect = true) {
+function resolveResponse(data, resolve) {
     switch (data.status) {
         case 401:
             Message.error(data.error);
@@ -100,8 +98,6 @@ function rejectResponse(data, reject) {
             router.replace({
                 path: '/403'
             });
-            // store.dispatch('userSignOut');
-            // store.dispatch('DeleteNavigationMenu');
             break
         default:
             reject(data)
@@ -118,19 +114,22 @@ class HttpResource {
     /**
      * @param url
      * @param params
-     * @param invalidTokenRedirect 登录失效后是否需要跳转到登录页
      * @returns {Promise}
      */
-    static httpGet(url, params, invalidTokenRedirect = true) {
-        showFullScreenLoading()
+
+    static httpGet(url, params) {
+        store.dispatch('pageLoadingUpdate', true);
+        showFullScreenLoading();
         bindAccessToken(params)
         return new Promise((resolve, reject) => {
             instance.get(url, {params: params})
                 .then(({data}) => {
-                    resolveResponse(data, resolve, invalidTokenRedirect)
+                    resolveResponse(data, resolve)
+                    store.dispatch('pageLoadingUpdate', false)
                     tryHideFullScreenLoading()
                 }, (data) => {
                     rejectResponse(data, reject)
+                    store.dispatch('pageLoadingUpdate', false)
                     tryHideFullScreenLoading()
                 })
         })
@@ -139,17 +138,16 @@ class HttpResource {
     /**
      * @param url
      * @param params
-     * @param invalidTokenRedirect 登录失效后是否需要跳转到登录页
      * @returns {Promise}
      */
-    static httpPost(url, params, invalidTokenRedirect = true) {
+    static httpPost(url, params) {
         store.dispatch('pageLoadingUpdate', true)
         showFullScreenLoading()
         bindAccessToken(params)
         return new Promise((resolve, reject) => {
             instance.post(url, params)
                 .then(({data}) => {
-                    resolveResponse(data, resolve, invalidTokenRedirect)
+                    resolveResponse(data, resolve)
                     store.dispatch('pageLoadingUpdate', false)
                     tryHideFullScreenLoading()
                 }, (data) => {
