@@ -7,13 +7,13 @@
             <div class="handle-box" style="margin-bottom: 20px;display: flex;flex-flow: row wrap;">
                 <div style="margin: 0px 20px 10px 0;">
                     <span>用户名：</span>
-                    <el-input style="width: 150px;" class="username" v-model.trim="searchUserAccountForm.username"
+                    <el-input style="width: 150px;" class="username" v-model.trim="searchDataForm.username"
                               clearable placeholder="请填写用户名">
                     </el-input>
                 </div>
                 <div style="margin: 0px 20px 10px 0;">
                     <span>状态：</span>
-                    <el-select style="width: 150px;" v-model="searchUserAccountForm.status" placeholder="请选择状态">
+                    <el-select style="width: 150px;" v-model="searchDataForm.status" placeholder="请选择状态">
                         <el-option
                             v-for="item in roleStatus"
                             :key="item.status"
@@ -24,7 +24,7 @@
                 </div>
                 <div style="margin: 0px 20px 10px 0;">
                     <span>角色：</span>
-                    <el-select style="width: 150px;" v-model="searchUserAccountForm.role" placeholder="请选择角色">
+                    <el-select style="width: 150px;" v-model="searchDataForm.role" placeholder="请选择角色">
                         <el-option
                             v-for="item in roleList"
                             :key="item.id"
@@ -56,7 +56,7 @@
                 </el-table-column>
                 <el-table-column prop="lockedOrNo" label="是否被锁" :formatter="lockedOrNoFormatter">
                 </el-table-column>
-                <el-table-column label="操作" width="300px">
+                <el-table-column label="操作" width="300px" align="center">
                     <template v-if="getDataList.length > 0" slot-scope="scope">
                         <el-button @click="handleEdit(scope.row)" type="primary" icon="el-icon-edit" size="small">编辑
                         </el-button>
@@ -220,7 +220,7 @@
                         loginDate: ""
                     }*/
                 ],
-                searchUserAccountForm: {
+                searchDataForm: {
                     username: '',
                     status: '',
                     role: ''
@@ -284,6 +284,7 @@
                 let vm = this;
                 this.$httpGet('/admin/admin/getAdminRoleList', {}).then(({data}) => {
                     vm.roleList = data;
+                    vm.getData();
                 }).catch((data) => {
                     console.log(data)
                 })
@@ -303,11 +304,8 @@
                 }).then(() => {
                     vm.$httpGet('/admin/admin/deleteLogic', {
                         id: id
-                    }).then(({data}) => {
-                        vm.$message({
-                            type: 'success',
-                            message: '删除成功!'
-                        });
+                    }).then((data) => {
+                        vm.$message.success(data.message);
                         vm.getData();
                     }).catch((data) => {
                         console.log(data)
@@ -324,9 +322,9 @@
                 this.$httpGet('/admin/admin/index', {
                     pageNo: this.cur_page,
                     pageSize: 10,
-                    userName: this.searchUserAccountForm.username,
-                    status: this.searchUserAccountForm.status,
-                    roleId: this.searchUserAccountForm.role
+                    userName: this.searchDataForm.username,
+                    status: this.searchDataForm.status,
+                    roleId: this.searchDataForm.role
                 }).then(({data}) => {
                     vm.getDataList = data.page.list;
                     vm.total = data.page.total;
@@ -366,9 +364,9 @@
                 this.$httpGet('/admin/admin/index', {
                     pageNo: 1,
                     pageSize: 10,
-                    userName: this.searchUserAccountForm.username,
-                    status: this.searchUserAccountForm.status,
-                    roleId: this.searchUserAccountForm.role
+                    userName: this.searchDataForm.username,
+                    status: this.searchDataForm.status,
+                    roleId: this.searchDataForm.role
                 }).then(({data}) => {
                     vm.getDataList = data.page.list;
                     vm.total = data.page.total;
@@ -433,8 +431,8 @@
                     email: this.addDataForm.email,
                     roleId: this.addDataForm.selectedRole,
                     passId: this.addDataForm.uTypeShield
-                }).then(({data}) => {
-                    vm.$message.success(data);
+                }).then((data) => {
+                    vm.$message.success(data.message);
                     vm.isShowAdd = false;
                     vm.addDataForm = {};
                     vm.$httpGet('/admin/admin/index', {
@@ -479,8 +477,8 @@
                 this.$httpPost('/admin/admin/updatePwd', {
                     id: this.modifyDataForm.id,
                     newPwd: this.modifyDataForm.confirmPassword
-                }).then(({data}) => {
-                    vm.$message.success(data);
+                }).then((data) => {
+                    vm.$message.success(data.message);
                     vm.isShowModify = false;
                     vm.modifyDataForm = {};
                 }).catch((data) => {
@@ -537,8 +535,8 @@
                     status: this.editDataForm.status,
                     lockedOrNo: this.editDataForm.lockedOrNo,
                     passId: this.editDataForm.passId,
-                }).then(({data}) => {
-                    vm.$message.success(data);
+                }).then((data) => {
+                    vm.$message.success(data.message);
                     vm.isShowEdit = false;
                     vm.getData();
                 }).catch((data) => {
@@ -549,9 +547,7 @@
         ,
         created() {
             this.getRoleList();
-            this.getData();
         }
-        ,
     }
 
 </script>

@@ -23,7 +23,7 @@
                         <span v-if="scope.row.status==2">关闭</span>
                     </template>
                 </el-table-column>
-                <el-table-column label="操作" width="200px">
+                <el-table-column align="center" label="操作" width="200px">
                     <template v-if="getDataList.length > 0" slot-scope="scope">
                         <el-button @click="handleEdit(scope.row)" type="primary" icon="el-icon-edit" size="small">编辑
                         </el-button>
@@ -187,11 +187,8 @@
                 }).then(() => {
                     vm.$httpGet('/admin/epay/salesman/delete', {
                         code: row.code
-                    }).then(({data}) => {
-                        vm.$message({
-                            type: 'success',
-                            message: data
-                        });
+                    }).then((data) => {
+                        vm.$message.success(data.message);
                         vm.getData();
                     }).catch((data) => {
                         console.log(data)
@@ -253,8 +250,8 @@
                     phone: this.addDataForm.phone,
                     email: this.addDataForm.email,
                     type: this.addDataForm.type
-                }).then(({data}) => {
-                    vm.$message.success(data);
+                }).then((data) => {
+                    vm.$message.success(data.message);
                     vm.isShowAdd = false;
                     vm.addDataForm = {};
                     vm.$httpGet('/admin/epay/salesman/index', {
@@ -319,16 +316,15 @@
                     email: this.editDataForm.email,
                     type: this.editDataForm.type,
                     status: this.editDataForm.status
-                }).then(({data}) => {
-                    vm.$message.success(data);
+                }).then((data) => {
+                    vm.$message.success(data.message);
                     vm.isShowEdit = false;
                     vm.getData();
                 }).catch((data) => {
                     console.log(data)
                 })
             }
-        }
-        ,
+        },
         created() {
             this.getData();
         }

@@ -19,7 +19,7 @@
                 <el-table-column prop="bankCode" label="银行代码" header-align="center"/>
                 <el-table-column prop="bankNumber" label="银行编号" header-align="center"/>
 
-                <el-table-column label="操作" width="190px" header-align="center">
+                <el-table-column label="操作" width="200px" align="center">
                     <template v-if="getDataList.length > 0" slot-scope="scope">
                         <el-button @click="handleEdit(scope.row)" type="primary" icon="el-icon-edit" size="small">编辑
                         </el-button>
@@ -174,11 +174,8 @@
                 }).then(() => {
                     vm.$httpGet('/admin/epay/bankCard/deleteBin', {
                         id: row.id
-                    }).then(({data}) => {
-                        vm.$message({
-                            type: 'success',
-                            message: data
-                        });
+                    }).then((data) => {
+                        vm.$message.success(data.message);
                         vm.getData();
                     }).catch((data) => {
                         console.log(data)
@@ -243,8 +240,8 @@
                     bankCode: this.addDataForm.bankCode,
                     bankNumber: this.addDataForm.bankNumber,
                     uniBankNumId: this.addDataForm.uniBankNumId
-                }).then(({data}) => {
-                    vm.$message.success(data);
+                }).then((data) => {
+                    vm.$message.success(data.message);
                     vm.isShowAdd = false;
                     vm.addDataForm = {};
                     vm.$httpGet('/admin/epay/bankCard/index', {
@@ -308,8 +305,8 @@
                     bankCode: this.ditDataForm.bankCode,
                     bankNumber: this.ditDataForm.bankNumber,
                     uniBankNumId: this.ditDataForm.uniBankNumId
-                }).then(({data}) => {
-                    vm.$message.success(data);
+                }).then((data) => {
+                    vm.$message.success(data.message);
                     vm.isShowEdit = false;
                     vm.getData();
                 }).catch((data) => {

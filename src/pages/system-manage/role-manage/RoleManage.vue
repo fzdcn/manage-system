@@ -12,7 +12,7 @@
                 <el-table-column prop="defaultOrNo" label="是否默认" :formatter="defaultOrNoFormatter"
                 >
                 </el-table-column>
-                <el-table-column label="操作" width="300px">
+                <el-table-column label="操作" width="300px" align="center">
                     <template v-if="getDataList.length > 0" slot-scope="scope">
                         <el-button @click="handleEdit(scope.row)" type="primary" icon="el-icon-edit" size="small">编辑
                         </el-button>
@@ -111,11 +111,8 @@
                 }).then(() => {
                     vm.$httpGet('/admin/role/deleteAdminRole', {
                         id: row.id
-                    }).then(({data}) => {
-                        vm.$message({
-                            type: 'success',
-                            message: '删除成功!'
-                        });
+                    }).then((data) => {
+                        vm.$message.success(data.message);
                         vm.getData();
                     }).catch((data) => {
                         console.log(data)
@@ -162,8 +159,8 @@
                 }
                 this.$httpPost('/admin/role/save', {
                     name: this.addDataForm.name
-                }).then(({data}) => {
-                    vm.$message.success(data);
+                }).then((data) => {
+                    vm.$message.success(data.message);
                     vm.isShowAdd = false;
                     vm.addDataForm.name = '';
                     vm.$httpGet('/admin/role/index', {
@@ -200,8 +197,8 @@
                 this.$httpPost('/admin/role/update', {
                     id: this.editDataForm.id,
                     name: this.editDataForm.name
-                }).then(({data}) => {
-                    vm.$message.success(data);
+                }).then((data) => {
+                    vm.$message.success(data.message);
                     vm.isShowEdit = false;
                     vm.editDataForm = {};
                     vm.getData();

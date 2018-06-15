@@ -7,19 +7,19 @@
             <div class="handle-box" style="margin-bottom: 20px;display: flex;flex-flow: row wrap;">
                 <div style="margin: 0px 20px 10px 0;">
                     <span>银行名称：</span>
-                    <el-input style="width: 150px;" class="bankName" v-model.trim="searchBankNumberForm.bankName"
+                    <el-input style="width: 150px;" class="bankName" v-model.trim="searchDataForm.bankName"
                               clearable placeholder="请填写银行名称">
                     </el-input>
                 </div>
                 <div style="margin: 0px 20px 10px 0;">
                     <span>联行号：</span>
-                    <el-input style="width: 150px;" class="bankNumber" v-model.trim="searchBankNumberForm.bankNumber"
+                    <el-input style="width: 150px;" class="bankNumber" v-model.trim="searchDataForm.bankNumber"
                               clearable placeholder="请填写联行号">
                     </el-input>
                 </div>
                 <div style="margin: 0px 20px 10px 0;">
                     <span>银行编号：</span>
-                    <el-input style="width: 150px;" class="numbers" v-model.trim="searchBankNumberForm.numbers"
+                    <el-input style="width: 150px;" class="numbers" v-model.trim="searchDataForm.numbers"
                               clearable placeholder="请填写银行编号">
                     </el-input>
                 </div>
@@ -38,7 +38,7 @@
                 </el-table-column>
                 <el-table-column prop="identity" label="收款方账户所属机构标识">
                 </el-table-column>
-                <el-table-column label="操作" width="100px">
+                <el-table-column label="操作" width="100px" align="center">
                     <template v-if="getDataList.length > 0" slot-scope="scope">
                         <el-button @click="handleEdit(scope.row)" type="primary" icon="el-icon-edit" size="small">编辑
                         </el-button>
@@ -127,7 +127,7 @@
                 isShowEdit: false,
                 addDataForm: {},
                 editDataForm: {},
-                searchBankNumberForm: {}
+                searchDataForm: {}
             }
         },
         methods: {
@@ -145,11 +145,8 @@
                 }).then(() => {
                     vm.$httpGet('/admin/role/deleteAdminRole', {
                         id: row.id
-                    }).then(({data}) => {
-                        vm.$message({
-                            type: 'success',
-                            message: '删除成功!'
-                        });
+                    }).then((data) => {
+                        vm.$message.success(data.message);
                         vm.getData();
                     }).catch((data) => {
                         console.log(data)
@@ -166,9 +163,9 @@
                 this.$httpGet('/admin/epay/unionBankNumber/index', {
                     pageNo: 1,
                     pageSize: 10,
-                    bankName: this.searchBankNumberForm.bankName,
-                    bankNumber: this.searchBankNumberForm.bankNumber,
-                    numbers: this.searchBankNumberForm.numbers
+                    bankName: this.searchDataForm.bankName,
+                    bankNumber: this.searchDataForm.bankNumber,
+                    numbers: this.searchDataForm.numbers
                 }).then(({data}) => {
                     vm.getDataList = data.list;
                     vm.total = data.total;
@@ -181,9 +178,9 @@
                 this.$httpGet('/admin/epay/unionBankNumber/index', {
                     pageNo: this.cur_page,
                     pageSize: 10,
-                    bankName: this.searchBankNumberForm.bankName,
-                    bankNumber: this.searchBankNumberForm.bankNumber,
-                    numbers: this.searchBankNumberForm.numbers
+                    bankName: this.searchDataForm.bankName,
+                    bankNumber: this.searchDataForm.bankNumber,
+                    numbers: this.searchDataForm.numbers
                 }).then(({data}) => {
                     vm.getDataList = data.list;
                     vm.total = data.total;
@@ -234,8 +231,8 @@
                     bankCode: this.addDataForm.bankCode,
                     numbers: this.addDataForm.numbers,
                     identity: this.addDataForm.identity
-                }).then(({data}) => {
-                    vm.$message.success(data);
+                }).then((data) => {
+                    vm.$message.success(data.message);
                     vm.isShowAdd = false;
                     vm.addDataForm = {};
                     vm.$httpGet('/admin/epay/unionBankNumber/index', {
@@ -296,8 +293,8 @@
                     bankCode: this.editDataForm.bankCode,
                     numbers: this.editDataForm.numbers,
                     identity: this.editDataForm.identity,
-                }).then(({data}) => {
-                    vm.$message.success(data);
+                }).then((data) => {
+                    vm.$message.success(data.message);
                     vm.isShowEdit = false;
                     vm.editDataForm = {};
                     vm.getData();

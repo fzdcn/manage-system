@@ -61,8 +61,8 @@
                 this.$httpPost('/admin/role/assignUpdate', {
                     id: this.$route.params.id,
                     pids: this.pids.join(',')
-                }).then(({data}) => {
-                    vm.$message.success(data);
+                }).then((data) => {
+                    vm.$message.success(data.message);
                     vm.getMenuList();
                 }).catch((data) => {
                     console.log(data)

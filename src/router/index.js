@@ -66,6 +66,18 @@ const routes = [
                 meta: {title: '银行号管理', permission: false},
             },
             {
+                path: '/message-manage',
+                name: 'message-manage',
+                component: resolve => require(['../pages/system-manage/message-manage/MessageManage.vue'], resolve),
+                meta: {title: '短信管理', permission: false},
+            },
+            {
+                path: '/message-record-manage',
+                name: 'message-record-manage',
+                component: resolve => require(['../pages/system-manage/message-manage/messageRecordManage.vue'], resolve),
+                meta: {title: '短信记录管理', permission: false},
+            },
+            {
                 // 权限页面
                 path: '/permission',
                 name: 'permission',

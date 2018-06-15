@@ -24,7 +24,7 @@
                 </el-table-column>
                 <el-table-column prop="orders" label="排序">
                 </el-table-column>
-                <el-table-column label="操作" width="200px">
+                <el-table-column label="操作" width="200px" align="center">
                     <template v-if="getDataList.length > 0" slot-scope="scope">
                         <el-button @click="handleEdit(scope.row)" type="primary" icon="el-icon-edit" size="small">编辑
                         </el-button>
@@ -242,8 +242,8 @@
                     parentId: this.editDataForm.parentId,
                     type: this.editDataForm.type,
                     orders: this.editDataForm.orders
-                }).then(({data}) => {
-                    vm.$message.success(data);
+                }).then((data) => {
+                    vm.$message.success(data.message);
                     vm.isShowEdit = false;
                     vm.getMenuData();
                 }).catch((data) => {
@@ -259,8 +259,8 @@
                 }).then(() => {
                     this.$httpGet('/admin/permission/delete', {
                         id: row.id
-                    }).then(({data}) => {
-                        vm.$message.success(data);
+                    }).then((data) => {
+                        vm.$message.success(data.message);
                         vm.getMenuData();
                     }).catch((data) => {
                         console.log(data)
@@ -293,8 +293,8 @@
                     parentId: this.addDataForm.parentId,
                     type: this.addDataForm.type,
                     orders: this.addDataForm.orders
-                }).then(({data}) => {
-                    vm.$message.success(data);
+                }).then((data) => {
+                    vm.$message.success(data.message);
                     vm.isShowAdd = false;
                     vm.addDataForm = {};
                     vm.getMenuData();

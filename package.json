@@ -2,7 +2,7 @@
     "name": "vue-manage-system",
     "version": "3.1.0",
     "description": "基于Vue.js 2.x系列 + element-ui 内容管理系统解决方案",
-    "author": "tome <1621754954@qq.com>",
+    "author": "tome <vx:zhangmeng_95>",
     "private": true,
     "scripts": {
         "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
@@ -12,6 +12,7 @@
     "dependencies": {
         "axios": "^0.15.3",
         "babel-polyfill": "^6.26.0",
+        "echarts": "^4.1.0",
         "element-ui": "2.3.3",
         "mavon-editor": "^2.5.4",
         "moment": "^2.22.1",
@@ -19,8 +20,8 @@
         "style-loader": "^0.21.0",
         "stylus-loader": "^3.0.2",
         "vue": "^2.5.16",
+        "vue-count-to": "^1.0.13",
         "vue-cropperjs": "^2.2.0",
-        "vue-echarts": "^3.0.7",
         "vue-quill-editor": "3.0.6",
         "vue-router": "^3.0.1",
         "vue-schart": "^0.1.4",
