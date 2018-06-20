@@ -55,7 +55,7 @@
                         <el-input v-model.trim="addDataForm.email"></el-input>
                     </el-form-item>
                     <el-form-item label="业务员类型：">
-                        <el-select v-model="addDataForm.type" placeholder="业务员类型">
+                        <el-select clearable v-model="addDataForm.type" placeholder="业务员类型">
                             <el-option
                                 v-for="item in salesmanTypeList"
                                 :key="item.type"
@@ -86,7 +86,7 @@
                         <el-input v-model.trim="editDataForm.email"></el-input>
                     </el-form-item>
                     <el-form-item label="业务员类型：">
-                        <el-select v-model="editDataForm.type" placeholder="业务员类型">
+                        <el-select clearable v-model="editDataForm.type" placeholder="业务员类型">
                             <el-option
                                 v-for="item in salesmanTypeList"
                                 :key="item.type"
@@ -96,7 +96,7 @@
                         </el-select>
                     </el-form-item>
                     <el-form-item label="状态：">
-                        <el-select v-model="editDataForm.status" placeholder="状态">
+                        <el-select clearable v-model="editDataForm.status" placeholder="状态">
                             <el-option
                                 v-for="item in salesmanStatusList"
                                 :key="item.status"

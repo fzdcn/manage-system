@@ -31,7 +31,7 @@
                     <el-tab-pane class="tab-quick-payment" label="快捷支付">
                         <el-form ref="form" :model="form" label-width="100px">
                             <el-form-item label="银行卡：">
-                                <el-select v-model="form.selectedBank" placeholder="请选择银行">
+                                <el-select clearable v-model="form.selectedBank" placeholder="请选择银行">
                                     <el-option
                                         v-for="item in form.bankList"
                                         :key="item.value"
@@ -47,7 +47,7 @@
                                 <el-input v-model.trim="form.bankNumber"></el-input>
                             </el-form-item>
                             <el-form-item label="银行卡类型：">
-                                <el-select v-model="form.selectedBankCardType" placeholder="请选择">
+                                <el-select clearable v-model="form.selectedBankCardType" placeholder="请选择">
                                     <el-option
                                         v-for="item in form.bankCardType"
                                         :key="item.value"
@@ -60,7 +60,7 @@
                                 <el-input v-model.trim="form.accountName"></el-input>
                             </el-form-item>
                             <el-form-item label="证件类型：">
-                                <el-select v-model="form.selectedCertificatesType" placeholder="请选择">
+                                <el-select clearable v-model="form.selectedCertificatesType" placeholder="请选择">
                                     <el-option
                                         v-for="item in form.certificatesType"
                                         :key="item.value"

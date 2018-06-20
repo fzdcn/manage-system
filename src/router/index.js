@@ -60,6 +60,12 @@ const routes = [
                 meta: {title: '银行卡管理', permission: false},
             },
             {
+                path: '/risk-manage',
+                name: 'risk-manage',
+                component: resolve => require(['../pages/system-manage/risk-manage/RiskManage.vue'], resolve),
+                meta: {title: '风控列表管理', permission: false},
+            },
+            {
                 path: '/bank-number-manage',
                 name: 'bank-number-manage',
                 component: resolve => require(['../pages/system-manage/bank-number-manage/BankNumberManage.vue'], resolve),
@@ -68,14 +74,26 @@ const routes = [
             {
                 path: '/message-manage',
                 name: 'message-manage',
-                component: resolve => require(['../pages/system-manage/message-manage/MessageManage.vue'], resolve),
+                component: resolve => require(['../pages/message-manage/MessageManage.vue'], resolve),
                 meta: {title: '短信管理', permission: false},
             },
             {
                 path: '/message-record-manage',
                 name: 'message-record-manage',
-                component: resolve => require(['../pages/system-manage/message-manage/messageRecordManage.vue'], resolve),
+                component: resolve => require(['../pages/message-manage/messageRecordManage.vue'], resolve),
                 meta: {title: '短信记录管理', permission: false},
+            },
+            {
+                path: '/platform-information-manage',
+                name: 'platform-information-manage',
+                component: resolve => require(['../pages/platform-information-manage/platformInformationManage.vue'], resolve),
+                meta: {title: '平台信息管理', permission: false},
+            },
+            {
+                path: '/routes-manage',
+                name: 'routes-manage',
+                component: resolve => require(['../pages/routes-manage/RoutesManage.vue'], resolve),
+                meta: {title: '路由信息管理', permission: false},
             },
             {
                 // 权限页面
@@ -109,7 +127,7 @@ const routes = [
 ]
 
 let router = new Router({
-    mode: 'history',
+    // mode: 'history',
     routes,
     scrollBehavior(to, from, savedPosition) {
         if (savedPosition) {

@@ -47,7 +47,7 @@
                         <el-input v-model.trim="addDataForm.bankName"></el-input>
                     </el-form-item>
                     <el-form-item label="银行卡类型：">
-                        <el-select v-model="addDataForm.cardType" placeholder="银行卡类型">
+                        <el-select clearable v-model="addDataForm.cardType" placeholder="银行卡类型">
                             <el-option
                                 v-for="item in cardTypeList"
                                 :key="item.cardType"
@@ -84,7 +84,7 @@
                         <el-input v-model.trim="ditDataForm.bankName"></el-input>
                     </el-form-item>
                     <el-form-item label="银行卡类型：">
-                        <el-select v-model="ditDataForm.cardType" placeholder="银行卡类型">
+                        <el-select clearable v-model="ditDataForm.cardType" placeholder="银行卡类型">
                             <el-option
                                 v-for="item in cardTypeList"
                                 :key="item.cardType"
@@ -113,7 +113,6 @@
 </template>
 
 <script>
-    import {regTel, regEmail, regIdCode} from '../../../functions/index';
 
     export default {
         data() {

@@ -13,7 +13,7 @@
                 </div>
                 <div style="margin: 0px 20px 10px 0;">
                     <span>状态：</span>
-                    <el-select style="width: 150px;" v-model="searchDataForm.status" placeholder="请选择状态">
+                    <el-select clearable style="width: 150px;" v-model="searchDataForm.status" placeholder="请选择状态">
                         <el-option
                             v-for="item in roleStatus"
                             :key="item.status"
@@ -24,7 +24,7 @@
                 </div>
                 <div style="margin: 0px 20px 10px 0;">
                     <span>角色：</span>
-                    <el-select style="width: 150px;" v-model="searchDataForm.role" placeholder="请选择角色">
+                    <el-select clearable style="width: 150px;" v-model="searchDataForm.role" placeholder="请选择角色">
                         <el-option
                             v-for="item in roleList"
                             :key="item.id"
@@ -99,7 +99,7 @@
                         <el-input type="email" v-model.trim="addDataForm.email"></el-input>
                     </el-form-item>
                     <el-form-item label="角色：">
-                        <el-select v-model="addDataForm.selectedRole" placeholder="角色">
+                        <el-select clearable v-model="addDataForm.selectedRole" placeholder="角色">
                             <el-option
                                 v-for="item in roleList"
                                 :key="item.id"
@@ -157,7 +157,7 @@
                         <el-input type="email" v-model.trim="editDataForm.email"></el-input>
                     </el-form-item>
                     <el-form-item label="角色：">
-                        <el-select v-model="editDataForm.roleId" placeholder="角色">
+                        <el-select clearable v-model="editDataForm.roleId" placeholder="角色">
                             <el-option
                                 v-for="item in roleList"
                                 :key="item.id"
@@ -167,7 +167,7 @@
                         </el-select>
                     </el-form-item>
                     <el-form-item label="状态：">
-                        <el-select v-model="editDataForm.status" placeholder="状态">
+                        <el-select clearable v-model="editDataForm.status" placeholder="状态">
                             <el-option
                                 v-for="item in roleStatus"
                                 :key="item.status"
@@ -177,7 +177,7 @@
                         </el-select>
                     </el-form-item>
                     <el-form-item label="锁定状态：">
-                        <el-select v-model="editDataForm.lockedOrNo" placeholder="锁定状态">
+                        <el-select clearable v-model="editDataForm.lockedOrNo" placeholder="锁定状态">
                             <el-option
                                 v-for="item in roleLockedOrNo"
                                 :key="item.lockedOrNo"
@@ -282,17 +282,12 @@
         methods: {
             getRoleList() {
                 let vm = this;
-                this.$httpGet('/admin/admin/getAdminRoleList', {}).then(({data}) => {
-                    vm.roleList = data;
-                    vm.getData();
-                }).catch((data) => {
-                    console.log(data)
-                })
+                return this.$httpGet('/admin/admin/getAdminRoleList', {});
             },
             // 分页导航
             handleCurrentChange(val) {
                 this.cur_page = val;
-                this.getData();
+                this.dataList();
             },
             handleDelete(row) {
                 let vm = this;
@@ -306,7 +301,7 @@
                         id: id
                     }).then((data) => {
                         vm.$message.success(data.message);
-                        vm.getData();
+                        vm.dataList();
                     }).catch((data) => {
                         console.log(data)
                     })
@@ -317,7 +312,7 @@
                     });
                 });
             },
-            getData() {
+            dataList() {
                 let vm = this;
                 this.$httpGet('/admin/admin/index', {
                     pageNo: this.cur_page,
@@ -330,6 +325,15 @@
                     vm.total = data.page.total;
                 }).catch((data) => {
                     console.log(data)
+                })
+            },
+            getData() {
+                return this.$httpGet('/admin/admin/index', {
+                    pageNo: this.cur_page,
+                    pageSize: 10,
+                    userName: this.searchDataForm.username,
+                    status: this.searchDataForm.status,
+                    roleId: this.searchDataForm.role
                 })
             },
             statusFormatter(row, column) {
@@ -538,15 +542,25 @@
                 }).then((data) => {
                     vm.$message.success(data.message);
                     vm.isShowEdit = false;
-                    vm.getData();
+                    vm.dataList();
                 }).catch((data) => {
                     console.log(data)
                 })
+            },
+            async getAllData() {
+                let vm = this;
+                await Promise.all([vm.getRoleList(), vm.getData()])
+                    .then((data) => {
+                        vm.roleList = data[0].data;
+                        vm.getDataList = data[1].data.page.list;
+                        vm.total = data[1].data.page.total;
+                    }).catch((data) => {
+                        console.log(data);
+                    })
             }
-        }
-        ,
+        },
         created() {
-            this.getRoleList();
+            this.getAllData();
         }
     }
 

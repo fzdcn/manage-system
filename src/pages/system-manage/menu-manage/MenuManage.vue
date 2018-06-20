@@ -46,7 +46,7 @@
                         <el-input v-model.trim="addDataForm.icon" placeholder="如：el-icon-setting"></el-input>
                     </el-form-item>
                     <el-form-item label="类型：">
-                        <el-select v-model.trim="addDataForm.type" placeholder="类型">
+                        <el-select clearable v-model.trim="addDataForm.type" placeholder="类型">
                             <el-option
                                 v-for="item in typeList"
                                 :key="item.type"
@@ -62,7 +62,7 @@
                         <el-input type="tel" v-model.trim="addDataForm.url" placeholder="如common:index"></el-input>
                     </el-form-item>
                     <el-form-item label="父节点：">
-                        <el-select v-model.trim="addDataForm.parentId" placeholder="请选择">
+                        <el-select clearable v-model.trim="addDataForm.parentId" placeholder="请选择">
                             <el-option
                                 v-for="item in menuList"
                                 :key="item.id"
@@ -100,7 +100,7 @@
                         <el-input v-model.trim="editDataForm.icon" placeholder="如：el-icon-setting"></el-input>
                     </el-form-item>
                     <el-form-item label="类型：">
-                        <el-select v-model.trim="editDataForm.type" placeholder="类型">
+                        <el-select clearable v-model.trim="editDataForm.type" placeholder="类型">
                             <el-option
                                 v-for="item in typeList"
                                 :key="item.type"
@@ -116,7 +116,7 @@
                         <el-input type="tel" v-model.trim="editDataForm.url" placeholder="如common:index"></el-input>
                     </el-form-item>
                     <el-form-item label="父节点：">
-                        <el-select v-model.trim="editDataForm.parentId" placeholder="请选择">
+                        <el-select clearable v-model.trim="editDataForm.parentId" placeholder="请选择">
                             <el-option
                                 v-for="item in menuList"
                                 :key="item.id"
@@ -194,20 +194,19 @@
         },
         methods: {
             getMenuData() {
+                return this.$httpGet('/admin/permission/index', {});
+            },
+            getMenu() {
                 let vm = this;
-                this.$httpGet('/admin/permission/index', {}).then(({data}) => {
-                    vm.getDataList = data;
-                }).catch((data) => {
-                    console.log(data)
+                this.$httpGet('/admin/permission/getSuperPermissionList', {})
+                    .then(({data}) => {
+                        vm.menuList = data;
+                    }).catch((data) => {
+                    console.log(data);
                 })
             },
             getMenuList() {
-                let vm = this;
-                this.$httpGet('/admin/permission/getSuperPermissionList', {}).then(({data}) => {
-                    vm.menuList = data;
-                }).catch((data) => {
-                    console.log(data)
-                })
+                return this.$httpGet('/admin/permission/getSuperPermissionList', {});
             },
             handleEdit(row) {
                 this.isShowEdit = true;
@@ -245,7 +244,7 @@
                 }).then((data) => {
                     vm.$message.success(data.message);
                     vm.isShowEdit = false;
-                    vm.getMenuData();
+                    vm.getMenu();
                 }).catch((data) => {
                     console.log(data)
                 })
@@ -261,7 +260,7 @@
                         id: row.id
                     }).then((data) => {
                         vm.$message.success(data.message);
-                        vm.getMenuData();
+                        vm.getMenu();
                     }).catch((data) => {
                         console.log(data)
                     })
@@ -297,7 +296,7 @@
                     vm.$message.success(data.message);
                     vm.isShowAdd = false;
                     vm.addDataForm = {};
-                    vm.getMenuData();
+                    vm.getMenu();
                 }).catch((data) => {
                     console.log(data)
                 })
@@ -305,11 +304,20 @@
             cancelAdd() {
                 this.isShowAdd = false;
                 this.addDataForm = {};
+            },
+            async getAllData() {
+                let vm = this;
+                await Promise.all([vm.getMenuList(), vm.getMenuData()])
+                    .then((data) => {
+                        vm.menuList = data[0].data;
+                        vm.getDataList = data[1].data;
+                    }).catch((data) => {
+                        console.log(data);
+                    })
             }
         },
         mounted() {
-            this.getMenuData();
-            this.getMenuList();
+            this.getAllData();
         }
     }
 

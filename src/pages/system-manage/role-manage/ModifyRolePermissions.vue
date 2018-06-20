@@ -56,6 +56,7 @@
             cancelAdd() {
                 goBack();
             },
+
             submitAdd() {
                 let vm = this;
                 this.$httpPost('/admin/role/assignUpdate', {
@@ -140,6 +141,7 @@
             },
             getPermissionsData() {
                 let vm = this;
+                this.pids = [];
                 this.$httpGet('/admin/role/assign', {
                     id: this.$route.params.id
                 }).then(({data}) => {
@@ -151,8 +153,8 @@
                     vm.$nextTick(() => {
                         vm.getDataList.forEach((item) => {
                             if (item.rid) {
-                                vm.$refs.itemTable.toggleRowSelection(item);
                                 vm.pids.push(item.id);
+                                vm.$refs.itemTable.toggleRowSelection(item);
                             }
                         })
                     });
