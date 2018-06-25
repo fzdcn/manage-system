@@ -62,7 +62,7 @@ const routes = [
             {
                 path: '/risk-manage',
                 name: 'risk-manage',
-                component: resolve => require(['../pages/system-manage/risk-manage/RiskManage.vue'], resolve),
+                component: resolve => require(['../pages/risk-manage/RiskManage.vue'], resolve),
                 meta: {title: '风控列表管理', permission: false},
             },
             {
@@ -93,6 +93,18 @@ const routes = [
                 path: '/routes-manage',
                 name: 'routes-manage',
                 component: resolve => require(['../pages/routes-manage/RoutesManage.vue'], resolve),
+                meta: {title: '路由信息管理', permission: false},
+            },
+            {
+                path: '/channel-manage',
+                name: 'channel-manage',
+                component: resolve => require(['../pages/channel-manage/ChannelManage.vue'], resolve),
+                meta: {title: '通道管理', permission: false},
+            },
+            {
+                path: '/product-manage',
+                name: 'product-manage',
+                component: resolve => require(['../pages/product-manage/ProductManage.vue'], resolve),
                 meta: {title: '路由信息管理', permission: false},
             },
             {

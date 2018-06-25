@@ -3,7 +3,9 @@
         <div class="container">
             <div class="add" style="margin-bottom: 30px;">
                 <el-button type="primary" size="medium" icon="el-icon-plus" @click="add">增加</el-button>
+                <el-button type="primary" size="medium" icon="el-icon-plus" @click="addFile">上传文件</el-button>
             </div>
+              
             <div class="handle-box" style="margin-bottom: 20px;display: flex;flex-flow: row wrap;">
                 <div style="margin: 0px 20px 10px 0;">
                     <span>模板号：</span>
@@ -24,7 +26,7 @@
                     </el-select>
                 </div>
                 <div>
-                    <el-button type="primary" icon="el-icon-search" @click="search">搜索</el-button>
+                    <el-button type="primary" icon="el-icon-search" @click="handleCurrentChange(1)">搜索</el-button>
                 </div>
             </div>
             <el-table :data="getDataList" border style="width: 100%;">
@@ -38,6 +40,17 @@
                 <el-table-column prop="explain" label="短信说明">
                 </el-table-column>
                 <el-table-column prop="content" label="短信模板内容">
+                    <template slot-scope="scope">
+                        <el-popover trigger="hover" placement="top">
+                            <p>{{ scope.row.content }}</p>
+                            <div slot="reference">
+                                <el-tag
+                                    style="width: 150px;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;"
+                                    size="medium">{{ scope.row.content }}
+                                </el-tag>
+                            </div>
+                        </el-popover>
+                    </template>
                 </el-table-column>
                 <el-table-column label="操作" width="100px" align="center">
                     <template v-if="getDataList.length > 0" slot-scope="scope">
@@ -47,7 +60,8 @@
                 </el-table-column>
             </el-table>
             <div class="pagination" style="overflow: hidden;">
-                <el-pagination background @current-change="handleCurrentChange"
+                <el-pagination v-if="paginationShow" background :current-page="cur_page"
+                               @current-change="handleCurrentChange"
                                layout="total, prev, pager, next, jumper"
                                :page-size="10" :pager-count="11" :total="total">
                 </el-pagination>
@@ -83,8 +97,54 @@
                 <el-button @click="cancelAdd">取 消</el-button>
             </span>
         </el-dialog>
-
-        <!--编辑后台角色-->
+        <!--上传文件-->
+        <el-dialog title="上传文件" :visible.sync="isShowFile" :before-close="cancelFile" width="500px" center>
+            <div class="form-content" style="margin: 0 auto;width: 90%;">
+                <el-form label-position="left" ref="fileDataForm" :model="fileDataForm" label-width="120px">
+                    <el-form-item label="平台标识：">
+                        <el-col :span="24">
+                            <el-select style="width: 100%;" clearable v-model="fileDataForm.platformId"
+                                       placeholder="请选择平台标识">
+                                <el-option
+                                    v-for="item in platformIdList"
+                                    :key="item.id"
+                                    :label="item.platformName"
+                                    :value="item.id">
+                                </el-option>
+                            </el-select>
+                        </el-col>
+                    </el-form-item>
+                </el-form>
+                <div style="text-align: center;margin-top:30px;">
+                    <el-upload
+                        class="upload-demo"
+                        ref="upload"
+                        :multiple="false"
+                        :action="uploadUrl"
+                        :data="fileDataForm"
+                        :file-list="fileList"
+                        :limit="1"
+                        :before-upload="beforeUpload"
+                        :on-remove="handleRemove"
+                        :on-change="handleChange"
+                        :on-success="handleSuccess"
+                        :on-error="handleError"
+                        :auto-upload="false"
+                        accept=".xlsx,.xls"
+                        list-type="picture">
+                        <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
+                        <el-button size="small" type="primary"><a style="color: white" :href="downLoadUrl">下载文件示例</a>
+                        </el-button>
+                        <div slot="tip" class="el-upload__tip">只能上传.xlsx及.xls表格文件</div>
+                    </el-upload>
+                </div>
+            </div>
+            <span slot="footer" class="dialog-footer">
+                <el-button type="primary" @click="submitFile">确 定</el-button>
+                <el-button @click="cancelFile">取 消</el-button>
+            </span>
+        </el-dialog>
+        <!--编辑短信-->
         <el-dialog title="编辑短信" :visible.sync="isShowEdit" :before-close="cancelEdit" width="500px" center>
             <div class="form-content" style="margin: 0 auto;width: 90%;">
                 <el-form ref="editDataForm" :model="editDataForm" label-width="120px">
@@ -118,10 +178,15 @@
 </template>
 
 <script>
+    import {API_BASE, DEBUG} from '../../config/config';
 
     export default {
         data() {
             return {
+                fileList: [],
+                uploadUrl: API_BASE + '/admin/sms/importSmsTemplate',
+                downLoadUrl: 'http://' + window.location.host + '/SMS_template.xlsx',
+                paginationShow: true,
                 getDataList: [],
                 // 当前页
                 cur_page: 1,
@@ -131,8 +196,12 @@
                 isShowAdd: false,
                 // 是否显示编辑弹框
                 isShowEdit: false,
+                // 是否显示上传文件弹框
+                isShowFile: false,
                 // 增加参数
                 addDataForm: {},
+                // 上传文件参数
+                fileDataForm: {},
                 // 编辑参数
                 editDataForm: {},
                 searchDataForm: {},
@@ -140,9 +209,54 @@
             }
         },
         methods: {
+            addFile() {
+                this.fileList = [];
+                this.fileDataForm = {};
+                this.isShowFile = true;
+            },
+            submitFile() {
+                if (!this.fileDataForm.platformId) {
+                    this.$message.warning('平台标识不能为空！');
+                    return false;
+                }
+                if (!this.fileList.length) {
+                    this.$message.warning('上传文件不能为空！');
+                    return false;
+                }
+                this.$refs.upload.submit();
+            },
+            cancelFile() {
+                this.fileList = [];
+                this.isShowFile = false;
+                this.fileDataForm = {};
+            },
+            handleChange(file, fileList) {
+                this.fileList.push(file);
+            },
+            handleRemove(file, fileList) {
+                this.fileList = fileList;
+            },
+            beforeUpload(file) {
+                this.fileList.push(file);
+                let isXlsx = file.name.split('.')[1] === 'xls' || 'xlsx';
+                if (!isXlsx) {
+                    this.$message.warning('文件类型必须是.xlsx或者.xls表格文件');
+                }
+                return isXlsx;
+            },
+            handleSuccess(response, file, fileList) {
+                this.fileList = [];
+                this.isShowFile = false;
+                this.$message.warning(response.message);
+                this.getData();
+            },
+            handleError(error, file, fileList) {
+                this.$message.warning(error.message);
+            },
             // 分页导航
             handleCurrentChange(val) {
                 this.cur_page = val;
+                this.paginationShow = false;
                 this.getData();
             },
             getData() {
@@ -155,31 +269,19 @@
                 }).then(({data}) => {
                     vm.getDataList = data.list;
                     vm.total = data.total;
+                    vm.paginationShow = true;
                 }).catch((data) => {
                     console.log(data)
                 })
             },
-            search() {
-                let vm = this;
-                this.$httpGet('/admin/sms/smsTemplateList', {
-                    pageNo: 1,
+            // 需要同步
+            getListData() {
+                return this.$httpGet('/admin/sms/smsTemplateList', {
+                    pageNo: this.cur_page,
                     pageSize: 10,
                     templateCode: this.searchDataForm.templateCode,
                     platformId: this.searchDataForm.platformId
-                }).then(({data}) => {
-                    vm.getDataList = data.list;
-                    vm.total = data.total;
-                }).catch((data) => {
-                    console.log(data)
                 })
-            },
-            defaultOrNoFormatter(row, column) {
-                let defaultOrNo = row.defaultOrNo;
-                if (defaultOrNo) {
-                    return '是';
-                } else if (defaultOrNo === false) {
-                    return '否';
-                }
             },
             add() {
                 this.isShowAdd = true;
@@ -215,17 +317,7 @@
                     vm.$message.success(data.message);
                     vm.isShowAdd = false;
                     vm.addDataForm = {};
-                    vm.$httpGet('/admin/sms/smsTemplateList', {
-                        pageNo: 1,
-                        pageSize: 10,
-                        templateCode: this.searchDataForm.templateCode,
-                        platformId: this.searchDataForm.platformId
-                    }).then(({data}) => {
-                        vm.getDataList = data.list;
-                        vm.total = data.total;
-                    }).catch((data) => {
-                        console.log(data)
-                    })
+                    vm.handleCurrentChange(1);
                 }).catch((data) => {
                     console.log(data)
                 })
@@ -277,17 +369,22 @@
                 })
             },
             getPlatFormList() {
+                return this.$httpGet('/admin/platformInfo/option', {});
+            },
+            async getAllData() {
                 let vm = this;
-                this.$httpGet('/admin/platformInfo/option', {}).then(({data}) => {
-                    vm.platformIdList = data;
-                    vm.getData();
-                }).catch((data) => {
-                    console.log(data)
-                })
+                await Promise.all([vm.getPlatFormList(), vm.getListData()])
+                    .then((data) => {
+                        vm.platformIdList = data[0].data;
+                        vm.getDataList = data[1].data.list;
+                        vm.total = data[1].data.total;
+                    }).catch((data) => {
+                        console.log(data);
+                    })
             }
         },
         created() {
-            this.getPlatFormList();
+            this.getAllData();
         }
     }
 

@@ -4,21 +4,25 @@
         <div class="ms-login">
             <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="0px" class="demo-ruleForm">
                 <el-form-item prop="username">
-                    <el-input @keyup.enter.native="submitForm('ruleForm')" v-model.trim="ruleForm.username"
+                    <el-input clearable @keyup.enter.native="submitForm('ruleForm')" v-model.trim="ruleForm.username"
                               placeholder="请输入用户名"></el-input>
                 </el-form-item>
                 <el-form-item prop="password">
-                    <el-input type="password" placeholder="请输入密码" v-model.trim="ruleForm.password"
+                    <el-input clearable type="password" placeholder="请输入密码" v-model.trim="ruleForm.password"
                               @keyup.enter.native="submitForm('ruleForm')"></el-input>
                 </el-form-item>
                 <el-form-item prop="verificationCode">
                     <el-row :gutter="30">
                         <el-col :span="12">
-                            <el-input @keyup.enter.native="submitForm('ruleForm')" type="text" placeholder="请输入验证码"
+                            <el-input clearable @keyup.enter.native="submitForm('ruleForm')" type="text"
+                                      placeholder="请输入验证码"
                                       v-model.trim="ruleForm.verificationCode"></el-input>
                         </el-col>
                         <el-col :span="10" class="image-code">
-                            <img :src="imgUrl" alt="" @click="changeImgUrl">
+                            <p style="background: url('/static/img/bc-img.jpg') repeat;cursor: pointer;"
+                               @click="changeImgUrl">
+                                {{ imgUrl }}
+                            </p>
                         </el-col>
                     </el-row>
                 </el-form-item>
@@ -103,15 +107,16 @@
             },
             // 点击更换验证码
             changeImgUrl() {
-                this.imgUrl = API_BASE + '/admin/utils/getCaptcha?' + this.getUuid();
-            },
-            // 获取时间戳
-            getUuid: function () {
-                return Date.parse(new Date());
+                this.$httpGet('/admin/utils/getCaptcha', {})
+                    .then(({data}) => {
+                        this.imgUrl = data;
+                    }).catch((data) => {
+                    console.log(data);
+                })
             }
         },
         mounted() {
-            this.imgUrl = API_BASE + '/admin/utils/getCaptcha?' + this.getUuid();
+            this.changeImgUrl();
         }
     }
 </script>

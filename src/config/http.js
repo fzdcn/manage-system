@@ -67,11 +67,11 @@ function bindAccessToken(params) {
  * @param resolve
  */
 function resolveResponse(data, resolve) {
-    switch (data.status) {
-        case 1:
+    switch (data.code) {
+        case '01':
             !DEBUG ? Message.error('系统错误:' + data.message) : Message.error('系统错误:' + data.message);
             break
-        case 401:
+        case '401':
             Message.error(data.message);
             if (router.currentRoute.name != 'login') {  //这里必须限制为非login页面
                 router.replace({
@@ -82,8 +82,11 @@ function resolveResponse(data, resolve) {
             store.dispatch('userSignOut');
             store.dispatch('DeleteNavigationMenu');
             break
-        case 422:
-            Message.error(data.message);
+        case '403':
+            !DEBUG ? Message.error('系统错误:' + data.message) : Message.error('系统错误:' + data.message);
+            router.replace({
+                path: '/403'
+            });
             break
         default:
             resolve(data);
@@ -96,9 +99,9 @@ function rejectResponse(data, reject) {
         switch (data.response.status) {
             case 500:
                 !DEBUG ? Message.error('系统错误:' + data) : Message.error('系统错误:' + data);
-                router.replace({
+                /*router.replace({
                     path: '/403'
-                });
+                });*/
                 break
             default:
                 reject(data);

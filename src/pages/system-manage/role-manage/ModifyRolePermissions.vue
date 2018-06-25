@@ -77,9 +77,9 @@
                 }).then(({data}) => {
                     vm.$store.dispatch('setNavigationMenu', JSON.stringify(data[0].subs));
                     setTimeout(() => {
-                        window.location.href = window.location.origin + '/role-manage';
+                        window.location.href = window.location.origin + '/#/role-manage';
+                        location.reload();
                     }, 1000);
-
                 }).catch((data) => {
                     console.log(data);
                 })

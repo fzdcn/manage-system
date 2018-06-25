@@ -57,7 +57,8 @@
                     </el-input>
                 </div>
                 <div>
-                    <el-button type="primary" icon="el-icon-search" @click="search">搜索</el-button>
+                    <el-button type="primary" icon="el-icon-search" @click="handleCurrentChange(1)">搜索
+                    </el-button>
                 </div>
             </div>
             <el-table :data="getDataList" border style="width: 100%;">
@@ -84,7 +85,8 @@
                 </el-table-column>
             </el-table>
             <div class="pagination" style="overflow: hidden;">
-                <el-pagination background @current-change="handleCurrentChange"
+                <el-pagination v-if="paginationShow" background :current-page="cur_page"
+                               @current-change="handleCurrentChange"
                                layout="total, prev, pager, next, jumper"
                                :page-size="10" :pager-count="11" :total="total">
                 </el-pagination>
@@ -98,6 +100,7 @@
     export default {
         data() {
             return {
+                paginationShow: true,
                 getDataList: [],
                 // 当前页
                 cur_page: 1,
@@ -121,6 +124,7 @@
             // 分页导航
             handleCurrentChange(val) {
                 this.cur_page = val;
+                this.paginationShow = false;
                 this.getData();
             },
             dateFormatter(row, column) {
@@ -143,14 +147,15 @@
                 }).then(({data}) => {
                     vm.getDataList = data.list;
                     vm.total = data.total;
+                    vm.paginationShow = true;
                 }).catch((data) => {
                     console.log(data)
                 })
             },
-            search() {
-                let vm = this;
-                this.$httpGet('/admin/sms/smsRecordList', {
-                    pageNo: 1,
+            // 获取同步数据
+            getListData() {
+                return this.$httpGet('/admin/sms/smsRecordList', {
+                    pageNo: this.cur_page,
                     pageSize: 10,
                     smsChannel: this.searchDataForm.smsChannel,
                     phone: this.searchDataForm.phone,
@@ -159,25 +164,25 @@
                     endTime: this.searchDataForm.endTime ? this.$moment(vm.searchDataForm.endTime).format('YYYY-MM-DD HH:mm:ss') : '',
                     platformId: this.searchDataForm.platformId,
                     templateCode: this.searchDataForm.templateCode
-                }).then(({data}) => {
-                    vm.getDataList = data.list;
-                    vm.total = data.total;
-                }).catch((data) => {
-                    console.log(data)
                 })
             },
             getPlatFormList() {
+                return this.$httpGet('/admin/platformInfo/option', {})
+            },
+            async getAllData() {
                 let vm = this;
-                this.$httpGet('/admin/platformInfo/option', {}).then(({data}) => {
-                    vm.platformIdList = data;
-                    vm.getData();
-                }).catch((data) => {
-                    console.log(data)
-                })
+                await Promise.all([vm.getPlatFormList(), vm.getListData()])
+                    .then((data) => {
+                        vm.platformIdList = data[0].data;
+                        vm.getDataList = data[1].data.list;
+                        vm.total = data[1].data.total;
+                    }).catch((data) => {
+                        console.log(data);
+                    })
             }
         },
         created() {
-            this.getPlatFormList();
+            this.getAllData();
         }
     }
 

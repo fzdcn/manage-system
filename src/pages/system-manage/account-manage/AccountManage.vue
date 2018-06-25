@@ -34,7 +34,7 @@
                     </el-select>
                 </div>
                 <div>
-                    <el-button type="primary" icon="el-icon-search" @click="search">搜索</el-button>
+                    <el-button type="primary" icon="el-icon-search" @click="handleCurrentChange(1)">搜索</el-button>
                 </div>
             </div>
             <el-table :data="getDataList" border style="width: 100%;">
@@ -70,7 +70,8 @@
                 </el-table-column>
             </el-table>
             <div class="pagination" style="overflow: hidden;">
-                <el-pagination background @current-change="handleCurrentChange"
+                <el-pagination v-if="paginationShow" background :current-page="cur_page"
+                               @current-change="handleCurrentChange"
                                layout="total, prev, pager, next, jumper"
                                :page-size="10" :pager-count="11" :total="total">
                 </el-pagination>
@@ -205,6 +206,7 @@
     export default {
         data() {
             return {
+                paginationShow: true,
                 getDataList: [
                     /*{
                         email: "",
@@ -287,6 +289,7 @@
             // 分页导航
             handleCurrentChange(val) {
                 this.cur_page = val;
+                this.paginationShow = false;
                 this.dataList();
             },
             handleDelete(row) {
@@ -323,6 +326,7 @@
                 }).then(({data}) => {
                     vm.getDataList = data.page.list;
                     vm.total = data.page.total;
+                    vm.paginationShow = true;
                 }).catch((data) => {
                     console.log(data)
                 })
@@ -362,21 +366,6 @@
                 let loginDate = row.loginDate;
                 if (loginDate)
                     return this.$moment(loginDate).format('YYYY-MM-DD HH:mm:ss');
-            },
-            search() {
-                let vm = this;
-                this.$httpGet('/admin/admin/index', {
-                    pageNo: 1,
-                    pageSize: 10,
-                    userName: this.searchDataForm.username,
-                    status: this.searchDataForm.status,
-                    roleId: this.searchDataForm.role
-                }).then(({data}) => {
-                    vm.getDataList = data.page.list;
-                    vm.total = data.page.total;
-                }).catch((data) => {
-                    console.log(data)
-                })
             },
             add() {
                 this.isShowAdd = true;
@@ -448,6 +437,7 @@
                     }).then(({data}) => {
                         vm.getDataList = data.page.list;
                         vm.total = data.page.total;
+                        vm.handleCurrentChange(1);
                     }).catch((data) => {
                         console.log(data)
                     })

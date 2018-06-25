@@ -9,8 +9,7 @@
                 </el-table-column>
                 <el-table-column prop="name" label="角色">
                 </el-table-column>
-                <el-table-column prop="defaultOrNo" label="是否默认" :formatter="defaultOrNoFormatter"
-                >
+                <el-table-column prop="defaultOrNo" label="是否默认" :formatter="defaultOrNoFormatter">
                 </el-table-column>
                 <el-table-column label="操作" width="300px" align="center">
                     <template v-if="getDataList.length > 0" slot-scope="scope">

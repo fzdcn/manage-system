@@ -4,6 +4,36 @@
             <div class="add" style="margin-bottom: 30px;">
                 <el-button type="primary" size="medium" icon="el-icon-plus" @click="add">增加</el-button>
             </div>
+
+            <div class="handle-box" style="margin-bottom: 20px;display: flex;flex-flow: row wrap;">
+                <div style="margin: 0px 20px 10px 0;">
+                    <span>银行卡号标识：</span>
+                    <el-input style="width: 150px;" class="username" v-model.trim="searchDataForm.cardNoMark"
+                              clearable placeholder="银行卡号标识">
+                    </el-input>
+                </div>
+                <div style="margin: 0px 20px 10px 0;">
+                    <span>银行名称：</span>
+                    <el-input style="width: 150px;" class="username" v-model.trim="searchDataForm.bankName"
+                              clearable placeholder="银行名称">
+                    </el-input>
+                </div>
+                <div style="margin: 0px 20px 10px 0;">
+                    <span>银行卡类型：</span>
+                    <el-select clearable style="width: 150px;" v-model="searchDataForm.cardType" placeholder="银行卡类型">
+                        <el-option
+                            v-for="item in cardTypeList"
+                            :key="item.cardType"
+                            :label="item.name"
+                            :value="item.cardType">
+                        </el-option>
+                    </el-select>
+                </div>
+                <div>
+                    <el-button type="primary" icon="el-icon-search" @click="handleCurrentChange(1)">搜索</el-button>
+                </div>
+            </div>
+
             <el-table :data="getDataList" border style="width: 100%;text-align: center;">
                 <el-table-column prop="cardNoMark" label="银行卡号标识" header-align="center"/>
                 <el-table-column prop="bankName" label="银行名称" header-align="center"/>
@@ -30,7 +60,8 @@
                 </el-table-column>
             </el-table>
             <div class="pagination" style="overflow: hidden;">
-                <el-pagination background @current-change="handleCurrentChange"
+                <el-pagination v-if="paginationShow" background :current-page="cur_page"
+                               @current-change="handleCurrentChange"
                                layout="total, prev, pager, next, jumper"
                                :page-size="10" :pager-count="11" :total="total">
                 </el-pagination>
@@ -117,6 +148,7 @@
     export default {
         data() {
             return {
+                paginationShow: true,
                 getDataList: [],
                 // 当前页
                 cur_page: 1,
@@ -128,6 +160,7 @@
                 isShowEdit: false,
                 // 增加
                 addDataForm: {},
+                searchDataForm: {},
                 cardTypeList: [
                     {
                         cardType: "1",
@@ -162,6 +195,7 @@
             // 分页导航
             handleCurrentChange(val) {
                 this.cur_page = val;
+                this.paginationShow = false;
                 this.getData();
             },
             handleDelete(row) {
@@ -190,10 +224,14 @@
                 let vm = this;
                 this.$httpGet('/admin/epay/bankCard/index', {
                     pageNo: this.cur_page,
-                    pageSize: 10
+                    pageSize: 10,
+                    cardNoMark: this.searchDataForm.cardNoMark,
+                    bankName: this.searchDataForm.bankName,
+                    cardType: this.searchDataForm.cardType
                 }).then(({data}) => {
                     vm.getDataList = data.list;
                     vm.total = data.total;
+                    vm.paginationShow = true;
                 }).catch((data) => {
                     console.log(data)
                 })
@@ -243,15 +281,7 @@
                     vm.$message.success(data.message);
                     vm.isShowAdd = false;
                     vm.addDataForm = {};
-                    vm.$httpGet('/admin/epay/bankCard/index', {
-                        pageNo: 1,
-                        pageSize: 10
-                    }).then(({data}) => {
-                        vm.getDataList = data.list;
-                        vm.total = data.total;
-                    }).catch((data) => {
-                        console.log(data)
-                    })
+                    vm.handleCurrentChange(1);
                 }).catch((data) => {
                     console.log(data)
                 })

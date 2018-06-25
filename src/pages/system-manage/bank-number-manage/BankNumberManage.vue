@@ -24,7 +24,7 @@
                     </el-input>
                 </div>
                 <div>
-                    <el-button type="primary" icon="el-icon-search" @click="search">搜索</el-button>
+                    <el-button type="primary" icon="el-icon-search" @click="handleCurrentChange(1)">搜索</el-button>
                 </div>
             </div>
             <el-table :data="getDataList" border style="width: 100%;">
@@ -49,16 +49,17 @@
                 </el-table-column>
             </el-table>
             <div class="pagination" style="overflow: hidden;">
-                <el-pagination background @current-change="handleCurrentChange"
+                <el-pagination v-if="paginationShow" background :current-page="cur_page"
+                               @current-change="handleCurrentChange"
                                layout="total, prev, pager, next, jumper"
                                :page-size="10" :pager-count="11" :total="total">
                 </el-pagination>
             </div>
         </div>
         <!--增加银行号-->
-        <el-dialog title="增加银行号" :visible.sync="isShowAdd" :before-close="cancelAdd" width="500px" center>
+        <el-dialog title="增加银行号" :visible.sync="isShowAdd" :before-close="cancelAdd" width="550px" center>
             <div class="form-content" style="margin: 0 auto;width: 90%;">
-                <el-form ref="addDataForm" :model="addDataForm" label-width="150px">
+                <el-form ref="addDataForm" :model="addDataForm" label-width="180px">
                     <el-form-item label="银行名称：">
                         <el-input v-model.trim="addDataForm.bankName"></el-input>
                     </el-form-item>
@@ -116,6 +117,7 @@
     export default {
         data() {
             return {
+                paginationShow: true,
                 getDataList: [],
                 // 当前页
                 cur_page: 1,
@@ -134,6 +136,7 @@
             // 分页导航
             handleCurrentChange(val) {
                 this.cur_page = val;
+                this.paginationShow = false;
                 this.getData();
             },
             handleDelete(row) {
@@ -158,21 +161,6 @@
                     });
                 });
             },
-            search() {
-                let vm = this;
-                this.$httpGet('/admin/epay/unionBankNumber/index', {
-                    pageNo: 1,
-                    pageSize: 10,
-                    bankName: this.searchDataForm.bankName,
-                    bankNumber: this.searchDataForm.bankNumber,
-                    numbers: this.searchDataForm.numbers
-                }).then(({data}) => {
-                    vm.getDataList = data.list;
-                    vm.total = data.total;
-                }).catch((data) => {
-                    console.log(data)
-                })
-            },
             getData() {
                 let vm = this;
                 this.$httpGet('/admin/epay/unionBankNumber/index', {
@@ -184,17 +172,10 @@
                 }).then(({data}) => {
                     vm.getDataList = data.list;
                     vm.total = data.total;
+                    vm.paginationShow = true;
                 }).catch((data) => {
                     console.log(data)
                 })
-            },
-            defaultOrNoFormatter(row, column) {
-                let defaultOrNo = row.defaultOrNo;
-                if (defaultOrNo) {
-                    return '是';
-                } else if (defaultOrNo === false) {
-                    return '否';
-                }
             },
             add() {
                 this.isShowAdd = true;
@@ -235,15 +216,7 @@
                     vm.$message.success(data.message);
                     vm.isShowAdd = false;
                     vm.addDataForm = {};
-                    vm.$httpGet('/admin/epay/unionBankNumber/index', {
-                        pageNo: 1,
-                        pageSize: 10
-                    }).then(({data}) => {
-                        vm.getDataList = data.list;
-                        vm.total = data.total;
-                    }).catch((data) => {
-                        console.log(data)
-                    })
+                    vm.handleCurrentChange(1);
                 }).catch((data) => {
                     console.log(data)
                 })

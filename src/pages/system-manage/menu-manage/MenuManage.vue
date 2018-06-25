@@ -193,9 +193,20 @@
             }
         },
         methods: {
+            // 菜单列表,同步需要
             getMenuData() {
                 return this.$httpGet('/admin/permission/index', {});
             },
+            // 菜单列表,不需要同步
+            getMenuDataList() {
+                this.$httpGet('/admin/permission/index', {})
+                    .then(({data}) => {
+                        vm.getDataList = data;
+                    }).catch((data) => {
+                    console.log(data);
+                })
+            },
+            // 增加的下拉菜单，不需要同步
             getMenu() {
                 let vm = this;
                 this.$httpGet('/admin/permission/getSuperPermissionList', {})
@@ -205,6 +216,7 @@
                     console.log(data);
                 })
             },
+            // 增加的下拉菜单，同步需要
             getMenuList() {
                 return this.$httpGet('/admin/permission/getSuperPermissionList', {});
             },
@@ -244,7 +256,7 @@
                 }).then((data) => {
                     vm.$message.success(data.message);
                     vm.isShowEdit = false;
-                    vm.getMenu();
+                    vm.getAllData();
                 }).catch((data) => {
                     console.log(data)
                 })
@@ -260,7 +272,7 @@
                         id: row.id
                     }).then((data) => {
                         vm.$message.success(data.message);
-                        vm.getMenu();
+                        vm.getAllData();
                     }).catch((data) => {
                         console.log(data)
                     })
@@ -296,7 +308,7 @@
                     vm.$message.success(data.message);
                     vm.isShowAdd = false;
                     vm.addDataForm = {};
-                    vm.getMenu();
+                    vm.getAllData();
                 }).catch((data) => {
                     console.log(data)
                 })

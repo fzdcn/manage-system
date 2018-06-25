@@ -12,7 +12,7 @@
                     </el-input>
                 </div>
                 <div>
-                    <el-button type="primary" icon="el-icon-search" @click="search">搜索</el-button>
+                    <el-button type="primary" icon="el-icon-search" @click="handleCurrentChange(1)">搜索</el-button>
                 </div>
             </div>
             <el-table :data="getDataList" border style="width: 100%;">
@@ -22,22 +22,28 @@
                 </el-table-column>
                 <el-table-column prop="md5Key" label="md5Key">
                 </el-table-column>
-                <el-table-column prop="publicKey" label="公钥">
+                <el-table-column prop="publicKey" label="公钥" align="center">
                     <template slot-scope="scope">
                         <el-popover trigger="hover" placement="top">
                             <p>{{ scope.row.publicKey }}</p>
                             <div slot="reference">
-                                <el-tag size="medium">{{ scope.row.publicKey }}</el-tag>
+                                <el-tag
+                                    style="width: 150px;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;"
+                                    size="medium">{{ scope.row.publicKey }}
+                                </el-tag>
                             </div>
                         </el-popover>
                     </template>
                 </el-table-column>
-                <el-table-column prop="privateKey" label="私钥">
+                <el-table-column prop="privateKey" label="私钥" align="center">
                     <template slot-scope="scope">
                         <el-popover trigger="hover" placement="top">
                             <p>{{ scope.row.privateKey }}</p>
                             <div slot="reference">
-                                <el-tag size="medium">{{ scope.row.privateKey }}</el-tag>
+                                <el-tag
+                                    style="width: 150px;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;"
+                                    size="medium">{{ scope.row.privateKey }}
+                                </el-tag>
                             </div>
                         </el-popover>
                     </template>
@@ -50,7 +56,7 @@
                 </el-table-column>
             </el-table>
             <div class="pagination" style="overflow: hidden;">
-                <el-pagination background @current-change="handleCurrentChange"
+                <el-pagination v-if="paginationShow" background @current-change="handleCurrentChange"
                                layout="total, prev, pager, next, jumper"
                                :page-size="10" :pager-count="11" :total="total">
                 </el-pagination>
@@ -108,6 +114,7 @@
     export default {
         data() {
             return {
+                paginationShow: true,
                 getDataList: [],
                 // 当前页
                 cur_page: 1,
@@ -129,6 +136,7 @@
             // 分页导航
             handleCurrentChange(val) {
                 this.cur_page = val;
+                this.paginationShow = false;
                 this.getData();
             },
             getData() {
@@ -140,19 +148,7 @@
                 }).then(({data}) => {
                     vm.getDataList = data.list;
                     vm.total = data.total;
-                }).catch((data) => {
-                    console.log(data)
-                })
-            },
-            search() {
-                let vm = this;
-                this.$httpGet('/admin/platformInfo/list', {
-                    pageNo: 1,
-                    pageSize: 10,
-                    platformNo: this.searchDataForm.platformNo
-                }).then(({data}) => {
-                    vm.getDataList = data.list;
-                    vm.total = data.total;
+                    vm.paginationShow = true;
                 }).catch((data) => {
                     console.log(data)
                 })
@@ -181,16 +177,7 @@
                     vm.$message.success(data.message);
                     vm.isShowAdd = false;
                     vm.addDataForm = {};
-                    vm.$httpGet('/admin/platformInfo/list', {
-                        pageNo: 1,
-                        pageSize: 10,
-                        platformNo: this.searchDataForm.platformNo
-                    }).then(({data}) => {
-                        vm.getDataList = data.list;
-                        vm.total = data.total;
-                    }).catch((data) => {
-                        console.log(data)
-                    })
+                    vm.handleCurrentChange(1);
                 }).catch((data) => {
                     console.log(data)
                 })

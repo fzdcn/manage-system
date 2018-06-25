@@ -57,7 +57,7 @@
                     </el-select>
                 </div>
                 <div>
-                    <el-button type="primary" icon="el-icon-search" @click="search">搜索</el-button>
+                    <el-button type="primary" icon="el-icon-search" @click="cur_page=1;getData();">搜索</el-button>
                 </div>
             </div>
             <el-table :data="getDataList" border style="width: 100%;">
@@ -108,7 +108,7 @@
                 </el-table-column>
             </el-table>
             <div class="pagination" style="overflow: hidden;">
-                <el-pagination background @current-change="handleCurrentChange"
+                <el-pagination background :current-page="cur_page" @current-change="handleCurrentChange"
                                layout="total, prev, pager, next, jumper"
                                :page-size="10" :pager-count="11" :total="total">
                 </el-pagination>
@@ -118,8 +118,8 @@
         <el-dialog title="增加交易通道" :visible.sync="isShowAdd" :before-close="cancelAdd" width="650px" center>
             <div class="form-content" style="margin: 0 auto;width: 90%;">
                 <el-form ref="addDataForm" :model="addDataForm" label-width="140px">
-                    <el-form-item label="银行：" style="width: 100%">
-                        <el-select clearable v-model="addDataForm.roleId" placeholder="银行">
+                    <el-form-item label="银行：">
+                        <el-select clearable v-model="addDataForm.roleId" placeholder="银行" style="width: 400px">
                             <el-option
                                 v-for="item in roleList"
                                 :key="item.id"
@@ -129,7 +129,7 @@
                         </el-select>
                     </el-form-item>
                     <el-form-item label="公司支付通道：">
-                        <el-select clearable v-model="addDataForm.roleId" placeholder="公司支付通道">
+                        <el-select clearable v-model="addDataForm.roleId" placeholder="公司支付通道" style="width: 400px">
                             <el-option
                                 v-for="item in roleList"
                                 :key="item.id"
@@ -139,7 +139,7 @@
                         </el-select>
                     </el-form-item>
                     <el-form-item label="银行支付通道：">
-                        <el-select clearable v-model="addDataForm.roleId" placeholder="银行支付通道">
+                        <el-select clearable v-model="addDataForm.roleId" placeholder="银行支付通道" style="width: 400px">
                             <el-option
                                 v-for="item in roleList"
                                 :key="item.id"
@@ -156,7 +156,7 @@
                         </el-radio-group>
                     </el-form-item>
                     <el-form-item label="指定商户类型：">
-                        <el-radio-group v-model="addDataForm.resource">
+                        <el-radio-group v-model="addDataForm.resource1">
                             <el-radio label="通用"></el-radio>
                             <el-radio label="直营商户"></el-radio>
                             <el-radio label="存管商户"></el-radio>
@@ -255,19 +255,6 @@
                 let vm = this;
                 this.$httpGet('/admin/platformInfo/list', {
                     pageNo: this.cur_page,
-                    pageSize: 10,
-                    platformNo: this.searchDataForm.platformNo
-                }).then(({data}) => {
-                    vm.getDataList = data.list;
-                    vm.total = data.total;
-                }).catch((data) => {
-                    console.log(data)
-                })
-            },
-            search() {
-                let vm = this;
-                this.$httpGet('/admin/platformInfo/list', {
-                    pageNo: 1,
                     pageSize: 10,
                     platformNo: this.searchDataForm.platformNo
                 }).then(({data}) => {
