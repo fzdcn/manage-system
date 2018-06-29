@@ -2,7 +2,7 @@
  * Created by Tome on 2018/5/18.
  */
 import axios from 'axios'
-import {API_BASE} from './configTest'
+import {API_BASE} from './config'
 import store from '../store/index'
 import router from '../router/index'
 import qs from 'qs'
