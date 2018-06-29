@@ -39,9 +39,9 @@
                     </el-date-picker>
                 </div>
                 <div style="margin: 0px 20px 10px 0;">
-                    <span>平台标识：</span>
+                    <span>平台名称：</span>
                     <el-select clearable style="width: 150px;" v-model="searchDataForm.platformId"
-                               placeholder="请选择平台标识">
+                               placeholder="请选择平台名称">
                         <el-option
                             v-for="item in platformIdList"
                             :key="item.id"
@@ -154,6 +154,7 @@
             },
             // 获取同步数据
             getListData() {
+                let vm = this;
                 return this.$httpGet('/admin/sms/smsRecordList', {
                     pageNo: this.cur_page,
                     pageSize: 10,
@@ -166,6 +167,7 @@
                     templateCode: this.searchDataForm.templateCode
                 })
             },
+            // 平台类型
             getPlatFormList() {
                 return this.$httpGet('/admin/platformInfo/option', {})
             },

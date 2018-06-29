@@ -3,14 +3,20 @@
         <div class="container">
             <div class="add" style="margin-bottom: 30px;">
                 <el-button type="primary" size="medium" icon="el-icon-plus" @click="add">增加</el-button>
-                <el-button type="primary" size="medium" icon="el-icon-plus" @click="addFile">上传文件</el-button>
+                <el-button type="primary" size="medium" icon="el-icon-upload2" @click="addFile">上传文件</el-button>
             </div>
               
             <div class="handle-box" style="margin-bottom: 20px;display: flex;flex-flow: row wrap;">
                 <div style="margin: 0px 20px 10px 0;">
-                    <span>模板号：</span>
+                    <span>系统模板号：</span>
+                    <el-input style="width: 150px;" class="username" v-model.trim="searchDataForm.sysTemplateCode"
+                              clearable placeholder="请填写系统模板号">
+                    </el-input>
+                </div>
+                <div style="margin: 0px 20px 10px 0;">
+                    <span>渠道模板号：</span>
                     <el-input style="width: 150px;" class="username" v-model.trim="searchDataForm.templateCode"
-                              clearable placeholder="请填写模板号">
+                              clearable placeholder="请填写渠道模板号">
                     </el-input>
                 </div>
                 <div style="margin: 0px 20px 10px 0;">
@@ -35,11 +41,13 @@
                         <span v-if="scope.row.platformId == item.id" v-for="(item,index) in platformIdList">{{ item.platformName }}</span>
                     </template>
                 </el-table-column>
-                <el-table-column prop="templateCode" label="模板号">
+                <el-table-column prop="sysTemplateCode" label="系统模板号">
+                </el-table-column>
+                <el-table-column prop="templateCode" label="渠道模板号">
                 </el-table-column>
                 <el-table-column prop="explain" label="短信说明">
                 </el-table-column>
-                <el-table-column prop="content" label="短信模板内容">
+                <el-table-column prop="content" label="短信模板内容" align="center">
                     <template slot-scope="scope">
                         <el-popover trigger="hover" placement="top">
                             <p>{{ scope.row.content }}</p>
@@ -51,6 +59,14 @@
                             </div>
                         </el-popover>
                     </template>
+                </el-table-column>
+                <el-table-column prop="channel" label="短信通道">
+                    <template slot-scope="scope">
+                        <span v-if="scope.row.channel == item.id"
+                              v-for="(item,index) in smsChannel">{{ item.name }}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column prop="sysRemark" label="系统备注">
                 </el-table-column>
                 <el-table-column label="操作" width="100px" align="center">
                     <template v-if="getDataList.length > 0" slot-scope="scope">
@@ -71,8 +87,8 @@
         <el-dialog title="增加短信" :visible.sync="isShowAdd" :before-close="cancelAdd" width="500px" center>
             <div class="form-content" style="margin: 0 auto;width: 90%;">
                 <el-form ref="addDataForm" :model="addDataForm" label-width="120px">
-                    <el-form-item label="模板号：">
-                        <el-input v-model.trim="addDataForm.templateCode"></el-input>
+                    <el-form-item label="渠道模板号：">
+                        <el-input clearable v-model.trim="addDataForm.templateCode"></el-input>
                     </el-form-item>
                     <el-form-item label="平台标识：">
                         <el-select clearable v-model="addDataForm.platformId" placeholder="请选择平台标识">
@@ -84,11 +100,24 @@
                             </el-option>
                         </el-select>
                     </el-form-item>
+                    <el-form-item label="短信通道：">
+                        <el-select clearable v-model="addDataForm.channel" placeholder="请选择短信通道">
+                            <el-option
+                                v-for="item in smsChannel"
+                                :key="item.id"
+                                :label="item.name"
+                                :value="item.id">
+                            </el-option>
+                        </el-select>
+                    </el-form-item>
                     <el-form-item label="短信说明：">
-                        <el-input v-model.trim="addDataForm.explain"></el-input>
+                        <el-input clearable v-model.trim="addDataForm.explain"></el-input>
                     </el-form-item>
                     <el-form-item label="短信模板内容：">
-                        <el-input type="textarea" v-model.trim="addDataForm.content"></el-input>
+                        <el-input clearable type="textarea" v-model.trim="addDataForm.content"></el-input>
+                    </el-form-item>
+                    <el-form-item label="系统备注：">
+                        <el-input clearable type="textarea" v-model.trim="addDataForm.sysRemark"></el-input>
                     </el-form-item>
                 </el-form>
             </div>
@@ -120,15 +149,12 @@
                         class="upload-demo"
                         ref="upload"
                         :multiple="false"
-                        :action="uploadUrl"
-                        :data="fileDataForm"
+                        action=""
                         :file-list="fileList"
                         :limit="1"
                         :before-upload="beforeUpload"
                         :on-remove="handleRemove"
                         :on-change="handleChange"
-                        :on-success="handleSuccess"
-                        :on-error="handleError"
                         :auto-upload="false"
                         accept=".xlsx,.xls"
                         list-type="picture">
@@ -148,8 +174,8 @@
         <el-dialog title="编辑短信" :visible.sync="isShowEdit" :before-close="cancelEdit" width="500px" center>
             <div class="form-content" style="margin: 0 auto;width: 90%;">
                 <el-form ref="editDataForm" :model="editDataForm" label-width="120px">
-                    <el-form-item label="模板号：">
-                        <el-input v-model.trim="editDataForm.templateCode"></el-input>
+                    <el-form-item label="渠道模板号：">
+                        <el-input clearable v-model.trim="editDataForm.templateCode"></el-input>
                     </el-form-item>
                     <el-form-item label="平台标识：">
                         <el-select clearable v-model="editDataForm.platformId" placeholder="请选择平台标识">
@@ -161,11 +187,24 @@
                             </el-option>
                         </el-select>
                     </el-form-item>
+                    <el-form-item label="短信通道：">
+                        <el-select clearable v-model="editDataForm.channel" placeholder="请选择短信通道">
+                            <el-option
+                                v-for="item in smsChannel"
+                                :key="item.id"
+                                :label="item.name"
+                                :value="item.id">
+                            </el-option>
+                        </el-select>
+                    </el-form-item>
                     <el-form-item label="短信说明：">
-                        <el-input v-model.trim="editDataForm.explain"></el-input>
+                        <el-input clearable v-model.trim="editDataForm.explain"></el-input>
                     </el-form-item>
                     <el-form-item label="短信模板内容：">
-                        <el-input type="textarea" v-model.trim="editDataForm.content"></el-input>
+                        <el-input clearable type="textarea" v-model.trim="editDataForm.content"></el-input>
+                    </el-form-item>
+                    <el-form-item label="系统备注：">
+                        <el-input clearable type="textarea" v-model.trim="editDataForm.sysRemark"></el-input>
                     </el-form-item>
                 </el-form>
             </div>
@@ -178,7 +217,7 @@
 </template>
 
 <script>
-    import {API_BASE, DEBUG} from '../../config/config';
+    import {API_BASE} from '../../config/config';
 
     export default {
         data() {
@@ -203,9 +242,25 @@
                 // 上传文件参数
                 fileDataForm: {},
                 // 编辑参数
-                editDataForm: {},
+                editDataForm: {
+                    platformId: "",
+                    templateCode: "",
+                    content: "",
+                    explain: "",
+                    channel: ""
+                },
                 searchDataForm: {},
                 platformIdList: [],
+                smsChannel: [
+                    {
+                        id: '1',
+                        name: '阿里大鱼'
+                    },
+                    {
+                        id: '2',
+                        name: '上海助通'
+                    }
+                ]
             }
         },
         methods: {
@@ -231,27 +286,44 @@
                 this.fileDataForm = {};
             },
             handleChange(file, fileList) {
+                this.fileList = [];
                 this.fileList.push(file);
             },
             handleRemove(file, fileList) {
                 this.fileList = fileList;
             },
             beforeUpload(file) {
+                let vm = this;
+                this.fileList = [];
                 this.fileList.push(file);
                 let isXlsx = file.name.split('.')[1] === 'xls' || 'xlsx';
                 if (!isXlsx) {
                     this.$message.warning('文件类型必须是.xlsx或者.xls表格文件');
                 }
-                return isXlsx;
-            },
-            handleSuccess(response, file, fileList) {
-                this.fileList = [];
-                this.isShowFile = false;
-                this.$message.warning(response.message);
-                this.getData();
-            },
-            handleError(error, file, fileList) {
-                this.$message.warning(error.message);
+                let formData = new FormData();
+                formData.append("file", file);
+                formData.append("platformId", vm.fileDataForm.platformId);
+                this.$axios.post('/admin/sms/importSmsTemplate', formData)
+                    .then(({data}) => {
+                        if (data.code == '00') {
+                            vm.$message.success(data.message);
+                            vm.cancelFile();
+                            vm.getData();
+                        } else if (data.code == '01') {
+                            vm.$message.error(data.message);
+                            vm.cancelFile();
+                        } else if (data.code == '401') {
+                            vm.$message.warning(data.message);
+                            vm.$router.replace({
+                                path: '/login',
+                                query: {redirect: vm.$router.currentRoute.fullPath}
+                            })
+                        }
+                    }).catch((data) => {
+                    vm.$message.error("上传失败");
+                    vm.cancelFile();
+                    console.log(data);
+                });
             },
             // 分页导航
             handleCurrentChange(val) {
@@ -265,7 +337,8 @@
                     pageNo: this.cur_page,
                     pageSize: 10,
                     templateCode: this.searchDataForm.templateCode,
-                    platformId: this.searchDataForm.platformId
+                    platformId: this.searchDataForm.platformId,
+                    sysTemplateCode: this.searchDataForm.sysTemplateCode
                 }).then(({data}) => {
                     vm.getDataList = data.list;
                     vm.total = data.total;
@@ -280,7 +353,8 @@
                     pageNo: this.cur_page,
                     pageSize: 10,
                     templateCode: this.searchDataForm.templateCode,
-                    platformId: this.searchDataForm.platformId
+                    platformId: this.searchDataForm.platformId,
+                    sysTemplateCode: this.searchDataForm.sysTemplateCode
                 })
             },
             add() {
@@ -293,11 +367,15 @@
             submitAdd() {
                 let vm = this;
                 if (!this.addDataForm.templateCode) {
-                    this.$message.warning('模板号不能为空！');
+                    this.$message.warning('渠道模板号不能为空！');
                     return false;
                 }
                 if (!this.addDataForm.platformId) {
                     this.$message.warning('平台标识不能为空！');
+                    return false;
+                }
+                if (!this.addDataForm.channel) {
+                    this.$message.warning('短信通道不能为空！');
                     return false;
                 }
                 if (!this.addDataForm.explain) {
@@ -312,7 +390,9 @@
                     templateCode: this.addDataForm.templateCode,
                     platformId: this.addDataForm.platformId,
                     content: this.addDataForm.content,
-                    explain: this.addDataForm.explain
+                    explain: this.addDataForm.explain,
+                    channel: this.addDataForm.channel,
+                    sysRemark: this.addDataForm.sysRemark
                 }).then((data) => {
                     vm.$message.success(data.message);
                     vm.isShowAdd = false;
@@ -329,20 +409,24 @@
                 this.editDataForm.templateCode = row.templateCode;
                 this.editDataForm.content = row.content;
                 this.editDataForm.explain = row.explain;
-
+                this.editDataForm.channel = row.channel;
+                this.editDataForm.sysRemark = row.sysRemark;
             },
             cancelEdit() {
                 this.isShowEdit = false;
-                this.editDataForm = {};
             },
             submitEdit() {
                 let vm = this;
                 if (!this.editDataForm.templateCode) {
-                    this.$message.warning('模板号不能为空！');
+                    this.$message.warning('渠道模板号不能为空！');
                     return false;
                 }
                 if (!this.editDataForm.platformId) {
                     this.$message.warning('平台标识不能为空！');
+                    return false;
+                }
+                if (!this.editDataForm.channel) {
+                    this.$message.warning('短信通道不能为空！');
                     return false;
                 }
                 if (!this.editDataForm.explain) {
@@ -358,11 +442,12 @@
                     templateCode: this.editDataForm.templateCode,
                     platformId: this.editDataForm.platformId,
                     content: this.editDataForm.content,
-                    explain: this.editDataForm.explain
+                    explain: this.editDataForm.explain,
+                    channel: this.editDataForm.channel,
+                    sysRemark: this.editDataForm.sysRemark
                 }).then((data) => {
                     vm.$message.success(data.message);
-                    vm.isShowEdit = false;
-                    vm.editDataForm = {};
+                    vm.cancelEdit();
                     vm.getData();
                 }).catch((data) => {
                     console.log(data)

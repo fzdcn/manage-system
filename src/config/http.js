@@ -2,7 +2,7 @@
  * Created by Tome on 2018/5/18.
  */
 import axios from 'axios'
-import {API_BASE, DEBUG} from './config'
+import {API_BASE} from './configTest'
 import store from '../store/index'
 import router from '../router/index'
 import qs from 'qs'
@@ -44,18 +44,9 @@ function endLoading() {
     loading.close()
 }
 
-let config = {
-    baseURL: API_BASE,
-    withCredentials: true,
-    headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
-    },
-    transformRequest: [function (data) {
-        data = qs.stringify(data);
-        return data;
-    }],
-}
-const instance = axios.create(config)
+axios.defaults.baseURL = API_BASE;
+axios.defaults.withCredentials = true;
+axios.defaults.headers.post['Content-Type'] = 'application/json';
 
 function bindAccessToken(params) {
     let accessToken = store.getters.accessToken
@@ -69,7 +60,7 @@ function bindAccessToken(params) {
 function resolveResponse(data, resolve) {
     switch (data.code) {
         case '01':
-            !DEBUG ? Message.error('系统错误:' + data.message) : Message.error('系统错误:' + data.message);
+            Message.error('系统错误:' + data.message);
             break
         case '401':
             Message.error(data.message);
@@ -83,7 +74,7 @@ function resolveResponse(data, resolve) {
             store.dispatch('DeleteNavigationMenu');
             break
         case '403':
-            !DEBUG ? Message.error('系统错误:' + data.message) : Message.error('系统错误:' + data.message);
+            Message.error('系统错误:' + data.message);
             router.replace({
                 path: '/403'
             });
@@ -98,7 +89,7 @@ function rejectResponse(data, reject) {
     if (data.response) {
         switch (data.response.status) {
             case 500:
-                !DEBUG ? Message.error('系统错误:' + data) : Message.error('系统错误:' + data);
+                Message.error('系统错误:' + data);
                 /*router.replace({
                     path: '/403'
                 });*/
@@ -130,7 +121,7 @@ class HttpResource {
         showFullScreenLoading();
         bindAccessToken(params)
         return new Promise((resolve, reject) => {
-            instance.get(url, {params: params})
+            axios.get(url, {params: params})
                 .then(({data}) => {
                     resolveResponse(data, resolve)
                     store.dispatch('pageLoadingUpdate', false)
@@ -148,21 +139,28 @@ class HttpResource {
      * @param params
      * @returns {Promise}
      */
-    static httpPost(url, params) {
+
+    static httpPost(url, params, isFormData) {
+        if (!isFormData) {
+            params = qs.stringify(params);
+        }
         store.dispatch('pageLoadingUpdate', true)
         showFullScreenLoading()
         bindAccessToken(params)
         return new Promise((resolve, reject) => {
-            instance.post(url, params)
-                .then(({data}) => {
-                    resolveResponse(data, resolve)
-                    store.dispatch('pageLoadingUpdate', false)
-                    tryHideFullScreenLoading()
-                }, (data) => {
-                    rejectResponse(data, reject)
-                    store.dispatch('pageLoadingUpdate', false)
-                    tryHideFullScreenLoading()
-                })
+            axios.post(url, params, {
+                headers: {
+                    "Content-Type": isFormData ? "application/json" : "application/x-www-form-urlencoded;charset=UTF-8"
+                }
+            }).then(({data}) => {
+                resolveResponse(data, resolve)
+                store.dispatch('pageLoadingUpdate', false)
+                tryHideFullScreenLoading()
+            }, (data) => {
+                rejectResponse(data, reject)
+                store.dispatch('pageLoadingUpdate', false)
+                tryHideFullScreenLoading()
+            })
         })
     }
 }

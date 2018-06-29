@@ -36,7 +36,8 @@
             <div class="form-content" style="margin: 0 auto;width: 90%;">
                 <el-form ref="addDataForm" :model="addDataForm" label-width="100px">
                     <el-form-item label="角色名称：">
-                        <el-input v-model.trim="addDataForm.name"></el-input>
+                        <el-input clearable v-model.trim="addDataForm.name" maxLength="10"
+                                  placeholder="只能是10位以内英文或汉字"></el-input>
                     </el-form-item>
                 </el-form>
             </div>
@@ -51,7 +52,8 @@
             <div class="form-content" style="margin: 0 auto;width: 90%;">
                 <el-form ref="editDataForm" :model="editDataForm" label-width="100px">
                     <el-form-item label="角色名称：">
-                        <el-input v-model.trim="editDataForm.name"></el-input>
+                        <el-input clearable v-model.trim="editDataForm.name" maxLength="10"
+                                  placeholder="只能是10位以内英文或汉字"></el-input>
                     </el-form-item>
                 </el-form>
             </div>
@@ -88,9 +90,7 @@
                 // 编辑时的name
                 editName: '',
                 // 增加后台账户参数
-                addDataForm: {
-                    name: '',
-                },
+                addDataForm: {},
                 // 编辑后台角色参数
                 editDataForm: {},
             }
@@ -148,7 +148,7 @@
             },
             cancelAdd() {
                 this.isShowAdd = false;
-                this.addDataForm.name = '';
+                this.addDataForm = {};
             },
             submitAdd() {
                 let vm = this;
@@ -156,12 +156,15 @@
                     this.$message.warning('角色名称不能为空！');
                     return false;
                 }
+                if (!/^[\u4e00-\u9fa5]{1,10}$/.test(vm.addDataForm.name) && !/^[A-Za-z]{1,10}$/.test(vm.addDataForm.name)) {
+                    this.$message.warning('角色名称只能是10位以内英文或汉字！');
+                    return false;
+                }
                 this.$httpPost('/admin/role/save', {
                     name: this.addDataForm.name
                 }).then((data) => {
                     vm.$message.success(data.message);
-                    vm.isShowAdd = false;
-                    vm.addDataForm.name = '';
+                    vm.cancelAdd();
                     vm.$httpGet('/admin/role/index', {
                         pageNo: 1,
                         pageSize: 10
@@ -185,7 +188,6 @@
             },
             cancelEdit() {
                 this.isShowEdit = false;
-                this.editDataForm = {};
             },
             submitEdit() {
                 let vm = this;
@@ -193,13 +195,16 @@
                     this.$message.warning('角色名称不能为空！');
                     return false;
                 }
+                if (!/^[\u4e00-\u9fa5]{1,10}$/.test(vm.editDataForm.name) && !/^[A-Za-z]{1,10}$/.test(vm.editDataForm.name)) {
+                    this.$message.warning('角色名称只能是10位以内英文或汉字！');
+                    return false;
+                }
                 this.$httpPost('/admin/role/update', {
                     id: this.editDataForm.id,
                     name: this.editDataForm.name
                 }).then((data) => {
                     vm.$message.success(data.message);
-                    vm.isShowEdit = false;
-                    vm.editDataForm = {};
+                    vm.cancelEdit();
                     vm.getData();
                 }).catch((data) => {
                     console.log(data)

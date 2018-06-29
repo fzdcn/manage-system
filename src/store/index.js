@@ -8,13 +8,19 @@ import setNavigationMenu from './modules/navigation/navigation-menu'
 import 'babel-polyfill'
 
 Vue.use(Vuex);
-
-const debug = process.env.NODE_ENV !== 'production';
+let debug = false;
+if (process.env.NODE_ENV !== 'production') {
+    debug = true;
+} else if (process.env.NODE_ENV !== 'test') {
+    debug = true;
+} else {
+    debug = false;
+}
 
 export default new Vuex.Store({
     modules: {
         userInfo,
         setNavigationMenu
     },
-    strict: debug
+    // strict: debug
 })

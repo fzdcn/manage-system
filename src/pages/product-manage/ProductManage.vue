@@ -70,10 +70,10 @@
             <div class="form-content" style="margin: 0 auto;width: 90%;">
                 <el-form ref="addDataForm" :model="addDataForm" label-width="150px">
                     <el-form-item label="产品名称：">
-                        <el-input v-model.trim="addDataForm.productName"></el-input>
+                        <el-input clearable v-model.trim="addDataForm.productName"></el-input>
                     </el-form-item>
                     <el-form-item label="产品接入码：">
-                        <el-input v-model.trim="addDataForm.productAccessCode"></el-input>
+                        <el-input clearable v-model.trim="addDataForm.productAccessCode"></el-input>
                     </el-form-item>
                     <el-form-item label="产品状态：">
                         <el-select clearable v-model="addDataForm.productState" placeholder="使用状态">
@@ -86,14 +86,8 @@
                         </el-select>
                     </el-form-item>
                     <el-form-item label="基础参考费率：">
-                        <el-row :gutter="10">
-                            <el-col :span="13">
-                                <el-input v-model.number="addDataForm.localFee" type="number"></el-input>
-                            </el-col>
-                            <el-col :span="6">
-                                <el-tag type="danger">最多4位整数，2位小数</el-tag>
-                            </el-col>
-                        </el-row>
+                        <el-input clearable v-model.number="addDataForm.localFee" type="number"
+                                  placeholder="最多4位整数，2位小数"></el-input>
                     </el-form-item>
                     <el-form-item label="收费方式：">
                         <el-select clearable v-model="addDataForm.computeMode" placeholder="收费方式">
@@ -126,10 +120,10 @@
             <div class="form-content" style="margin: 0 auto;width: 90%;">
                 <el-form ref="editDataForm" :model="editDataForm" label-width="150px">
                     <el-form-item label="产品名称：">
-                        <el-input v-model.trim="editDataForm.productName"></el-input>
+                        <el-input clearable v-model.trim="editDataForm.productName"></el-input>
                     </el-form-item>
                     <el-form-item label="产品接入码：">
-                        <el-input v-model.trim="editDataForm.productAccessCode"></el-input>
+                        <el-input clearable v-model.trim="editDataForm.productAccessCode"></el-input>
                     </el-form-item>
                     <el-form-item label="产品状态：">
                         <el-select clearable v-model="editDataForm.productState" placeholder="产品状态">
@@ -142,14 +136,8 @@
                         </el-select>
                     </el-form-item>
                     <el-form-item label="基础参考费率：">
-                        <el-row :gutter="10">
-                            <el-col :span="13">
-                                <el-input v-model.number="editDataForm.localFee" type="number"></el-input>
-                            </el-col>
-                            <el-col :span="6">
-                                <el-tag type="danger">最多4位整数，2位小数</el-tag>
-                            </el-col>
-                        </el-row>
+                        <el-input clearable v-model.number="editDataForm.localFee" type="number"
+                                  placeholder="最多4位整数，2位小数"></el-input>
                     </el-form-item>
                     <el-form-item label="收费方式：">
                         <el-select clearable v-model="editDataForm.computeMode" placeholder="收费方式">

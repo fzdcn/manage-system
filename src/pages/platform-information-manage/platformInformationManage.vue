@@ -67,10 +67,10 @@
             <div class="form-content" style="margin: 0 auto;width: 90%;">
                 <el-form ref="addDataForm" :model="addDataForm" label-width="120px">
                     <el-form-item label="平台号：">
-                        <el-input v-model.trim="addDataForm.platformNo"></el-input>
+                        <el-input clearable v-model.trim="addDataForm.platformNo"></el-input>
                     </el-form-item>
                     <el-form-item label="平台名称：">
-                        <el-input v-model.trim="addDataForm.platformName"></el-input>
+                        <el-input clearable v-model.trim="addDataForm.platformName"></el-input>
                     </el-form-item>
                 </el-form>
             </div>
@@ -85,19 +85,19 @@
             <div class="form-content" style="margin: 0 auto;width: 90%;">
                 <el-form ref="editDataForm" :model="editDataForm" label-width="120px">
                     <el-form-item label="平台号：">
-                        <el-input v-model.trim="editDataForm.platformNo"></el-input>
+                        <el-input clearable v-model.trim="editDataForm.platformNo"></el-input>
                     </el-form-item>
                     <el-form-item label="平台名称：">
-                        <el-input v-model.trim="editDataForm.name"></el-input>
+                        <el-input clearable v-model.trim="editDataForm.name"></el-input>
                     </el-form-item>
                     <el-form-item label="md5Key：">
-                        <el-input v-model.trim="editDataForm.md5Key"></el-input>
+                        <el-input clearable v-model.trim="editDataForm.md5Key"></el-input>
                     </el-form-item>
                     <el-form-item label="公钥：">
-                        <el-input type="textarea" v-model.trim="editDataForm.publicKey"></el-input>
+                        <el-input clearable type="textarea" v-model.trim="editDataForm.publicKey"></el-input>
                     </el-form-item>
                     <el-form-item label="私钥：">
-                        <el-input type="textarea" v-model.trim="editDataForm.privateKey"></el-input>
+                        <el-input clearable type="textarea" v-model.trim="editDataForm.privateKey"></el-input>
                     </el-form-item>
                 </el-form>
             </div>

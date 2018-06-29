@@ -46,13 +46,15 @@
             <div class="form-content" style="margin: 0 auto;width: 90%;">
                 <el-form ref="addDataForm" :model="addDataForm" label-width="100px">
                     <el-form-item label="名称：">
-                        <el-input v-model.trim="addDataForm.name"></el-input>
+                        <el-input clearable v-model.trim="addDataForm.name" maxlength="10"
+                                  placeholder="名称只能是10位以内汉字"></el-input>
                     </el-form-item>
                     <el-form-item label="电话：">
-                        <el-input v-model.trim="addDataForm.phone"></el-input>
+                        <el-input clearable v-model.trim="addDataForm.phone" placeholder="电话"></el-input>
                     </el-form-item>
                     <el-form-item label="邮箱：">
-                        <el-input v-model.trim="addDataForm.email"></el-input>
+                        <el-input clearable v-model.trim="addDataForm.email" maxlength="20"
+                                  placeholder="邮箱"></el-input>
                     </el-form-item>
                     <el-form-item label="业务员类型：">
                         <el-select clearable v-model="addDataForm.type" placeholder="业务员类型">
@@ -77,13 +79,15 @@
             <div class="form-content" style="margin: 0 auto;width: 90%;">
                 <el-form ref="editDataForm" :model="editDataForm" label-width="100px">
                     <el-form-item label="名称：">
-                        <el-input v-model.trim="editDataForm.name"></el-input>
+                        <el-input clearable v-model.trim="editDataForm.name" maxlength="10"
+                                  placeholder="名称只能是10位以内汉字"></el-input>
                     </el-form-item>
                     <el-form-item label="电话：">
-                        <el-input v-model.trim="editDataForm.phone"></el-input>
+                        <el-input clearable v-model.trim="editDataForm.phone" placeholder="电话"></el-input>
                     </el-form-item>
                     <el-form-item label="邮箱：">
-                        <el-input v-model.trim="editDataForm.email"></el-input>
+                        <el-input clearable v-model.trim="editDataForm.email" maxlength="20"
+                                  placeholder="邮箱"></el-input>
                     </el-form-item>
                     <el-form-item label="业务员类型：">
                         <el-select clearable v-model="editDataForm.type" placeholder="业务员类型">
@@ -225,6 +229,10 @@
                     this.$message.warning('名称不能为空！');
                     return false;
                 }
+                if (!/^[\u4e00-\u9fa5]{1,10}$/.test(vm.addDataForm.name)) {
+                    this.$message.warning('名称只能是10位以内汉字！');
+                    return false;
+                }
                 if (!this.addDataForm.phone) {
                     this.$message.warning('电话不能为空！');
                     return false;
@@ -235,6 +243,10 @@
                 }
                 if (!this.addDataForm.email) {
                     this.$message.warning('邮箱不能为空！');
+                    return false;
+                }
+                if (this.addDataForm.email.length > 20) {
+                    this.$message.warning('邮箱长度不超过20位！');
                     return false;
                 }
                 if (!regEmail.test(this.addDataForm.email)) {
@@ -281,8 +293,8 @@
             },
             submitEdit() {
                 let vm = this;
-                if (!this.editDataForm.name) {
-                    this.$message.warning('名称不能为空！');
+                if (!/^[\u4e00-\u9fa5]{1,10}$/.test(vm.editDataForm.name)) {
+                    this.$message.warning('名称只能是10位以内汉字！');
                     return false;
                 }
                 if (!this.editDataForm.phone) {
@@ -295,6 +307,10 @@
                 }
                 if (!this.editDataForm.email) {
                     this.$message.warning('邮箱不能为空！');
+                    return false;
+                }
+                if (this.editDataForm.email.length > 20) {
+                    this.$message.warning('邮箱长度不超过20位！');
                     return false;
                 }
                 if (!regEmail.test(this.editDataForm.email)) {

@@ -59,7 +59,7 @@
             <div class="form-content" style="margin: 0 auto;width: 90%;">
                 <el-form ref="addDataForm" :model="addDataForm" label-width="120px">
                     <el-form-item label="IP：">
-                        <el-input v-model.trim="addDataForm.ip"></el-input>
+                        <el-input clearable v-model.trim="addDataForm.ip"></el-input>
                     </el-form-item>
                     <el-form-item label="类型：">
                         <el-select clearable v-model="addDataForm.type" placeholder="类型">
@@ -84,7 +84,7 @@
             <div class="form-content" style="margin: 0 auto;width: 90%;">
                 <el-form ref="ditDataForm" :model="ditDataForm" label-width="120px">
                     <el-form-item label="IP：">
-                        <el-input v-model.trim="ditDataForm.ip"></el-input>
+                        <el-input clearable v-model.trim="ditDataForm.ip"></el-input>
                     </el-form-item>
                     <el-form-item label="类型：">
                         <el-select clearable v-model="ditDataForm.type" placeholder="类型">
@@ -211,8 +211,7 @@
                     type: this.addDataForm.type
                 }).then((data) => {
                     vm.$message.success(data.message);
-                    vm.isShowAdd = false;
-                    vm.addDataForm = {};
+                    vm.cancelAdd();
                     vm.handleCurrentChange(1);
                 }).catch((data) => {
                     console.log(data)
@@ -243,7 +242,7 @@
                     type: this.ditDataForm.type
                 }).then((data) => {
                     vm.$message.success(data.message);
-                    vm.isShowEdit = false;
+                    vm.cancelEdit();
                     vm.getData();
                 }).catch((data) => {
                     console.log(data)

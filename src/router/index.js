@@ -108,6 +108,18 @@ const routes = [
                 meta: {title: '路由信息管理', permission: false},
             },
             {
+                path: '/trade-manage',
+                name: 'trade-manage',
+                component: resolve => require(['../pages/trade-manage/TradeManage.vue'], resolve),
+                meta: {title: '交易信息管理', permission: false},
+            },
+            {
+                path: '/bank-info-manage',
+                name: 'bank-info-manage',
+                component: resolve => require(['../pages/system-manage/bank-info-manage/BankInfoManage.vue'], resolve),
+                meta: {title: '银行管理', permission: false},
+            },
+            {
                 // 权限页面
                 path: '/permission',
                 name: 'permission',

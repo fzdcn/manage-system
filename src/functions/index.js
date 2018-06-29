@@ -33,7 +33,7 @@ export function goBack() {
     }
 }
 
-// 11位数字，以1开头
+// 电话号码，11位数字，以1开头
 export const regTel = /^1\d{10}$/;
 
 /**
@@ -57,7 +57,7 @@ export const regEmail = /^(\w-*\.*)+@(\w-?)+(\.\w{2,})+$/;
  第十八位是‘X‘ d.17位数字，
  第十八位是‘x‘
  */
-export const regIdCode = /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/
+export const regIdCode = /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/;
 
 
 

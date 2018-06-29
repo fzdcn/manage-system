@@ -7,209 +7,240 @@
             <div class="handle-box" style="margin-bottom: 20px;display: flex;flex-flow: row wrap;">
                 <div style="margin: 0px 20px 10px 0;">
                     <span>银行名称：</span>
-                    <el-input style="width: 150px;" class="username" v-model.trim="searchDataForm.templateCode"
-                              clearable placeholder="请填写银行名称">
-                    </el-input>
-                </div>
-                <div style="margin: 0px 20px 10px 0;">
-                    <span>通道卡类型：</span>
-                    <el-select clearable style="width: 150px;" v-model="searchDataForm.platformId" placeholder="通道卡类型">
-                        <el-option
-                            v-for="item in platformIdList"
-                            :key="item.id"
-                            :label="item.platformName"
-                            :value="item.id">
+                    <el-select clearable style="width: 150px;" v-model="searchDataForm.bankCode" placeholder="请选择银行名称">
+                        <el-option v-for="item in bankInfoList" :key="item.bankCode" :label="item.bankName"
+                                   :value="item.bankCode">
                         </el-option>
                     </el-select>
                 </div>
                 <div style="margin: 0px 20px 10px 0;">
-                    <span>指定商户类型：</span>
-                    <el-select clearable style="width: 150px;" v-model="searchDataForm.platformId"
-                               placeholder="通指定商户类型">
-                        <el-option
-                            v-for="item in platformIdList"
-                            :key="item.id"
-                            :label="item.platformName"
-                            :value="item.id">
+                    <span>卡类型：</span>
+                    <el-select clearable style="width: 150px;" v-model="searchDataForm.cardType" placeholder="请选择卡类型">
+                        <el-option v-for="item in cardType" :key="item.id" :label="item.name" :value="item.id">
                         </el-option>
                     </el-select>
                 </div>
                 <div style="margin: 0px 20px 10px 0;">
-                    <span>公司支付通道：</span>
-                    <el-select clearable style="width: 150px;" v-model="searchDataForm.platformId" placeholder="公司支付通道">
-                        <el-option
-                            v-for="item in platformIdList"
-                            :key="item.id"
-                            :label="item.platformName"
-                            :value="item.id">
+                    <span>平台名称：</span>
+                    <el-select clearable style="width: 150px;" v-model="searchDataForm.platformNo"
+                               placeholder="请选择平台名称">
+                        <el-option v-for="item in platformIdList" :key="item.platformNo" :label="item.platformName"
+                                   :value="item.platformNo">
+                        </el-option>
+                    </el-select>
+                </div>
+                <div style="margin: 0px 20px 10px 0;">
+                    <span>产品名称：</span>
+                    <el-select clearable style="width: 150px;" v-model="searchDataForm.productAccessCode"
+                               placeholder="请选择产品名称">
+                        <el-option v-for="item in productNameList" :key="item.productAccessCode"
+                                   :label="item.productName" :value="item.productAccessCode">
                         </el-option>
                     </el-select>
                 </div>
                 <div style="margin: 0px 20px 10px 0;">
                     <span>银行支付通道：</span>
-                    <el-select clearable style="width: 150px;" v-model="searchDataForm.platformId" placeholder="银行支付通道">
-                        <el-option
-                            v-for="item in platformIdList"
-                            :key="item.id"
-                            :label="item.platformName"
-                            :value="item.id">
+                    <el-select clearable style="width: 150px;" v-model="searchDataForm.channelAccessCode"
+                               placeholder="请选择银行支付通道">
+                        <el-option v-for="item in channelNameList" :key="item.channelAccessCode"
+                                   :label="item.channelName" :value="item.channelAccessCode">
                         </el-option>
                     </el-select>
                 </div>
                 <div>
-                    <el-button type="primary" icon="el-icon-search" @click="cur_page=1;getData();">搜索</el-button>
+                    <el-button type="primary" icon="el-icon-search" @click="handleCurrentChange(1)">搜索</el-button>
                 </div>
             </div>
             <el-table :data="getDataList" border style="width: 100%;">
-                <el-table-column prop="platformNo" label="id">
+                <el-table-column prop="id" label="编号">
                 </el-table-column>
-                <el-table-column prop="name" label="银行名称">
+                <el-table-column prop="bankName" label="银行名称">
                 </el-table-column>
-                <el-table-column prop="md5Key" label="银行代码">
+                <el-table-column prop="cardType" label="卡类型">
+                    <template slot-scope="scope">
+                        <span v-if="scope.row.cardType==1">借记卡</span>
+                        <span v-if="scope.row.cardType==2">贷记卡</span>
+                        <span v-if="scope.row.cardType==9">通用</span>
+                    </template>
                 </el-table-column>
-                <el-table-column prop="publicKey" label="银行编号">
+                <el-table-column prop="platformName" label="平台名称">
                 </el-table-column>
-                <el-table-column prop="privateKey" label="公司通道名称">
+                <el-table-column prop="productName" label="产品名称">
                 </el-table-column>
-                <el-table-column prop="privateKey" label="公司通道接入码">
+                <el-table-column prop="channelName" label="银行支付通道">
                 </el-table-column>
-                <el-table-column prop="privateKey" label="银行通道名称">
+                <el-table-column prop="amountMin" label="交易下限">
                 </el-table-column>
-                <el-table-column prop="privateKey" label="银行通道接入码">
+                <el-table-column prop="amountMax" label="交易上限">
                 </el-table-column>
-                <el-table-column prop="privateKey" label="通道卡类型">
+                <el-table-column prop="remark" label="备注">
                 </el-table-column>
-                <el-table-column prop="privateKey" label="交易金额下限">
+                <el-table-column prop="status" label="状态">
+                    <template slot-scope="scope">
+                        <span v-if="scope.row.status==1">可用</span>
+                        <span v-else>不可用</span>
+                    </template>
                 </el-table-column>
-                <el-table-column prop="privateKey" label="交易金额上限">
+                <el-table-column prop="createBy" label="创建人">
                 </el-table-column>
-                <el-table-column prop="privateKey" label="使用范围">
+                <el-table-column prop="createAt" label="创建时间">
                 </el-table-column>
-                <el-table-column prop="privateKey" label="商户号">
-                </el-table-column>
-                <el-table-column prop="privateKey" label="指定商户类型">
-                </el-table-column>
-                <el-table-column prop="privateKey" label="操作人">
-                </el-table-column>
-                <el-table-column prop="privateKey" label="执行时间">
-                </el-table-column>
-                <el-table-column prop="privateKey" label="备注">
-                </el-table-column>
-                <el-table-column prop="privateKey" label="执行时间">
-                </el-table-column>
-                <el-table-column label="操作" width="160px" align="center">
+                <el-table-column label="操作" width="100px" align="center">
                     <template v-if="getDataList.length > 0" slot-scope="scope">
                         <el-button @click="handleEdit(scope.row)" type="primary" icon="el-icon-edit" size="small">编辑
-                        </el-button>
-                        <el-button @click="handleDelete(scope.row)" type="danger" icon="el-icon-delete" size="small">
-                            删除
                         </el-button>
                     </template>
                 </el-table-column>
             </el-table>
             <div class="pagination" style="overflow: hidden;">
-                <el-pagination background :current-page="cur_page" @current-change="handleCurrentChange"
+                <el-pagination v-if="paginationShow" background :current-page="cur_page"
+                               @current-change="handleCurrentChange"
                                layout="total, prev, pager, next, jumper"
                                :page-size="10" :pager-count="11" :total="total">
                 </el-pagination>
             </div>
         </div>
         <!--增加-->
-        <el-dialog title="增加交易通道" :visible.sync="isShowAdd" :before-close="cancelAdd" width="650px" center>
+        <el-dialog title="添加渠道路由" :visible.sync="isShowAdd" :before-close="cancelAdd" width="650px" center>
             <div class="form-content" style="margin: 0 auto;width: 90%;">
                 <el-form ref="addDataForm" :model="addDataForm" label-width="140px">
-                    <el-form-item label="银行：">
-                        <el-select clearable v-model="addDataForm.roleId" placeholder="银行" style="width: 400px">
+                    <el-form-item label="银行名称：">
+                        <el-select clearable v-model="addDataForm.bankCode" placeholder="银行名称" style="width: 400px">
                             <el-option
-                                v-for="item in roleList"
-                                :key="item.id"
-                                :label="item.name"
-                                :value="item.id">
+                                v-for="item in bankInfoList"
+                                :key="item.bankCode"
+                                :label="item.bankName"
+                                :value="item.bankCode">
                             </el-option>
                         </el-select>
                     </el-form-item>
-                    <el-form-item label="公司支付通道：">
-                        <el-select clearable v-model="addDataForm.roleId" placeholder="公司支付通道" style="width: 400px">
+                    <el-form-item label="产品名称：">
+                        <el-select clearable v-model="addDataForm.productAccessCode" placeholder="产品名称"
+                                   style="width: 400px">
                             <el-option
-                                v-for="item in roleList"
-                                :key="item.id"
-                                :label="item.name"
-                                :value="item.id">
+                                v-for="item in productNameList"
+                                :key="item.productAccessCode"
+                                :label="item.productName"
+                                :value="item.productAccessCode">
                             </el-option>
                         </el-select>
                     </el-form-item>
                     <el-form-item label="银行支付通道：">
-                        <el-select clearable v-model="addDataForm.roleId" placeholder="银行支付通道" style="width: 400px">
+                        <el-select clearable v-model="addDataForm.channelAccessCode" placeholder="银行支付通道"
+                                   style="width: 400px">
                             <el-option
-                                v-for="item in roleList"
+                                v-for="item in channelNameList"
+                                :key="item.channelAccessCode"
+                                :label="item.channelName"
+                                :value="item.channelAccessCode">
+                            </el-option>
+                        </el-select>
+                    </el-form-item>
+                    <el-form-item label="卡类型：">
+                        <el-select clearable v-model="addDataForm.cardType" placeholder="卡类型"
+                                   style="width: 400px">
+                            <el-option
+                                v-for="item in cardType"
                                 :key="item.id"
                                 :label="item.name"
                                 :value="item.id">
                             </el-option>
                         </el-select>
                     </el-form-item>
-                    <el-form-item label="使用卡类型：">
-                        <el-radio-group v-model="addDataForm.resource">
-                            <el-radio label="借贷通用"></el-radio>
-                            <el-radio label="借记卡"></el-radio>
-                            <el-radio label="贷记卡"></el-radio>
-                        </el-radio-group>
+                    <el-form-item label="平台名称：">
+                        <el-select clearable v-model="addDataForm.platformCode" placeholder="平台名称"
+                                   style="width: 400px">
+                            <el-option
+                                v-for="item in platformIdList"
+                                :key="item.platformNo"
+                                :label="item.platformName"
+                                :value="item.platformNo">
+                            </el-option>
+                        </el-select>
                     </el-form-item>
-                    <el-form-item label="指定商户类型：">
-                        <el-radio-group v-model="addDataForm.resource1">
-                            <el-radio label="通用"></el-radio>
-                            <el-radio label="直营商户"></el-radio>
-                            <el-radio label="存管商户"></el-radio>
-                            <el-radio label="会员商户"></el-radio>
-                        </el-radio-group>
+                    <el-form-item label="交易上限：">
+                        <el-input clearable type="number" v-model.trim="addDataForm.amountMax"></el-input>
                     </el-form-item>
-                    <el-form-item label="指定商户号：">
-                        <el-input v-model.trim="addDataForm.name"></el-input>
-                    </el-form-item>
-                    <el-form-item label="通道支付金额下限：">
-                        <el-input v-model.trim="addDataForm.name"></el-input>
-                    </el-form-item>
-                    <el-form-item label="通道支付金额上限：">
-                        <el-input v-model.trim="addDataForm.name"></el-input>
+                    <el-form-item label="交易下限：">
+                        <el-input clearable type="number" v-model.trim="addDataForm.amountMin"></el-input>
                     </el-form-item>
                     <el-form-item label="备注：">
-                        <el-input v-model.trim="addDataForm.name"></el-input>
+                        <el-input clearable type="textarea" v-model.trim="addDataForm.remark"></el-input>
                     </el-form-item>
                 </el-form>
             </div>
             <span slot="footer" class="dialog-footer">
                 <el-button type="primary" @click="submitAdd">确 定</el-button>
-                <el-button @click="cancelAdd">取 消</el-button>
+                <el-button @click="cancelAdd">取消</el-button>
             </span>
         </el-dialog>
 
         <!--编辑-->
-        <el-dialog title="编辑平台信息" :visible.sync="isShowEdit" :before-close="cancelEdit" width="600px" center>
+        <el-dialog title="编辑渠道路由" :visible.sync="isShowEdit" :before-close="cancelEdit" width="600px" center>
             <div class="form-content" style="margin: 0 auto;width: 90%;">
                 <el-form ref="editDataForm" :model="editDataForm" label-width="120px">
-                    <el-form-item label="平台号：">
-                        <el-input v-model.trim="editDataForm.platformNo"></el-input>
+                    <el-form-item label="银行名称：">
+                        <el-select clearable v-model="editDataForm.bankCode" placeholder="银行名称" style="width: 400px">
+                            <el-option
+                                v-for="item in bankInfoList"
+                                :key="item.bankCode"
+                                :label="item.bankName"
+                                :value="item.bankCode">
+                            </el-option>
+                        </el-select>
+                    </el-form-item>
+                    <el-form-item label="产品名称：">
+                        <el-select clearable v-model="editDataForm.productAccessCode" placeholder="产品名称"
+                                   style="width: 400px">
+                            <el-option
+                                v-for="item in productNameList"
+                                :key="item.productAccessCode"
+                                :label="item.productName"
+                                :value="item.productAccessCode">
+                            </el-option>
+                        </el-select>
+                    </el-form-item>
+                    <el-form-item label="银行支付通道：">
+                        <el-select clearable v-model="editDataForm.channelAccessCode" placeholder="银行支付通道"
+                                   style="width: 400px">
+                            <el-option
+                                v-for="item in channelNameList"
+                                :key="item.channelAccessCode"
+                                :label="item.channelName"
+                                :value="item.channelAccessCode">
+                            </el-option>
+                        </el-select>
+                    </el-form-item>
+                    <el-form-item label="卡类型：">
+                        <el-select clearable v-model="editDataForm.cardType" placeholder="卡类型"
+                                   style="width: 400px">
+                            <el-option
+                                v-for="item in cardType"
+                                :key="item.id"
+                                :label="item.name"
+                                :value="item.id">
+                            </el-option>
+                        </el-select>
                     </el-form-item>
                     <el-form-item label="平台名称：">
-                        <el-input v-model.trim="editDataForm.platformName"></el-input>
+                        <el-select clearable v-model="editDataForm.platformCode" placeholder="平台名称"
+                                   style="width: 400px">
+                            <el-option
+                                v-for="item in platformIdList"
+                                :key="item.platformNo"
+                                :label="item.platformName"
+                                :value="item.platformNo">
+                            </el-option>
+                        </el-select>
                     </el-form-item>
-                    <el-form-item label="md5Key：">
-                        <el-input v-model.trim="editDataForm.md5Key"></el-input>
+                    <el-form-item label="交易上限：">
+                        <el-input clearable type="number" v-model.trim="editDataForm.amountMax"></el-input>
                     </el-form-item>
-                    <el-form-item label="公钥：">
-                        <!--<el-input v-model.trim="editDataForm.publicKey"></el-input>-->
-                        <template slot-scope="scope">
-                            <el-popover trigger="hover" placement="top">
-                                <p>标题: 公钥</p>
-                                <p>{{ scope.row.publicKey }}</p>
-                                <div slot="reference" class="name-wrapper">
-                                    <el-tag size="medium">{{ scope.row.publicKey }}</el-tag>
-                                </div>
-                            </el-popover>
-                        </template>
+                    <el-form-item label="交易下限：">
+                        <el-input clearable type="number" v-model.trim="editDataForm.amountMin"></el-input>
                     </el-form-item>
-                    <el-form-item label="私钥：">
-                        <el-input v-model.trim="editDataForm.privateKey"></el-input>
+                    <el-form-item label="备注：">
+                        <el-input clearable type="textarea" v-model.trim="editDataForm.remark"></el-input>
                     </el-form-item>
                 </el-form>
             </div>
@@ -226,6 +257,7 @@
     export default {
         data() {
             return {
+                paginationShow: true,
                 getDataList: [],
                 // 当前页
                 cur_page: 1,
@@ -236,32 +268,77 @@
                 // 是否显示编辑弹框
                 isShowEdit: false,
                 // 增加参数
-                addDataForm: {
-                    resource: '借贷通用'
-                },
+                addDataForm: {},
                 // 编辑参数
-                editDataForm: {},
+                editDataForm: {
+                    bankCode: "",
+                    productAccessCode: "",
+                    channelAccessCode: "",
+                    cardType: "",
+                    platformCode: "",
+                    remark: ""
+                },
                 searchDataForm: {},
+                // 平台名称
                 platformIdList: [],
+                // 银行名称
+                bankInfoList: [],
+                // 产品名称
+                productNameList: [],
+                // 银行支付通道
+                channelNameList: [],
+                // 卡类型
+                cardType: [
+                    {
+                        id: '1',
+                        name: '借记卡'
+                    },
+                    {
+                        id: '2',
+                        name: '贷记卡'
+                    },
+                    {
+                        id: '9',
+                        name: '通用'
+                    }
+                ],
             }
         },
         methods: {
             // 分页导航
             handleCurrentChange(val) {
                 this.cur_page = val;
+                this.paginationShow = false;
                 this.getData();
             },
             getData() {
                 let vm = this;
-                this.$httpGet('/admin/platformInfo/list', {
+                this.$httpGet('/admin/routeInfo/list', {
                     pageNo: this.cur_page,
                     pageSize: 10,
-                    platformNo: this.searchDataForm.platformNo
+                    bankCode: this.searchDataForm.bankCode,
+                    cardType: this.searchDataForm.cardType,
+                    platformCode: this.searchDataForm.platformNo,
+                    productAccessCode: this.searchDataForm.productAccessCode,
+                    channelAccessCode: this.searchDataForm.channelAccessCode
                 }).then(({data}) => {
                     vm.getDataList = data.list;
                     vm.total = data.total;
+                    vm.paginationShow = true;
                 }).catch((data) => {
                     console.log(data)
+                })
+            },
+            // 获取同步数据
+            getListData() {
+                return this.$httpGet('/admin/routeInfo/list', {
+                    pageNo: this.cur_page,
+                    pageSize: 10,
+                    bankCode: this.searchDataForm.bankCode,
+                    cardType: this.searchDataForm.cardType,
+                    platformCode: this.searchDataForm.platformNo,
+                    productAccessCode: this.searchDataForm.productAccessCode,
+                    channelAccessCode: this.searchDataForm.channelAccessCode
                 })
             },
             add() {
@@ -273,89 +350,127 @@
             },
             submitAdd() {
                 let vm = this;
-                if (!this.addDataForm.platformNo) {
-                    this.$message.warning('平台号不能为空！');
+                if (!this.addDataForm.bankCode) {
+                    this.$message.warning('银行名称不能为空！');
                     return false;
                 }
-                if (!this.addDataForm.platformName) {
+                if (!this.addDataForm.productAccessCode) {
+                    this.$message.warning('产品通道不能为空！');
+                    return false;
+                }
+                if (!this.addDataForm.channelAccessCode) {
+                    this.$message.warning('银行支付通道不能为空！');
+                    return false;
+                }
+                if (!this.addDataForm.cardType) {
+                    this.$message.warning('卡类型不能为空！');
+                    return false;
+                }
+                if (!this.addDataForm.platformCode) {
                     this.$message.warning('平台名称不能为空！');
                     return false;
                 }
-                this.$httpPost('/admin/platformInfo/add', {
-                    platformNo: this.addDataForm.platformNo,
-                    platformName: this.addDataForm.platformName
+                this.$httpPost('/admin/routeInfo/add', {
+                    bankCode: this.addDataForm.bankCode,
+                    productAccessCode: this.addDataForm.productAccessCode,
+                    channelAccessCode: this.addDataForm.channelAccessCode,
+                    cardType: this.addDataForm.cardType,
+                    platformCode: this.addDataForm.platformCode,
+                    amountMax: this.addDataForm.amountMax,
+                    amountMin: this.addDataForm.amountMin,
+                    remark: this.addDataForm.remark
                 }).then((data) => {
                     vm.$message.success(data.message);
-                    vm.isShowAdd = false;
-                    vm.addDataForm = {};
-                    vm.$httpGet('/admin/platformInfo/list', {
-                        pageNo: 1,
-                        pageSize: 10,
-                        platformNo: this.searchDataForm.platformNo
-                    }).then(({data}) => {
-                        vm.getDataList = data.list;
-                        vm.total = data.total;
-                    }).catch((data) => {
-                        console.log(data)
-                    })
+                    vm.cancelAdd();
+                    vm.handleCurrentChange(1);
                 }).catch((data) => {
                     console.log(data)
                 })
             },
             handleEdit(row) {
                 this.isShowEdit = true;
-                this.editDataForm.platformNo = row.platformNo;
-                this.editDataForm.platformName = row.platformName;
-                this.editDataForm.md5Key = row.md5Key;
-                this.editDataForm.publicKey = row.publicKey;
-                this.editDataForm.privateKey = row.privateKey;
                 this.editDataForm.id = row.id;
+                this.editDataForm.bankCode = row.bankCode;
+                this.editDataForm.productAccessCode = row.productAccessCode;
+                this.editDataForm.channelAccessCode = row.channelAccessCode;
+                this.editDataForm.cardType = row.cardType;
+                this.editDataForm.platformCode = row.platformCode;
+                this.editDataForm.remark = row.remark;
             },
             cancelEdit() {
                 this.isShowEdit = false;
-                this.editDataForm = {};
             },
             submitEdit() {
                 let vm = this;
-                if (!this.editDataForm.platformNo) {
-                    this.$message.warning('平台号不能为空！');
+                if (!this.editDataForm.bankCode) {
+                    this.$message.warning('银行名称不能为空！');
                     return false;
                 }
-                if (!this.editDataForm.platformName) {
+                if (!this.editDataForm.productAccessCode) {
+                    this.$message.warning('产品名称不能为空！');
+                    return false;
+                }
+                if (!this.editDataForm.channelAccessCode) {
+                    this.$message.warning('银行支付通道不能为空！');
+                    return false;
+                }
+                if (!this.editDataForm.cardType) {
+                    this.$message.warning('卡类型不能为空！');
+                    return false;
+                }
+                if (!this.editDataForm.platformCode) {
                     this.$message.warning('平台名称不能为空！');
                     return false;
                 }
-                if (!this.editDataForm.md5Key) {
-                    this.$message.warning('md5Key不能为空！');
-                    return false;
-                }
-                if (!this.editDataForm.publicKey) {
-                    this.$message.warning('公钥不能为空！');
-                    return false;
-                }
-                if (!this.editDataForm.privateKey) {
-                    this.$message.warning('私钥不能为空！');
-                    return false;
-                }
-                this.$httpPost('/admin/platformInfo/update', {
+                this.$httpPost('/admin/routeInfo/edit', {
                     id: this.editDataForm.id,
-                    platformNo: this.editDataForm.platformNo,
-                    platformName: this.editDataForm.platformName,
-                    md5Key: this.editDataForm.md5Key,
-                    publicKey: this.editDataForm.publicKey,
-                    privateKey: this.editDataForm.privateKey
+                    bankCode: this.editDataForm.bankCode,
+                    productAccessCode: this.editDataForm.productAccessCode,
+                    channelAccessCode: this.editDataForm.channelAccessCode,
+                    cardType: this.editDataForm.cardType,
+                    platformCode: this.editDataForm.platformCode,
+                    remark: this.editDataForm.remark
                 }).then((data) => {
                     vm.$message.success(data.message);
-                    vm.isShowEdit = false;
-                    vm.editDataForm = {};
+                    vm.cancelEdit();
                     vm.getData();
                 }).catch((data) => {
                     console.log(data)
                 })
+            },
+            // 平台名称
+            getPlatFormList() {
+                return this.$httpGet('/admin/platformInfo/option', {})
+            },
+            // 产品名称
+            getProductNameList() {
+                return this.$httpGet('/admin/epay/productsInfo/findProductAll', {})
+            },
+            // 银行支付通道
+            getChannelInfoList() {
+                return this.$httpGet('/admin/epay/channelInfo/findChannelAll', {})
+            },
+            // 银行信息下拉列表
+            getBankInfoList() {
+                return this.$httpGet('/admin/bankInfo/option', {})
+            },
+            async getAllData() {
+                let vm = this;
+                await Promise.all([vm.getPlatFormList(), vm.getListData(), vm.getProductNameList(), vm.getChannelInfoList(), vm.getBankInfoList()])
+                    .then((data) => {
+                        vm.platformIdList = data[0].data;
+                        vm.productNameList = data[2].data;
+                        vm.channelNameList = data[3].data;
+                        vm.bankInfoList = data[4].data;
+                        vm.getDataList = data[1].data.list;
+                        vm.total = data[1].data.total;
+                    }).catch((data) => {
+                        console.log(data);
+                    })
             }
         },
         created() {
-            this.getData();
+            this.getAllData();
         }
     }
 

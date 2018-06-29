@@ -40,10 +40,11 @@
             <div class="form-content" style="margin: 0 auto;width: 90%;">
                 <el-form ref="addDataForm" :model="addDataForm" label-width="100px">
                     <el-form-item label="菜单名：">
-                        <el-input v-model.trim="addDataForm.name" placeholder="如：首页"></el-input>
+                        <el-input clearable v-model.trim="addDataForm.name" maxLength="10"
+                                  placeholder="只能是10位以内英文或汉字"></el-input>
                     </el-form-item>
                     <el-form-item label="ICON：">
-                        <el-input v-model.trim="addDataForm.icon" placeholder="如：el-icon-setting"></el-input>
+                        <el-input clearable v-model.trim="addDataForm.icon" placeholder="如：el-icon-setting"></el-input>
                     </el-form-item>
                     <el-form-item label="类型：">
                         <el-select clearable v-model.trim="addDataForm.type" placeholder="类型">
@@ -56,10 +57,12 @@
                         </el-select>
                     </el-form-item>
                     <el-form-item label="权限key：">
-                        <el-input v-model.trim="addDataForm.permission" placeholder="如common:index"></el-input>
+                        <el-input clearable v-model.trim="addDataForm.permission"
+                                  placeholder="如common:index"></el-input>
                     </el-form-item>
                     <el-form-item label="链接：">
-                        <el-input type="tel" v-model.trim="addDataForm.url" placeholder="如common:index"></el-input>
+                        <el-input clearable type="tel" v-model.trim="addDataForm.url"
+                                  placeholder="如common:index"></el-input>
                     </el-form-item>
                     <el-form-item label="父节点：">
                         <el-select clearable v-model.trim="addDataForm.parentId" placeholder="请选择">
@@ -80,7 +83,7 @@
                         </el-select>
                     </el-form-item>
                     <el-form-item label="排序：">
-                        <el-input v-model.trim="addDataForm.orders"></el-input>
+                        <el-input type="number" v-model.trim="addDataForm.orders" placeholder="必须为正整数"></el-input>
                     </el-form-item>
                 </el-form>
             </div>
@@ -93,11 +96,13 @@
         <el-dialog title="编辑后台菜单" :visible.sync="isShowEdit" :before-close="cancelEdit" width="500px" center>
             <div class="form-content" style="margin: 0 auto;width: 90%;">
                 <el-form ref="editDataForm" :model="editDataForm" label-width="100px">
+
                     <el-form-item label="菜单名：">
-                        <el-input v-model.trim="editDataForm.name" placeholder="如：首页"></el-input>
+                        <el-input clearable v-model.trim="editDataForm.name" maxLength="10"
+                                  placeholder="只能是10位以内英文或汉字"></el-input>
                     </el-form-item>
                     <el-form-item label="ICON：">
-                        <el-input v-model.trim="editDataForm.icon" placeholder="如：el-icon-setting"></el-input>
+                        <el-input clearable v-model.trim="editDataForm.icon" placeholder="如：el-icon-setting"></el-input>
                     </el-form-item>
                     <el-form-item label="类型：">
                         <el-select clearable v-model.trim="editDataForm.type" placeholder="类型">
@@ -110,10 +115,12 @@
                         </el-select>
                     </el-form-item>
                     <el-form-item label="权限key：">
-                        <el-input v-model.trim="editDataForm.permission" placeholder="如common:index"></el-input>
+                        <el-input clearable v-model.trim="editDataForm.permission"
+                                  placeholder="如common:index"></el-input>
                     </el-form-item>
                     <el-form-item label="链接：">
-                        <el-input type="tel" v-model.trim="editDataForm.url" placeholder="如common:index"></el-input>
+                        <el-input clearable type="tel" v-model.trim="editDataForm.url"
+                                  placeholder="如common:index"></el-input>
                     </el-form-item>
                     <el-form-item label="父节点：">
                         <el-select clearable v-model.trim="editDataForm.parentId" placeholder="请选择">
@@ -134,7 +141,7 @@
                         </el-select>
                     </el-form-item>
                     <el-form-item label="排序：">
-                        <el-input v-model.trim="editDataForm.orders"></el-input>
+                        <el-input type="number" v-model.trim="editDataForm.orders" placeholder="必须为正整数"></el-input>
                     </el-form-item>
                 </el-form>
             </div>
@@ -240,8 +247,28 @@
                     this.$message.warning('菜单名不能为空！');
                     return false;
                 }
+                if (!/^[\u4e00-\u9fa5]{1,10}$/.test(vm.editDataForm.name) && !/^[A-Za-z]{1,10}$/.test(vm.editDataForm.name)) {
+                    this.$message.warning('菜单名只能是10位以内英文或汉字！');
+                    return false;
+                }
+                if (!this.editDataForm.type) {
+                    this.$message.warning('类型不能为空！');
+                    return false;
+                }
                 if (!this.editDataForm.permission) {
                     this.$message.warning('权限key不能为空！');
+                    return false;
+                }
+                if (!this.editDataForm.parentId) {
+                    this.$message.warning('父节点不能为空！');
+                    return false;
+                }
+                if (!this.editDataForm.orders) {
+                    this.$message.warning('排序不能为空！');
+                    return false;
+                }
+                if (!/^[1-9]\d*$/.test(vm.editDataForm.orders)) {
+                    this.$message.warning('排序数字必须为正整数！');
                     return false;
                 }
                 this.$httpPost('/admin/permission/update', {
@@ -255,7 +282,7 @@
                     orders: this.editDataForm.orders
                 }).then((data) => {
                     vm.$message.success(data.message);
-                    vm.isShowEdit = false;
+                    vm.cancelEdit();
                     vm.getAllData();
                 }).catch((data) => {
                     console.log(data)
@@ -292,8 +319,28 @@
                     this.$message.warning('菜单名不能为空！');
                     return false;
                 }
+                if (!/^[\u4e00-\u9fa5]{1,10}$/.test(vm.addDataForm.name) && !/^[A-Za-z]{1,10}$/.test(vm.addDataForm.name)) {
+                    this.$message.warning('菜单名只能是10位以内英文或汉字！');
+                    return false;
+                }
+                if (!this.addDataForm.type) {
+                    this.$message.warning('类型不能为空！');
+                    return false;
+                }
                 if (!this.addDataForm.permission) {
                     this.$message.warning('权限key不能为空！');
+                    return false;
+                }
+                if (!this.addDataForm.parentId) {
+                    this.$message.warning('父节点不能为空！');
+                    return false;
+                }
+                if (!this.addDataForm.orders) {
+                    this.$message.warning('排序不能为空！');
+                    return false;
+                }
+                if (!/^[1-9]\d*$/.test(vm.addDataForm.orders)) {
+                    this.$message.warning('排序数字必须为正整数！');
                     return false;
                 }
                 this.$httpPost('/admin/permission/save', {
@@ -306,8 +353,7 @@
                     orders: this.addDataForm.orders
                 }).then((data) => {
                     vm.$message.success(data.message);
-                    vm.isShowAdd = false;
-                    vm.addDataForm = {};
+                    vm.cancelAdd();
                     vm.getAllData();
                 }).catch((data) => {
                     console.log(data)

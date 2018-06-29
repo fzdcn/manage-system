@@ -74,23 +74,17 @@
             <div class="form-content" style="margin: 0 auto;width: 90%;">
                 <el-form ref="addDataForm" :model="addDataForm" label-width="150px">
                     <el-form-item label="通道名称：">
-                        <el-input v-model.trim="addDataForm.channelName"></el-input>
+                        <el-input clearable v-model.trim="addDataForm.channelName"></el-input>
                     </el-form-item>
                     <el-form-item label="通道接入码：">
-                        <el-input v-model.trim="addDataForm.channelAccessCode"></el-input>
+                        <el-input clearable v-model.trim="addDataForm.channelAccessCode"></el-input>
                     </el-form-item>
                     <el-form-item label="通道接入请求地址：">
-                        <el-input v-model.trim="addDataForm.bankUrl"></el-input>
+                        <el-input clearable v-model.trim="addDataForm.bankUrl"></el-input>
                     </el-form-item>
                     <el-form-item label="银行收取费率：">
-                        <el-row :gutter="10">
-                            <el-col :span="13">
-                                <el-input v-model.number="addDataForm.localFee" type="number"></el-input>
-                            </el-col>
-                            <el-col :span="6">
-                                <el-tag type="danger">最多4位整数，2位小数</el-tag>
-                            </el-col>
-                        </el-row>
+                        <el-input clearable v-model.number="addDataForm.localFee" type="number"
+                                  placeholder="最多4位整数，2位小数"></el-input>
                     </el-form-item>
                     <el-form-item label="使用状态：">
                         <el-select clearable v-model="addDataForm.channelState" placeholder="使用状态">
@@ -129,23 +123,17 @@
             <div class="form-content" style="margin: 0 auto;width: 90%;">
                 <el-form ref="editDataForm" :model="editDataForm" label-width="150px">
                     <el-form-item label="通道名称：">
-                        <el-input v-model.trim="editDataForm.channelName"></el-input>
+                        <el-input clearable v-model.trim="editDataForm.channelName"></el-input>
                     </el-form-item>
                     <el-form-item label="通道接入码：">
-                        <el-input v-model.trim="editDataForm.channelAccessCode"></el-input>
+                        <el-input clearable v-model.trim="editDataForm.channelAccessCode"></el-input>
                     </el-form-item>
                     <el-form-item label="通道接入请求地址：">
-                        <el-input v-model.trim="editDataForm.bankUrl"></el-input>
+                        <el-input clearable v-model.trim="editDataForm.bankUrl"></el-input>
                     </el-form-item>
                     <el-form-item label="银行收取费率：">
-                        <el-row :gutter="10">
-                            <el-col :span="13">
-                                <el-input v-model.number="editDataForm.localFee" type="number"></el-input>
-                            </el-col>
-                            <el-col :span="6">
-                                <el-tag type="danger">最多4位整数，2位小数</el-tag>
-                            </el-col>
-                        </el-row>
+                        <el-input clearable v-model.number="editDataForm.localFee" type="number"
+                                  placeholder="最多4位整数，2位小数"></el-input>
                     </el-form-item>
                     <el-form-item label="使用状态：">
                         <el-select clearable v-model="editDataForm.channelState" placeholder="使用状态">

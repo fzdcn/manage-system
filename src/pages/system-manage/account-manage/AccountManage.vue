@@ -82,25 +82,31 @@
             <div class="form-content" style="margin: 0 auto;width: 90%;">
                 <el-form ref="addDataForm" :model="addDataForm" label-width="100px">
                     <el-form-item label="用户名：">
-                        <el-input v-model.trim="addDataForm.username"></el-input>
+                        <el-input clearable v-model.trim="addDataForm.username" maxlength="15"
+                                  placeholder="只能是15位以内英文或英文加数字组合"></el-input>
                     </el-form-item>
                     <el-form-item label="密码：">
-                        <el-input type="password" v-model.trim="addDataForm.password"></el-input>
+                        <el-input clearable type="password" v-model.trim="addDataForm.password" maxlength="15"
+                                  placeholder="长度不超过20位的字母数字组合"></el-input>
                     </el-form-item>
                     <el-form-item label="确认密码：">
-                        <el-input type="password" v-model.trim="addDataForm.confirmPassword"></el-input>
+                        <el-input clearable type="password" v-model.trim="addDataForm.confirmPassword" maxlength="15"
+                                  placeholder="长度不超过20位的字母数字组合"></el-input>
                     </el-form-item>
                     <el-form-item label="姓名：">
-                        <el-input v-model.trim="addDataForm.name"></el-input>
+                        <el-input clearable v-model.trim="addDataForm.name" maxlength="10"
+                                  placeholder="姓名只能是10位以内汉字"></el-input>
                     </el-form-item>
                     <el-form-item label="手机号码：">
-                        <el-input type="tel" v-model.trim="addDataForm.telephone"></el-input>
+                        <el-input clearable type="tel" v-model.trim="addDataForm.telephone"
+                                  placeholder="请输入手机号码"></el-input>
                     </el-form-item>
                     <el-form-item label="邮箱：">
-                        <el-input type="email" v-model.trim="addDataForm.email"></el-input>
+                        <el-input clearable type="email" v-model.trim="addDataForm.email"
+                                  placeholder="邮箱"></el-input>
                     </el-form-item>
                     <el-form-item label="角色：">
-                        <el-select clearable v-model="addDataForm.selectedRole" placeholder="角色">
+                        <el-select clearable v-model="addDataForm.selectedRole" placeholder="请选择角色">
                             <el-option
                                 v-for="item in roleList"
                                 :key="item.id"
@@ -110,7 +116,7 @@
                         </el-select>
                     </el-form-item>
                     <el-form-item label="U盾值：">
-                        <el-input v-model.trim="addDataForm.uTypeShield"></el-input>
+                        <el-input clearable v-model.trim="addDataForm.uTypeShield" placeholder="请输入U盾值"></el-input>
                     </el-form-item>
                 </el-form>
             </div>
@@ -125,13 +131,16 @@
             <div class="form-content" style="margin: 0 auto;width: 90%;">
                 <el-form ref="modifyDataForm" :model="modifyDataForm" label-width="100px">
                     <el-form-item label="用户名：">
-                        <el-input v-model.trim="modifyDataForm.username" :disabled="true"></el-input>
+                        <el-input clearable v-model.trim="modifyDataForm.username" maxlength="15" placeholder="最长15位"
+                                  :disabled="true"></el-input>
                     </el-form-item>
                     <el-form-item label="密码：">
-                        <el-input type="password" v-model.trim="modifyDataForm.password"></el-input>
+                        <el-input clearable type="password" v-model.trim="modifyDataForm.password" maxlength="20"
+                                  placeholder="长度不超过20位的字母数字组合"></el-input>
                     </el-form-item>
                     <el-form-item label="确认密码：">
-                        <el-input type="password" v-model.trim="modifyDataForm.confirmPassword"></el-input>
+                        <el-input clearable type="password" v-model.trim="modifyDataForm.confirmPassword" maxlength="20"
+                                  placeholder="长度不超过20位的字母数字组合"></el-input>
                     </el-form-item>
                 </el-form>
             </div>
@@ -146,16 +155,19 @@
             <div class="form-content" style="margin: 0 auto;width: 90%;">
                 <el-form ref="editDataForm" :model="editDataForm" label-width="100px">
                     <el-form-item label="用户名：">
-                        <el-input v-model.trim="editDataForm.username" :disabled="true"></el-input>
+                        <el-input clearable v-model.trim="editDataForm.username" maxlength="15"
+                                  placeholder="只能是15位以内英文或英文加数字组合"
+                                  :disabled="true"></el-input>
                     </el-form-item>
                     <el-form-item label="姓名：">
-                        <el-input v-model.trim="editDataForm.name"></el-input>
+                        <el-input clearable v-model.trim="editDataForm.name" maxlength="10"
+                                  placeholder="姓名只能是10位以内汉字"></el-input>
                     </el-form-item>
                     <el-form-item label="手机号码：">
-                        <el-input type="tel" v-model.trim="editDataForm.phone"></el-input>
+                        <el-input clearable type="tel" v-model.trim="editDataForm.phone" placeholder="手机号码"></el-input>
                     </el-form-item>
                     <el-form-item label="邮箱：">
-                        <el-input type="email" v-model.trim="editDataForm.email"></el-input>
+                        <el-input clearable type="email" v-model.trim="editDataForm.email" placeholder="邮箱"></el-input>
                     </el-form-item>
                     <el-form-item label="角色：">
                         <el-select clearable v-model="editDataForm.roleId" placeholder="角色">
@@ -188,7 +200,7 @@
                         </el-select>
                     </el-form-item>
                     <el-form-item label="U盾值：">
-                        <el-input v-model.trim="editDataForm.passId"></el-input>
+                        <el-input clearable v-model.trim="editDataForm.passId" placeholder="U盾值"></el-input>
                     </el-form-item>
                 </el-form>
             </div>
@@ -380,12 +392,24 @@
                     this.$message.warning('用户名不能为空！');
                     return false;
                 }
+                if (!/^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{1,15}$/.test(vm.addDataForm.username) && !/^[A-Za-z]{1,15}$/.test(vm.addDataForm.username)) {
+                    this.$message.warning('用户名只能是15位以内英文或英文加数字组合！');
+                    return false;
+                }
                 if (!this.addDataForm.password) {
                     this.$message.warning('密码不能为空！');
                     return false;
                 }
+                if (!/^(?![^a-zA-Z]+$)(?!\D+$)/.test(vm.addDataForm.password)) {
+                    this.$message.warning('密码长度不超过20位的字母数字组合！');
+                    return false;
+                }
                 if (!this.addDataForm.confirmPassword) {
                     this.$message.warning('确认密码不能为空！');
+                    return false;
+                }
+                if (!/^(?![^a-zA-Z]+$)(?!\D+$)/.test(vm.addDataForm.confirmPassword)) {
+                    this.$message.warning('确认密码长度不超过20位的字母数字组合！');
                     return false;
                 }
                 if (this.addDataForm.password != this.addDataForm.confirmPassword) {
@@ -394,6 +418,10 @@
                 }
                 if (!this.addDataForm.name) {
                     this.$message.warning('姓名不能为空！');
+                    return false;
+                }
+                if (!/^[\u4e00-\u9fa5]{1,10}$/.test(vm.addDataForm.name)) {
+                    this.$message.warning('姓名只能是10位以内汉字！');
                     return false;
                 }
                 if (!this.addDataForm.telephone) {
@@ -426,8 +454,7 @@
                     passId: this.addDataForm.uTypeShield
                 }).then((data) => {
                     vm.$message.success(data.message);
-                    vm.isShowAdd = false;
-                    vm.addDataForm = {};
+                    vm.cancelAdd();
                     vm.$httpGet('/admin/admin/index', {
                         pageNo: 1,
                         pageSize: 10,
@@ -460,8 +487,16 @@
                     this.$message.warning('密码不能为空！');
                     return false;
                 }
+                if (!/^[A-Za-z0-9]{1,20}$/.test(vm.modifyDataForm.password)) {
+                    this.$message.warning('密码长度不超过20位的字母数字组合！');
+                    return false;
+                }
                 if (!this.modifyDataForm.confirmPassword) {
                     this.$message.warning('确认密码不能为空！');
+                    return false;
+                }
+                if (!/^[A-Za-z0-9]{1,20}$/.test(vm.modifyDataForm.confirmPassword)) {
+                    this.$message.warning('确认密码长度不超过20位的字母数字组合！');
                     return false;
                 }
                 if (this.modifyDataForm.password != this.modifyDataForm.confirmPassword) {
@@ -473,8 +508,7 @@
                     newPwd: this.modifyDataForm.confirmPassword
                 }).then((data) => {
                     vm.$message.success(data.message);
-                    vm.isShowModify = false;
-                    vm.modifyDataForm = {};
+                    vm.cancelModify();
                 }).catch((data) => {
                     console.log(data)
                 })
@@ -500,6 +534,10 @@
                     this.$message.warning('姓名不能为空！');
                     return false;
                 }
+                if (!/^[\u4e00-\u9fa5]{1,10}$/.test(vm.editDataForm.name)) {
+                    this.$message.warning('姓名只能是10位以内汉字！');
+                    return false;
+                }
                 if (!this.editDataForm.phone) {
                     this.$message.warning('手机号码不能为空！');
                     return false;
@@ -520,6 +558,14 @@
                     this.$message.warning('角色不能为空！');
                     return false;
                 }
+                if (!this.editDataForm.status) {
+                    this.$message.warning('状态不能为空！');
+                    return false;
+                }
+                if (!this.editDataForm.lockedOrNo) {
+                    this.$message.warning('锁定状态不能为空！');
+                    return false;
+                }
                 this.$httpPost('/admin/admin/update', {
                     id: this.editDataForm.id,
                     name: this.editDataForm.name,
@@ -531,7 +577,7 @@
                     passId: this.editDataForm.passId,
                 }).then((data) => {
                     vm.$message.success(data.message);
-                    vm.isShowEdit = false;
+                    vm.cancelEdit();
                     vm.dataList();
                 }).catch((data) => {
                     console.log(data)

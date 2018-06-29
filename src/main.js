@@ -2,6 +2,7 @@ import Vue from 'vue';
 import App from './App';
 import router from './router';
 import store from './store';
+import axios from 'axios'
 import ElementUI from 'element-ui';
 // 默认主题
 import 'element-ui/lib/theme-chalk/index.css';
@@ -16,6 +17,7 @@ import moment from 'moment';
 //     return moment(value * 1000).format(formatString)
 // })
 Vue.prototype.$moment = moment;
+Vue.prototype.$axios = axios;
 Vue.use(http);
 Vue.use(ElementUI, {size: 'small'});
 new Vue({

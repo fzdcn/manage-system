@@ -7,47 +7,40 @@
 
             <div class="handle-box" style="margin-bottom: 20px;display: flex;flex-flow: row wrap;">
                 <div style="margin: 0px 20px 10px 0;">
-                    <span>银行卡号标识：</span>
-                    <el-input style="width: 150px;" class="username" v-model.trim="searchDataForm.cardNoMark"
-                              clearable placeholder="银行卡号标识">
-                    </el-input>
-                </div>
-                <div style="margin: 0px 20px 10px 0;">
                     <span>银行名称：</span>
                     <el-input style="width: 150px;" class="username" v-model.trim="searchDataForm.bankName"
                               clearable placeholder="银行名称">
                     </el-input>
                 </div>
                 <div style="margin: 0px 20px 10px 0;">
-                    <span>银行卡类型：</span>
-                    <el-select clearable style="width: 150px;" v-model="searchDataForm.cardType" placeholder="银行卡类型">
-                        <el-option
-                            v-for="item in cardTypeList"
-                            :key="item.cardType"
-                            :label="item.name"
-                            :value="item.cardType">
-                        </el-option>
-                    </el-select>
+                    <span>银行代码：</span>
+                    <el-input style="width: 150px;" class="username" v-model.trim="searchDataForm.bankCode"
+                              clearable placeholder="银行代码">
+                    </el-input>
                 </div>
+                <div style="margin: 0px 20px 10px 0;">
+                    <span>银行编号：</span>
+                    <el-input style="width: 150px;" class="username" v-model.trim="searchDataForm.bankNumber"
+                              clearable placeholder="银行编号">
+                    </el-input>
+                </div>
+                <div style="margin: 0px 20px 10px 0;">
+                    <span>联行号：</span>
+                    <el-input style="width: 150px;" class="username" v-model.trim="searchDataForm.uniBankNum"
+                              clearable placeholder="联行号">
+                    </el-input>
+                </div>
+
                 <div>
-                    <el-button type="primary" icon="el-icon-search" @click="handleCurrentChange(1)">搜索</el-button>
+                    <el-button type="primary" icon="el-icon-search" @click="search">搜索</el-button>
                 </div>
             </div>
 
             <el-table :data="getDataList" border style="width: 100%;text-align: center;">
-                <el-table-column prop="cardNoMark" label="银行卡号标识" header-align="center"/>
                 <el-table-column prop="bankName" label="银行名称" header-align="center"/>
-                <el-table-column prop="cardType" label="银行卡类型" header-align="center">
-                    <template slot-scope="scope">
-                        <span v-if="scope.row.cardType==1">借记卡</span>
-                        <span v-if="scope.row.cardType==2">贷记卡</span>
-                        <span v-if="scope.row.cardType==3">准贷记卡</span>
-                        <span v-if="scope.row.cardType==4">预付费卡</span>
-                    </template>
-                </el-table-column>
-                <el-table-column prop="cardExplain" label="银行卡说明" header-align="center"/>
                 <el-table-column prop="bankCode" label="银行代码" header-align="center"/>
                 <el-table-column prop="bankNumber" label="银行编号" header-align="center"/>
+                <el-table-column prop="uniBankNum" label="联行号" header-align="center"/>
 
                 <el-table-column label="操作" width="200px" align="center">
                     <template v-if="getDataList.length > 0" slot-scope="scope">
@@ -60,41 +53,27 @@
                 </el-table-column>
             </el-table>
             <div class="pagination" style="overflow: hidden;">
-                <el-pagination v-if="paginationShow" background :current-page="cur_page"
-                               @current-change="handleCurrentChange"
+                <el-pagination background @current-change="handleCurrentChange"
                                layout="total, prev, pager, next, jumper"
                                :page-size="10" :pager-count="11" :total="total">
                 </el-pagination>
             </div>
         </div>
         <!--增加-->
-        <el-dialog title="增加银行卡识别信息" :visible.sync="isShowAdd" :before-close="cancelAdd" width="500px" center>
+        <el-dialog title="增加银行信息" :visible.sync="isShowAdd" :before-close="cancelAdd" width="500px" center>
             <div class="form-content" style="margin: 0 auto;width: 90%;">
                 <el-form ref="addDataForm" :model="addDataForm" label-width="120px">
-                    <el-form-item label="银行卡号标识：">
-                        <el-input clearable v-model.trim="addDataForm.cardNoMark"></el-input>
-                    </el-form-item>
                     <el-form-item label="银行名称：">
-                        <el-input clearable v-model.trim="addDataForm.bankName"></el-input>
+                        <el-input v-model.trim="addDataForm.bankName"></el-input>
                     </el-form-item>
-                    <el-form-item label="银行卡类型：">
-                        <el-select clearable v-model="addDataForm.cardType" placeholder="银行卡类型">
-                            <el-option
-                                v-for="item in cardTypeList"
-                                :key="item.cardType"
-                                :label="item.name"
-                                :value="item.cardType">
-                            </el-option>
-                        </el-select>
-                    </el-form-item>
-                    <el-form-item label="银行卡说明：">
-                        <el-input clearable v-model.trim="addDataForm.cardExplain"></el-input>
-                    </el-form-item>
-                    <el-form-item label="银行卡代码：">
-                        <el-input clearable v-model.trim="addDataForm.bankCode"></el-input>
+                    <el-form-item label="银行代码：">
+                        <el-input v-model.trim="addDataForm.bankCode"></el-input>
                     </el-form-item>
                     <el-form-item label="银行编号：">
-                        <el-input clearable v-model.trim="addDataForm.bankNumber"></el-input>
+                        <el-input v-model.trim="addDataForm.bankNumber"></el-input>
+                    </el-form-item>
+                    <el-form-item label="联行号：">
+                        <el-input v-model.trim="addDataForm.uniBankNum"></el-input>
                     </el-form-item>
                 </el-form>
             </div>
@@ -105,33 +84,20 @@
         </el-dialog>
 
         <!--编辑-->
-        <el-dialog title="编辑银行卡识别信息" :visible.sync="isShowEdit" :before-close="cancelEdit" width="500px" center>
+        <el-dialog title="编辑银行信息" :visible.sync="isShowEdit" :before-close="cancelEdit" width="500px" center>
             <div class="form-content" style="margin: 0 auto;width: 90%;">
                 <el-form ref="ditDataForm" :model="ditDataForm" label-width="120px">
-                    <el-form-item label="银行卡号标识：">
-                        <el-input clearable v-model.trim="ditDataForm.cardNoMark"></el-input>
-                    </el-form-item>
                     <el-form-item label="银行名称：">
-                        <el-input clearable v-model.trim="ditDataForm.bankName"></el-input>
+                        <el-input v-model.trim="ditDataForm.bankName"></el-input>
                     </el-form-item>
-                    <el-form-item label="银行卡类型：">
-                        <el-select clearable v-model="ditDataForm.cardType" placeholder="银行卡类型">
-                            <el-option
-                                v-for="item in cardTypeList"
-                                :key="item.cardType"
-                                :label="item.name"
-                                :value="item.cardType">
-                            </el-option>
-                        </el-select>
-                    </el-form-item>
-                    <el-form-item label="银行卡说明：">
-                        <el-input clearable v-model.trim="ditDataForm.cardExplain"></el-input>
-                    </el-form-item>
-                    <el-form-item label="银行卡代码：">
-                        <el-input clearable v-model.trim="ditDataForm.bankCode"></el-input>
+                    <el-form-item label="银行代码：">
+                        <el-input v-model.trim="ditDataForm.bankCode"></el-input>
                     </el-form-item>
                     <el-form-item label="银行编号：">
-                        <el-input clearable v-model.trim="ditDataForm.bankNumber"></el-input>
+                        <el-input v-model.trim="ditDataForm.bankNumber"></el-input>
+                    </el-form-item>
+                    <el-form-item label="联行号：">
+                        <el-input v-model.trim="ditDataForm.uniBankNum"></el-input>
                     </el-form-item>
                 </el-form>
             </div>
@@ -148,7 +114,6 @@
     export default {
         data() {
             return {
-                paginationShow: true,
                 getDataList: [],
                 // 当前页
                 cur_page: 1,
@@ -160,34 +125,19 @@
                 isShowEdit: false,
                 // 增加
                 addDataForm: {},
-                searchDataForm: {},
-                cardTypeList: [
-                    {
-                        cardType: "1",
-                        name: '借记卡'
-                    },
-                    {
-                        cardType: "2",
-                        name: '贷记卡'
-                    },
-                    {
-                        cardType: "3",
-                        name: '准贷记卡'
-                    },
-                    {
-                        cardType: "4",
-                        name: '预付费卡'
-                    },
-                ],
+                searchDataForm: {
+                    bankName: '',
+                    bankCode: '',
+                    bankNumber:'',
+                    uniBankNum:''
+                },
                 // 编辑
                 ditDataForm: {
                     id: "",
-                    cardNoMark: "",
                     bankName: "",
-                    cardType: "",
-                    cardExplain: "",
                     bankCode: "",
-                    bankNumber: ""
+                    bankNumber: "",
+                    uniBankNum: ""
                 }
             }
         },
@@ -195,7 +145,6 @@
             // 分页导航
             handleCurrentChange(val) {
                 this.cur_page = val;
-                this.paginationShow = false;
                 this.getData();
             },
             handleDelete(row) {
@@ -205,7 +154,7 @@
                     cancelButtonText: '取消',
                     type: 'warning'
                 }).then(() => {
-                    vm.$httpGet('/admin/epay/bankCard/deleteBin', {
+                    vm.$httpGet('/admin/bankInfo/deleteBankInfo', {
                         id: row.id
                     }).then((data) => {
                         vm.$message.success(data.message);
@@ -222,16 +171,32 @@
             },
             getData() {
                 let vm = this;
-                this.$httpGet('/admin/epay/bankCard/index', {
+                this.$httpGet('/admin/bankInfo/index', {
                     pageNo: this.cur_page,
                     pageSize: 10,
-                    cardNoMark: this.searchDataForm.cardNoMark,
                     bankName: this.searchDataForm.bankName,
-                    cardType: this.searchDataForm.cardType
+                    bankCode: this.searchDataForm.bankCode,
+                    bankNumber: this.searchDataForm.bankNumber,
+                    uniBankNum: this.searchDataForm.uniBankNum
                 }).then(({data}) => {
                     vm.getDataList = data.list;
                     vm.total = data.total;
-                    vm.paginationShow = true;
+                }).catch((data) => {
+                    console.log(data)
+                })
+            },
+            search() {
+                let vm = this;
+                this.$httpGet('/admin/bankInfo/index', {
+                    pageNo: 1,
+                    pageSize: 10,
+                    bankName: this.searchDataForm.bankName,
+                    bankCode: this.searchDataForm.bankCode,
+                    bankNumber: this.searchDataForm.bankNumber,
+                    uniBankNum: this.searchDataForm.uniBankNum
+                }).then(({data}) => {
+                    vm.getDataList = data.list;
+                    vm.total = data.total;
                 }).catch((data) => {
                     console.log(data)
                 })
@@ -245,43 +210,41 @@
             },
             submitAdd() {
                 let vm = this;
-                if (!this.addDataForm.cardNoMark) {
-                    this.$message.warning('银行卡号标识不能为空！');
-                    return false;
-                }
                 if (!this.addDataForm.bankName) {
                     this.$message.warning('银行名称不能为空！');
                     return false;
                 }
-                if (!this.addDataForm.cardType) {
-                    this.$message.warning('银行卡类型不能为空！');
-                    return false;
-                }
-                if (!this.addDataForm.cardExplain) {
-                    this.$message.warning('银行卡说明不能为空！');
-                    return false;
-                }
                 if (!this.addDataForm.bankCode) {
-                    this.$message.warning('银行卡代码不能为空！');
+                    this.$message.warning('银行代码类型不能为空！');
                     return false;
                 }
                 if (!this.addDataForm.bankNumber) {
-                    this.$message.warning('银行卡号标识不能为空！');
+                    this.$message.warning('银行编号说明不能为空！');
                     return false;
                 }
-                this.$httpPost('/admin/epay/bankCard/saveBin', {
-                    cardNoMark: this.addDataForm.cardNoMark,
+                if (!this.addDataForm.uniBankNum) {
+                    this.$message.warning('联行号不能为空！');
+                    return false;
+                }
+
+                this.$httpPost('/admin/bankInfo/saveBankInfo', {
                     bankName: this.addDataForm.bankName,
-                    cardType: this.addDataForm.cardType,
-                    cardExplain: this.addDataForm.cardExplain,
                     bankCode: this.addDataForm.bankCode,
                     bankNumber: this.addDataForm.bankNumber,
-                    uniBankNumId: this.addDataForm.uniBankNumId
+                    uniBankNum: this.addDataForm.uniBankNum
                 }).then((data) => {
                     vm.$message.success(data.message);
                     vm.isShowAdd = false;
                     vm.addDataForm = {};
-                    vm.handleCurrentChange(1);
+                    vm.$httpGet('/admin/bankInfo/index', {
+                        pageNo: 1,
+                        pageSize: 10
+                    }).then(({data}) => {
+                        vm.getDataList = data.list;
+                        vm.total = data.total;
+                    }).catch((data) => {
+                        console.log(data)
+                    })
                 }).catch((data) => {
                     console.log(data)
                 })
@@ -289,51 +252,38 @@
             handleEdit(row) {
                 this.isShowEdit = true;
                 this.ditDataForm.id = row.id;
-                this.ditDataForm.cardNoMark = row.cardNoMark;
                 this.ditDataForm.bankName = row.bankName;
-                this.ditDataForm.cardType = row.cardType;
-                this.ditDataForm.cardExplain = row.cardExplain;
                 this.ditDataForm.bankCode = row.bankCode;
                 this.ditDataForm.bankNumber = row.bankNumber;
+                this.ditDataForm.uniBankNum = row.uniBankNum;
             },
             cancelEdit() {
                 this.isShowEdit = false;
             },
             submitEdit() {
                 let vm = this;
-                if (!this.ditDataForm.cardNoMark) {
-                    this.$message.warning('银行卡号标识不能为空！');
-                    return false;
-                }
                 if (!this.ditDataForm.bankName) {
                     this.$message.warning('银行名称不能为空！');
                     return false;
                 }
-                if (!this.ditDataForm.cardType) {
-                    this.$message.warning('银行卡类型不能为空！');
-                    return false;
-                }
-                if (!this.ditDataForm.cardExplain) {
-                    this.$message.warning('银行卡说明不能为空！');
-                    return false;
-                }
                 if (!this.ditDataForm.bankCode) {
-                    this.$message.warning('银行卡代码不能为空！');
+                    this.$message.warning('银行代码类型不能为空！');
                     return false;
                 }
                 if (!this.ditDataForm.bankNumber) {
-                    this.$message.warning('银行卡号标识不能为空！');
+                    this.$message.warning('银行编号说明不能为空！');
                     return false;
                 }
-                this.$httpPost('/admin/epay/bankCard/updateBin', {
+                if (!this.ditDataForm.uniBankNum) {
+                    this.$message.warning('联行号不能为空！');
+                    return false;
+                }
+                this.$httpPost('/admin/bankInfo/updateBankInfo', {
                     id: this.ditDataForm.id,
-                    cardNoMark: this.ditDataForm.cardNoMark,
                     bankName: this.ditDataForm.bankName,
-                    cardType: this.ditDataForm.cardType,
-                    cardExplain: this.ditDataForm.cardExplain,
                     bankCode: this.ditDataForm.bankCode,
                     bankNumber: this.ditDataForm.bankNumber,
-                    uniBankNumId: this.ditDataForm.uniBankNumId
+                    uniBankNum: this.ditDataForm.uniBankNum,
                 }).then((data) => {
                     vm.$message.success(data.message);
                     vm.isShowEdit = false;

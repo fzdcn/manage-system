@@ -49,7 +49,6 @@
 </template>
 
 <script>
-    import {API_BASE, DEBUG} from '../../config/config';
 
     export default {
         data() {
