@@ -59,7 +59,8 @@
             <div class="form-content" style="margin: 0 auto;width: 90%;">
                 <el-form ref="addDataForm" :model="addDataForm" label-width="120px">
                     <el-form-item label="IP：">
-                        <el-input clearable v-model.trim="addDataForm.ip"></el-input>
+                        <el-input clearable v-model.trim="addDataForm.ip" placeholder="ip格式应该位xxx.xxx.xxx.xxx">
+                        </el-input>
                     </el-form-item>
                     <el-form-item label="类型：">
                         <el-select clearable v-model="addDataForm.type" placeholder="类型">
@@ -84,7 +85,9 @@
             <div class="form-content" style="margin: 0 auto;width: 90%;">
                 <el-form ref="ditDataForm" :model="ditDataForm" label-width="120px">
                     <el-form-item label="IP：">
-                        <el-input clearable v-model.trim="ditDataForm.ip"></el-input>
+                        <el-input clearable v-model.trim="ditDataForm.ip"
+                                  placeholder="ip格式应该位xxx.xxx.xxx.xxx">
+                        </el-input>
                     </el-form-item>
                     <el-form-item label="类型：">
                         <el-select clearable v-model="ditDataForm.type" placeholder="类型">
@@ -202,6 +205,10 @@
                     this.$message.warning('ip不能为空！');
                     return false;
                 }
+                if (!/^(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])$/.test(vm.addDataForm.ip)) {
+                    this.$message.warning('ip格式不对！');
+                    return false;
+                }
                 if (!this.addDataForm.type) {
                     this.$message.warning('类型不能为空！');
                     return false;
@@ -230,6 +237,10 @@
                 let vm = this;
                 if (!this.ditDataForm.ip) {
                     this.$message.warning('ip不能为空！');
+                    return false;
+                }
+                if (!/^(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])$/.test(vm.ditDataForm.ip)) {
+                    this.$message.warning('ip格式不对！');
                     return false;
                 }
                 if (!this.ditDataForm.type) {

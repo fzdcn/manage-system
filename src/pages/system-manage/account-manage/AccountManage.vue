@@ -400,7 +400,7 @@
                     this.$message.warning('密码不能为空！');
                     return false;
                 }
-                if (!/^(?![^a-zA-Z]+$)(?!\D+$)/.test(vm.addDataForm.password)) {
+                if (!/^(?![^a-zA-Z]+$)(?!\D+$){1,20}/.test(vm.addDataForm.password)) {
                     this.$message.warning('密码长度不超过20位的字母数字组合！');
                     return false;
                 }
@@ -408,7 +408,7 @@
                     this.$message.warning('确认密码不能为空！');
                     return false;
                 }
-                if (!/^(?![^a-zA-Z]+$)(?!\D+$)/.test(vm.addDataForm.confirmPassword)) {
+                if (!/^(?![^a-zA-Z]+$)(?!\D+$){1,20}/.test(vm.addDataForm.confirmPassword)) {
                     this.$message.warning('确认密码长度不超过20位的字母数字组合！');
                     return false;
                 }
@@ -466,7 +466,7 @@
                         vm.total = data.page.total;
                         vm.handleCurrentChange(1);
                     }).catch((data) => {
-                        console.log(data)
+                        console.log(data);
                     })
                 }).catch((data) => {
                     console.log(data)
@@ -487,7 +487,7 @@
                     this.$message.warning('密码不能为空！');
                     return false;
                 }
-                if (!/^[A-Za-z0-9]{1,20}$/.test(vm.modifyDataForm.password)) {
+                if (!/^(?![^a-zA-Z]+$)(?!\D+$){1,20}/.test(vm.modifyDataForm.password)) {
                     this.$message.warning('密码长度不超过20位的字母数字组合！');
                     return false;
                 }
@@ -495,7 +495,7 @@
                     this.$message.warning('确认密码不能为空！');
                     return false;
                 }
-                if (!/^[A-Za-z0-9]{1,20}$/.test(vm.modifyDataForm.confirmPassword)) {
+                if (!/^(?![^a-zA-Z]+$)(?!\D+$){1,20}/.test(vm.modifyDataForm.confirmPassword)) {
                     this.$message.warning('确认密码长度不超过20位的字母数字组合！');
                     return false;
                 }

@@ -72,10 +72,13 @@
             <div class="form-content" style="margin: 0 auto;width: 90%;">
                 <el-form ref="addDataForm" :model="addDataForm" label-width="120px">
                     <el-form-item label="银行卡号标识：">
-                        <el-input clearable v-model.trim="addDataForm.cardNoMark"></el-input>
+                        <el-input type="number" v-model.trim="addDataForm.cardNoMark" maxlength="10"
+                                  placeholder="不超过10位纯数字">
+                        </el-input>
                     </el-form-item>
                     <el-form-item label="银行名称：">
-                        <el-input clearable v-model.trim="addDataForm.bankName"></el-input>
+                        <el-input clearable v-model.trim="addDataForm.bankName" maxlength="32"
+                                  placeholder="不超过32位"></el-input>
                     </el-form-item>
                     <el-form-item label="银行卡类型：">
                         <el-select clearable v-model="addDataForm.cardType" placeholder="银行卡类型">
@@ -88,13 +91,16 @@
                         </el-select>
                     </el-form-item>
                     <el-form-item label="银行卡说明：">
-                        <el-input clearable v-model.trim="addDataForm.cardExplain"></el-input>
+                        <el-input clearable v-model.trim="addDataForm.cardExplain" maxlength="32"
+                                  placeholder="不超过32位"></el-input>
                     </el-form-item>
                     <el-form-item label="银行卡代码：">
-                        <el-input clearable v-model.trim="addDataForm.bankCode"></el-input>
+                        <el-input clearable v-model.trim="addDataForm.bankCode" maxlength="15"
+                                  placeholder="不超过15位"></el-input>
                     </el-form-item>
                     <el-form-item label="银行编号：">
-                        <el-input clearable v-model.trim="addDataForm.bankNumber"></el-input>
+                        <el-input clearable v-model.trim="addDataForm.bankNumber" maxlength="32"
+                                  placeholder="不超过32位"></el-input>
                     </el-form-item>
                 </el-form>
             </div>
@@ -109,10 +115,13 @@
             <div class="form-content" style="margin: 0 auto;width: 90%;">
                 <el-form ref="ditDataForm" :model="ditDataForm" label-width="120px">
                     <el-form-item label="银行卡号标识：">
-                        <el-input clearable v-model.trim="ditDataForm.cardNoMark"></el-input>
+                        <el-input type="number" v-model.trim="ditDataForm.cardNoMark" maxlength="10"
+                                  placeholder="不超过10位纯数字">
+                        </el-input>
                     </el-form-item>
                     <el-form-item label="银行名称：">
-                        <el-input clearable v-model.trim="ditDataForm.bankName"></el-input>
+                        <el-input clearable v-model.trim="ditDataForm.bankName" maxlength="32"
+                                  placeholder="不超过32位"></el-input>
                     </el-form-item>
                     <el-form-item label="银行卡类型：">
                         <el-select clearable v-model="ditDataForm.cardType" placeholder="银行卡类型">
@@ -125,13 +134,16 @@
                         </el-select>
                     </el-form-item>
                     <el-form-item label="银行卡说明：">
-                        <el-input clearable v-model.trim="ditDataForm.cardExplain"></el-input>
+                        <el-input clearable v-model.trim="ditDataForm.cardExplain" maxlength="32"
+                                  placeholder="不超过32位"></el-input>
                     </el-form-item>
                     <el-form-item label="银行卡代码：">
-                        <el-input clearable v-model.trim="ditDataForm.bankCode"></el-input>
+                        <el-input clearable v-model.trim="ditDataForm.bankCode" maxlength="15"
+                                  placeholder="不超过15位"></el-input>
                     </el-form-item>
                     <el-form-item label="银行编号：">
-                        <el-input clearable v-model.trim="ditDataForm.bankNumber"></el-input>
+                        <el-input clearable v-model.trim="ditDataForm.bankNumber" maxlength="32"
+                                  placeholder="不超过32位"></el-input>
                     </el-form-item>
                 </el-form>
             </div>
@@ -249,8 +261,16 @@
                     this.$message.warning('银行卡号标识不能为空！');
                     return false;
                 }
+                if (!/^\d{1,10}$/.test(vm.addDataForm.cardNoMark)) {
+                    this.$message.warning('银行卡号标识不超过10位纯数字！');
+                    return false;
+                }
                 if (!this.addDataForm.bankName) {
                     this.$message.warning('银行名称不能为空！');
+                    return false;
+                }
+                if (this.addDataForm.bankName.length > 32) {
+                    this.$message.warning('银行名称不超过32位！');
                     return false;
                 }
                 if (!this.addDataForm.cardType) {
@@ -261,12 +281,24 @@
                     this.$message.warning('银行卡说明不能为空！');
                     return false;
                 }
+                if (this.addDataForm.cardExplain.length > 32) {
+                    this.$message.warning('银行卡说明不超过32位！');
+                    return false;
+                }
                 if (!this.addDataForm.bankCode) {
                     this.$message.warning('银行卡代码不能为空！');
                     return false;
                 }
+                if (this.addDataForm.bankCode > 15) {
+                    this.$message.warning('银行卡代码不超过15位！');
+                    return false;
+                }
                 if (!this.addDataForm.bankNumber) {
-                    this.$message.warning('银行卡号标识不能为空！');
+                    this.$message.warning('银行编号不能为空！');
+                    return false;
+                }
+                if (this.addDataForm.bankNumber > 32) {
+                    this.$message.warning('银行编号不超过32位！');
                     return false;
                 }
                 this.$httpPost('/admin/epay/bankCard/saveBin', {
@@ -305,8 +337,16 @@
                     this.$message.warning('银行卡号标识不能为空！');
                     return false;
                 }
+                if (!/^\d{1,10}$/.test(vm.ditDataForm.cardNoMark)) {
+                    this.$message.warning('银行卡号标识不超过10位纯数字！');
+                    return false;
+                }
                 if (!this.ditDataForm.bankName) {
                     this.$message.warning('银行名称不能为空！');
+                    return false;
+                }
+                if (this.ditDataForm.bankName.length > 32) {
+                    this.$message.warning('银行名称不超过32位！');
                     return false;
                 }
                 if (!this.ditDataForm.cardType) {
@@ -317,12 +357,24 @@
                     this.$message.warning('银行卡说明不能为空！');
                     return false;
                 }
+                if (this.ditDataForm.cardExplain.length > 32) {
+                    this.$message.warning('银行卡说明不超过32位！');
+                    return false;
+                }
                 if (!this.ditDataForm.bankCode) {
                     this.$message.warning('银行卡代码不能为空！');
                     return false;
                 }
+                if (this.ditDataForm.bankCode > 15) {
+                    this.$message.warning('银行卡代码不超过15位！');
+                    return false;
+                }
                 if (!this.ditDataForm.bankNumber) {
-                    this.$message.warning('银行卡号标识不能为空！');
+                    this.$message.warning('银行编号不能为空！');
+                    return false;
+                }
+                if (this.ditDataForm.bankNumber > 32) {
+                    this.$message.warning('银行编号不超过32位！');
                     return false;
                 }
                 this.$httpPost('/admin/epay/bankCard/updateBin', {

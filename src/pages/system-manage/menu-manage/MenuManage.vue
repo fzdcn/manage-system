@@ -40,7 +40,7 @@
             <div class="form-content" style="margin: 0 auto;width: 90%;">
                 <el-form ref="addDataForm" :model="addDataForm" label-width="100px">
                     <el-form-item label="菜单名：">
-                        <el-input clearable v-model.trim="addDataForm.name" maxLength="10"
+                        <el-input clearable v-model.trim="addDataForm.name" maxlength="10"
                                   placeholder="只能是10位以内英文或汉字"></el-input>
                     </el-form-item>
                     <el-form-item label="ICON：">
@@ -98,7 +98,7 @@
                 <el-form ref="editDataForm" :model="editDataForm" label-width="100px">
 
                     <el-form-item label="菜单名：">
-                        <el-input clearable v-model.trim="editDataForm.name" maxLength="10"
+                        <el-input clearable v-model.trim="editDataForm.name" maxlength="10"
                                   placeholder="只能是10位以内英文或汉字"></el-input>
                     </el-form-item>
                     <el-form-item label="ICON：">

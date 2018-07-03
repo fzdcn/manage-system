@@ -34,7 +34,10 @@
                         <span v-else>关闭</span>
                     </template>
                 </el-table-column>
-                <el-table-column prop="localFee" label="基础参考费率（最多4位整数，2位小数）">
+                <el-table-column prop="localFee" label="基础参考费率">
+                    <template slot-scope="scope">
+                        <span>{{ scope.row.localFee * 100 }}%</span>
+                    </template>
                 </el-table-column>
                 <el-table-column prop="computeMode" label="收费方式">
                     <template slot-scope="scope">
@@ -66,7 +69,7 @@
             </div>
         </div>
         <!--增加-->
-        <el-dialog title="增加产品信息" :visible.sync="isShowAdd" :before-close="cancelAdd" width="600px" center>
+        <el-dialog title="增加产品信息" :visible.sync="isShowAdd" :before-close="cancelAdd" width="720px" center>
             <div class="form-content" style="margin: 0 auto;width: 90%;">
                 <el-form ref="addDataForm" :model="addDataForm" label-width="150px">
                     <el-form-item label="产品名称：">
@@ -86,16 +89,20 @@
                         </el-select>
                     </el-form-item>
                     <el-form-item label="基础参考费率：">
-                        <el-input clearable v-model.number="addDataForm.localFee" type="number"
-                                  placeholder="最多4位整数，2位小数"></el-input>
+                        <el-input v-model.number="addDataForm.localFee" type="number"
+                                  placeholder="不能为负数,整数最多10位，小数最多5位,>=1时，收费方式只能是定额"></el-input>
                     </el-form-item>
                     <el-form-item label="收费方式：">
                         <el-select clearable v-model="addDataForm.computeMode" placeholder="收费方式">
-                            <el-option
-                                v-for="item in computeModeList"
-                                :key="item.id"
-                                :label="item.name"
-                                :value="item.id">
+                            <el-option v-if="addDataForm.localFee >= 1" v-for="item in otherComputeModeList"
+                                       :key="item.id"
+                                       :label="item.name"
+                                       :value="item.id">
+                            </el-option>
+                            <el-option v-else v-for="item in computeModeList"
+                                       :key="item.id"
+                                       :label="item.name"
+                                       :value="item.id">
                             </el-option>
                         </el-select>
                     </el-form-item>
@@ -116,7 +123,7 @@
         </el-dialog>
 
         <!--编辑-->
-        <el-dialog title="编辑通道信息" :visible.sync="isShowEdit" :before-close="cancelEdit" width="600px" center>
+        <el-dialog title="编辑通道信息" :visible.sync="isShowEdit" :before-close="cancelEdit" width="720px" center>
             <div class="form-content" style="margin: 0 auto;width: 90%;">
                 <el-form ref="editDataForm" :model="editDataForm" label-width="150px">
                     <el-form-item label="产品名称：">
@@ -136,16 +143,20 @@
                         </el-select>
                     </el-form-item>
                     <el-form-item label="基础参考费率：">
-                        <el-input clearable v-model.number="editDataForm.localFee" type="number"
-                                  placeholder="最多4位整数，2位小数"></el-input>
+                        <el-input v-model.number="editDataForm.localFee" type="number"
+                                  placeholder="不能为负数,整数最多10位，小数最多5位,>=1时，收费方式只能是定额"></el-input>
                     </el-form-item>
                     <el-form-item label="收费方式：">
                         <el-select clearable v-model="editDataForm.computeMode" placeholder="收费方式">
-                            <el-option
-                                v-for="item in computeModeList"
-                                :key="item.id"
-                                :label="item.name"
-                                :value="item.id">
+                            <el-option v-if="editDataForm.localFee >= 1" v-for="item in otherComputeModeList"
+                                       :key="item.id"
+                                       :label="item.name"
+                                       :value="item.id">
+                            </el-option>
+                            <el-option v-else v-for="item in computeModeList"
+                                       :key="item.id"
+                                       :label="item.name"
+                                       :value="item.id">
                             </el-option>
                         </el-select>
                     </el-form-item>
@@ -187,7 +198,17 @@
                 addDataForm: {},
                 num: null,
                 // 编辑参数
-                editDataForm: {},
+                editDataForm: {
+                    id: "",
+                    productName: "",
+                    productAccessCode: "",
+                    bankUrl: "",
+                    localFee: "",
+                    productState: "",
+                    computeMode: "",
+                    productDesc: "",
+                    remark: ""
+                },
                 productStateList: [
                     {
                         id: 1,
@@ -207,6 +228,12 @@
                         id: 2,
                         name: '借贷比例'
                     },
+                    {
+                        id: 3,
+                        name: '定额'
+                    },
+                ],
+                otherComputeModeList: [
                     {
                         id: 3,
                         name: '定额'
@@ -253,8 +280,8 @@
                 this.$httpGet('/admin/epay/productsInfo/index', {
                     pageNo: this.cur_page,
                     pageSize: 10,
-                    channelName: this.searchDataForm.productName,
-                    channelAccessCode: this.searchDataForm.productAccessCode
+                    productName: this.searchDataForm.productName,
+                    productAccessCode: this.searchDataForm.productAccessCode
                 }).then(({data}) => {
                     vm.getDataList = data.list;
                     vm.total = data.total;
@@ -288,8 +315,8 @@
                     this.$message.warning('基础参考费率不能为空！');
                     return false;
                 }
-                if (Number(this.addDataForm.localFee) == NaN) {
-                    this.$message.warning('类型不对，只能是正整数和小数！');
+                if (!/^\d{1,10}(\.\d{1,5})?$/.test(vm.addDataForm.localFee)) {
+                    this.$message.warning('基础参考费率整数最多10位，小数最多为5位！');
                     return false;
                 }
                 if (!this.addDataForm.computeMode) {
@@ -331,7 +358,6 @@
             },
             cancelEdit() {
                 this.isShowEdit = false;
-                this.editDataForm = {};
             },
             submitEdit() {
                 let vm = this;
@@ -351,8 +377,8 @@
                     this.$message.warning('基础参考费率不能为空！');
                     return false;
                 }
-                if (Number(this.editDataForm.localFee) == NaN) {
-                    this.$message.warning('类型不对，只能是正整数和小数！');
+                if (!/^\d{1,10}(\.\d{1,5})?$/.test(vm.editDataForm.localFee)) {
+                    this.$message.warning('基础参考费率整数最多10位，小数最多为5位！');
                     return false;
                 }
                 if (!this.editDataForm.computeMode) {
@@ -374,8 +400,7 @@
                     remark: this.editDataForm.remark
                 }).then((data) => {
                     vm.$message.success(data.message);
-                    vm.isShowEdit = false;
-                    vm.editDataForm = {};
+                    vm.cancelEdit();
                     vm.getData();
                 }).catch((data) => {
                     console.log(data)

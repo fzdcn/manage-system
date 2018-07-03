@@ -112,10 +112,13 @@
                 </el-table-column>
                 <el-table-column prop="tradeState" label="交易状态">
                     <template slot-scope="scope">
-                        <span v-if="scope.row.tradeState==0">成功</span>
-                        <span v-if="scope.row.tradeState==1">交易中</span>
-                        <span v-if="scope.row.tradeState==2">失败</span>
+                        <span v-if="scope.row.tradeState==0">失败</span>
+                        <span v-if="scope.row.tradeState==1">成功</span>
+                        <span v-if="scope.row.tradeState==2">待处理</span>
                         <span v-if="scope.row.tradeState==3">取消</span>
+                        <span v-if="scope.row.tradeState==4">待确认</span>
+                        <span v-if="scope.row.tradeState==5">未返回</span>
+                        <span v-if="scope.row.tradeState==8">异常</span>
                     </template>
                 </el-table-column>
                 <el-table-column prop="tradeTime" label="交易时间" :formatter="dateFormatter">
@@ -189,19 +192,31 @@
                 tradeStateList: [
                     {
                         id: '0',
-                        name: "成功"
+                        name: "失败"
                     },
                     {
                         id: '1',
-                        name: "交易中"
+                        name: "成功"
                     },
                     {
                         id: '2',
-                        name: "失败"
+                        name: "待处理"
                     },
                     {
                         id: '3',
-                        name: "失败"
+                        name: "取消"
+                    },
+                    {
+                        id: '4',
+                        name: "待确认"
+                    },
+                    {
+                        id: '5',
+                        name: "未返回"
+                    },
+                    {
+                        id: '8',
+                        name: "异常"
                     },
                 ],
                 // 支付类型列表

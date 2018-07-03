@@ -11,8 +11,10 @@
                                 </pan-thumb>
                                 <div class="grid-cont-right">
                                     <div class="grid-num">{{ username }}</div>
-                                    <div>登录时间：{{ loginDate }}</div>
-                                    <div>联系电话：{{ phone }}</div>
+                                    <div>登录时间</div>
+                                    <div>{{ loginDate }}</div>
+                                    <div>联系电话</div>
+                                    <div>{{ phone }}</div>
                                 </div>
                             </div>
                         </el-card>
@@ -22,9 +24,10 @@
                             <div class="grid-content grid-con-1">
                                 <i class="el-icon-view grid-con-icon"></i>
                                 <div class="grid-cont-right">
-                                    <count-to class="card-panel-num grid-num" :startVal="0" :endVal="81212"
+                                    <count-to class="card-panel-num grid-num" :startVal="0"
+                                              :endVal="currentDaySuccessPayMoney"
                                               :duration="3000"></count-to>
-                                    <div>用户访问量</div>
+                                    <div>当天交易成功金额</div>
                                 </div>
                             </div>
                         </el-card>
@@ -34,9 +37,10 @@
                             <div class="grid-content grid-con-2">
                                 <i class="el-icon-message grid-con-icon"></i>
                                 <div class="grid-cont-right">
-                                    <count-to class="card-panel-num grid-num" :startVal="0" :endVal="88888"
+                                    <count-to class="card-panel-num grid-num" :startVal="0"
+                                              :endVal="currentDaySuccessPayNumber"
                                               :duration="3000"></count-to>
-                                    <div>系统消息</div>
+                                    <div>当天交易成功笔数</div>
                                 </div>
                             </div>
                         </el-card>
@@ -46,9 +50,9 @@
                             <div class="grid-content grid-con-3">
                                 <i class="el-icon-goods grid-con-icon"></i>
                                 <div class="grid-cont-right">
-                                    <count-to class="card-panel-num grid-num" :startVal="0" :endVal="5000"
+                                    <count-to class="card-panel-num grid-num" :startVal="0" :endVal="AllSuccessPayMoney"
                                               :duration="3000"></count-to>
-                                    <div>数量</div>
+                                    <div>历史交易成功总金额</div>
                                 </div>
                             </div>
                         </el-card>
@@ -80,8 +84,45 @@
                 username: JSON.parse(localStorage.getItem('user')).username,
                 managerLevel: JSON.parse(localStorage.getItem('user')).roleName,
                 loginDate: JSON.parse(localStorage.getItem('user')).loginDate,
-                phone: JSON.parse(localStorage.getItem('user')).phone
+                phone: JSON.parse(localStorage.getItem('user')).phone,
+                currentDaySuccessPayMoney: 0,
+                currentDaySuccessPayNumber: 0,
+                AllSuccessPayMoney: 0
             }
+        },
+        methods: {
+            getCurrentDaySuccessPayMoney() {
+                let vm = this;
+                this.$httpGet('/admin/epay/tradeInfo/findTodayTradeAmount', {})
+                    .then(({data}) => {
+                        vm.currentDaySuccessPayMoney = data;
+                    }).catch((data) => {
+                    console.log(data);
+                })
+            },
+            getCurrentDaySuccessPayNumber() {
+                let vm = this;
+                this.$httpGet('/admin/epay/tradeInfo/findTodayTradeNum', {})
+                    .then(({data}) => {
+                        vm.currentDaySuccessPayNumber = data;
+                    }).catch((data) => {
+                    console.log(data);
+                })
+            },
+            getAllSuccessPayNumber() {
+                let vm = this;
+                this.$httpGet('/admin/epay/tradeInfo/findAllTradeAmount', {})
+                    .then(({data}) => {
+                        vm.AllSuccessPayMoney = data;
+                    }).catch((data) => {
+                    console.log(data);
+                })
+            }
+        },
+        mounted() {
+            this.getCurrentDaySuccessPayMoney();
+            this.getCurrentDaySuccessPayNumber();
+            this.getAllSuccessPayNumber();
         }
     }
 

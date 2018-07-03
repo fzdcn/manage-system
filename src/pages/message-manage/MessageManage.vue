@@ -296,9 +296,10 @@
                 let vm = this;
                 this.fileList = [];
                 this.fileList.push(file);
-                let isXlsx = file.name.split('.')[1] === 'xls' || 'xlsx';
+                let isXlsx = file.name.split('.')[1] == 'xls' || file.name.split('.')[1] == 'xlsx';
                 if (!isXlsx) {
                     this.$message.warning('文件类型必须是.xlsx或者.xls表格文件');
+                    return false
                 }
                 let formData = new FormData();
                 formData.append("file", file);

@@ -105,7 +105,7 @@ const routes = [
                 path: '/product-manage',
                 name: 'product-manage',
                 component: resolve => require(['../pages/product-manage/ProductManage.vue'], resolve),
-                meta: {title: '路由信息管理', permission: false},
+                meta: {title: '产品列表管理', permission: false},
             },
             {
                 path: '/trade-manage',

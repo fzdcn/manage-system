@@ -1,8 +1,8 @@
 import Vue from 'vue';
-import Toasted from 'vue-toasted';
+// import Toasted from 'vue-toasted';
 import router from '../router/index';
 
-Vue.use(Toasted)
+// Vue.use(Toasted)
 
 /**
  * 显示alert

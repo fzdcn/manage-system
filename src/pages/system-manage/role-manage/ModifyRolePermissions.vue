@@ -25,6 +25,22 @@
                 <el-button @click="submitAdd" size="medium" type="success">提交</el-button>
                 <el-button @click="cancelAdd" size="medium" type="primary">返回</el-button>
             </el-row>
+
+
+            <!--<el-tree-->
+                <!--:data="data2"-->
+                <!--show-checkbox-->
+                <!--node-key="id"-->
+                <!--ref="tree"-->
+                <!--highlight-current-->
+                <!--:default-expand-all="true"-->
+                <!--:default-checked-keys="defaultSelectedMenu"-->
+                <!--:props="defaultProps">-->
+            <!--</el-tree>-->
+            <!--<div class="buttons">-->
+                <!--<el-button @click="getCheckedNodes">通过 node 获取</el-button>-->
+                <!--<el-button @click="getCheckedKeys">通过 key 获取</el-button>-->
+            <!--</div>-->
         </div>
     </div>
 </template>
@@ -49,10 +65,75 @@
                         "url": ''
                     }
                 ],
-                pids: []
+                pids: [],
+                data2: [],
+                defaultProps: {
+                    children: 'subs',
+                    label: 'name'
+                },
+                defaultSelectedMenu: []
             }
         },
         methods: {
+            getCheckedNodes() {
+                console.log(this.$refs.tree.getCheckedNodes());
+            },
+            getCheckedKeys() {
+                console.log(this.$refs.tree.getCheckedKeys());
+                console.log(this.$refs.tree.getNode('98'));
+            },
+            getDefaultSelectedMenuList() {
+                let vm = this;
+                this.$httpGet('/admin/role/getAllMenuByRoleId', {
+                    id: this.$route.params.id
+                }).then(({data}) => {
+                    vm.data2 = data;
+                    if (vm.data2.length > 0) {
+                        if (vm.data2[0].subs || vm.data2[0].subs.length > 0) {
+                            for (let valuesOuter of vm.data2[0].subs) {
+                                if (valuesOuter.subs || valuesOuter.subs.length > 0) {
+                                    for (let valuesInsideOne of valuesOuter.subs) {
+                                        if (valuesInsideOne.subs || valuesInsideOne.subs.length > 0) {
+                                            for (let valuesInsideTwo of valuesInsideOne.subs) {
+                                                if (valuesInsideTwo.rid) {
+                                                    vm.defaultSelectedMenu.push(valuesInsideTwo.id);
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            for (let valuesOuter of vm.data2[0].subs) {
+                                if (valuesOuter.subs || valuesOuter.subs.length > 0) {
+                                    for (let valuesInsideOne of valuesOuter.subs) {
+                                        if (valuesInsideOne.subs || valuesInsideOne.subs.length > 0) {
+                                            if (valuesInsideOne.subs.length = 1) {
+
+                                            }
+                                            if (valuesInsideOne.rid) {
+                                                vm.defaultSelectedMenu.push(valuesInsideOne.id);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            for (let valuesOuter of vm.data2[0].subs) {
+                                if (valuesOuter.subs || valuesOuter.subs.length > 0) {
+                                    if (valuesOuter.rid) {
+                                        vm.defaultSelectedMenu.push(valuesOuter.id);
+                                    }
+                                }
+                            }
+                        } else {
+
+                        }
+                    } else {
+
+                    }
+                }).catch((data) => {
+                    console.log(data)
+                })
+            },
             cancelAdd() {
                 goBack();
             },
@@ -165,6 +246,7 @@
         },
         mounted() {
             this.getPermissionsData();
+            // this.getDefaultSelectedMenuList();
         }
     }
 

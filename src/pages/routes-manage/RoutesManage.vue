@@ -69,9 +69,9 @@
                 </el-table-column>
                 <el-table-column prop="channelName" label="银行支付通道">
                 </el-table-column>
-                <el-table-column prop="amountMin" label="交易下限">
+                <el-table-column prop="amountMin" label="交易下限（元）">
                 </el-table-column>
-                <el-table-column prop="amountMax" label="交易上限">
+                <el-table-column prop="amountMax" label="交易上限（元）">
                 </el-table-column>
                 <el-table-column prop="remark" label="备注">
                 </el-table-column>
@@ -159,10 +159,10 @@
                         </el-select>
                     </el-form-item>
                     <el-form-item label="交易上限：">
-                        <el-input clearable type="number" v-model.trim="addDataForm.amountMax"></el-input>
+                        <el-input type="number" v-model.trim="addDataForm.amountMax"></el-input>
                     </el-form-item>
                     <el-form-item label="交易下限：">
-                        <el-input clearable type="number" v-model.trim="addDataForm.amountMin"></el-input>
+                        <el-input type="number" v-model.trim="addDataForm.amountMin"></el-input>
                     </el-form-item>
                     <el-form-item label="备注：">
                         <el-input clearable type="textarea" v-model.trim="addDataForm.remark"></el-input>
@@ -234,10 +234,10 @@
                         </el-select>
                     </el-form-item>
                     <el-form-item label="交易上限：">
-                        <el-input clearable type="number" v-model.trim="editDataForm.amountMax"></el-input>
+                        <el-input type="number" v-model.trim="editDataForm.amountMax"></el-input>
                     </el-form-item>
                     <el-form-item label="交易下限：">
-                        <el-input clearable type="number" v-model.trim="editDataForm.amountMin"></el-input>
+                        <el-input type="number" v-model.trim="editDataForm.amountMin"></el-input>
                     </el-form-item>
                     <el-form-item label="备注：">
                         <el-input clearable type="textarea" v-model.trim="editDataForm.remark"></el-input>

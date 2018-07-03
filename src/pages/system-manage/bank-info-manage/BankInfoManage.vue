@@ -64,16 +64,20 @@
             <div class="form-content" style="margin: 0 auto;width: 90%;">
                 <el-form ref="addDataForm" :model="addDataForm" label-width="120px">
                     <el-form-item label="银行名称：">
-                        <el-input v-model.trim="addDataForm.bankName"></el-input>
+                        <el-input clearable v-model.trim="addDataForm.bankName" maxlength="32"
+                                  placeholder="不超过32位"></el-input>
                     </el-form-item>
                     <el-form-item label="银行代码：">
-                        <el-input v-model.trim="addDataForm.bankCode"></el-input>
+                        <el-input clearable v-model.trim="addDataForm.bankCode" maxlength="10"
+                                  placeholder="不超过10位的大写英文字母"></el-input>
                     </el-form-item>
                     <el-form-item label="银行编号：">
-                        <el-input v-model.trim="addDataForm.bankNumber"></el-input>
+                        <el-input clearable v-model.trim="addDataForm.bankNumber" maxlength="32"
+                                  placeholder="不超过32位的纯数字"></el-input>
                     </el-form-item>
                     <el-form-item label="联行号：">
-                        <el-input v-model.trim="addDataForm.uniBankNum"></el-input>
+                        <el-input clearable v-model.trim="addDataForm.uniBankNum" maxlength="12"
+                                  placeholder="12位的纯数字"></el-input>
                     </el-form-item>
                 </el-form>
             </div>
@@ -88,16 +92,20 @@
             <div class="form-content" style="margin: 0 auto;width: 90%;">
                 <el-form ref="ditDataForm" :model="ditDataForm" label-width="120px">
                     <el-form-item label="银行名称：">
-                        <el-input v-model.trim="ditDataForm.bankName"></el-input>
+                        <el-input clearable v-model.trim="ditDataForm.bankName" maxlength="32"
+                                  placeholder="不超过32位"></el-input>
                     </el-form-item>
                     <el-form-item label="银行代码：">
-                        <el-input v-model.trim="ditDataForm.bankCode"></el-input>
+                        <el-input clearable v-model.trim="ditDataForm.bankCode" maxlength="10"
+                                  placeholder="不超过10位的大写英文字母"></el-input>
                     </el-form-item>
                     <el-form-item label="银行编号：">
-                        <el-input v-model.trim="ditDataForm.bankNumber"></el-input>
+                        <el-input clearable v-model.trim="ditDataForm.bankNumber" maxlength="32"
+                                  placeholder="不超过32位的纯数字"></el-input>
                     </el-form-item>
                     <el-form-item label="联行号：">
-                        <el-input v-model.trim="ditDataForm.uniBankNum"></el-input>
+                        <el-input clearable v-model.trim="ditDataForm.uniBankNum" maxlength="12"
+                                  placeholder="12位的纯数字"></el-input>
                     </el-form-item>
                 </el-form>
             </div>
@@ -128,8 +136,8 @@
                 searchDataForm: {
                     bankName: '',
                     bankCode: '',
-                    bankNumber:'',
-                    uniBankNum:''
+                    bankNumber: '',
+                    uniBankNum: ''
                 },
                 // 编辑
                 ditDataForm: {
@@ -214,16 +222,32 @@
                     this.$message.warning('银行名称不能为空！');
                     return false;
                 }
+                if (this.addDataForm.bankName.length > 32) {
+                    this.$message.warning('银行名称不超过32位！');
+                    return false;
+                }
                 if (!this.addDataForm.bankCode) {
                     this.$message.warning('银行代码类型不能为空！');
                     return false;
                 }
+                if (!/^[A-Z]{1,10}$/.test(vm.addDataForm.bankCode)) {
+                    this.$message.warning('银行代码不超过10位的大写英文字母！');
+                    return false;
+                }
                 if (!this.addDataForm.bankNumber) {
-                    this.$message.warning('银行编号说明不能为空！');
+                    this.$message.warning('银行编号不能为空！');
+                    return false;
+                }
+                if (!/^\d{1,32}$/.test(vm.addDataForm.bankNumber)) {
+                    this.$message.warning('银行编号为不超过32位的纯数字！');
                     return false;
                 }
                 if (!this.addDataForm.uniBankNum) {
                     this.$message.warning('联行号不能为空！');
+                    return false;
+                }
+                if (!/^\d{12}$/.test(vm.addDataForm.uniBankNum)) {
+                    this.$message.warning('联行号为12位的纯数字！');
                     return false;
                 }
 
@@ -266,16 +290,32 @@
                     this.$message.warning('银行名称不能为空！');
                     return false;
                 }
+                if (this.ditDataForm.bankName.length > 32) {
+                    this.$message.warning('银行名称不超过32位！');
+                    return false;
+                }
                 if (!this.ditDataForm.bankCode) {
                     this.$message.warning('银行代码类型不能为空！');
                     return false;
                 }
+                if (!/^[A-Z]{1,10}$/.test(vm.ditDataForm.bankCode)) {
+                    this.$message.warning('银行代码不超过10位的大写英文字母！');
+                    return false;
+                }
                 if (!this.ditDataForm.bankNumber) {
-                    this.$message.warning('银行编号说明不能为空！');
+                    this.$message.warning('银行编号不能为空！');
+                    return false;
+                }
+                if (!/^\d{1,32}$/.test(vm.ditDataForm.bankNumber)) {
+                    this.$message.warning('银行编号为不超过32位的纯数字！');
                     return false;
                 }
                 if (!this.ditDataForm.uniBankNum) {
                     this.$message.warning('联行号不能为空！');
+                    return false;
+                }
+                if (!/^\d{12}$/.test(vm.ditDataForm.uniBankNum)) {
+                    this.$message.warning('联行号为12位的纯数字！');
                     return false;
                 }
                 this.$httpPost('/admin/bankInfo/updateBankInfo', {

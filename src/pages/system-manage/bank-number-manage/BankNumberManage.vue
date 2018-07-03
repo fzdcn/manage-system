@@ -61,19 +61,24 @@
             <div class="form-content" style="margin: 0 auto;width: 90%;">
                 <el-form ref="addDataForm" :model="addDataForm" label-width="180px">
                     <el-form-item label="银行名称：">
-                        <el-input v-model.trim="addDataForm.bankName"></el-input>
+                        <el-input clearable v-model.trim="addDataForm.bankName" maxlength="32"
+                                  placeholder="不超过32位"></el-input>
                     </el-form-item>
                     <el-form-item label="联行号：">
-                        <el-input v-model.trim="addDataForm.bankNumber"></el-input>
+                        <el-input type="number" v-model.trim="addDataForm.bankNumber" maxlength="12"
+                                  placeholder="12位的纯数字"></el-input>
                     </el-form-item>
                     <el-form-item label="银行代码：">
-                        <el-input v-model.trim="addDataForm.bankCode"></el-input>
+                        <el-input clearable v-model.trim="addDataForm.bankCode" maxlength="10"
+                                  placeholder="不超过10位的大写英文字母"></el-input>
                     </el-form-item>
                     <el-form-item label="银行编号：">
-                        <el-input v-model.trim="addDataForm.numbers"></el-input>
+                        <el-input type="number" v-model.trim="addDataForm.numbers" maxlength="32"
+                                  placeholder="不超过32位的纯数字"></el-input>
                     </el-form-item>
                     <el-form-item label="收款方账户所属机构标识：">
-                        <el-input v-model.trim="addDataForm.identity"></el-input>
+                        <el-input clearable v-model.trim="addDataForm.identity" maxlength="14"
+                                  placeholder="14位的大写英文字母加数字组合"></el-input>
                     </el-form-item>
                 </el-form>
             </div>
@@ -84,23 +89,28 @@
         </el-dialog>
 
         <!--编辑银行号-->
-        <el-dialog title="编辑银行号" :visible.sync="isShowEdit" :before-close="cancelEdit" width="500px" center>
+        <el-dialog title="编辑银行号" :visible.sync="isShowEdit" :before-close="cancelEdit" width="550px" center>
             <div class="form-content" style="margin: 0 auto;width: 90%;">
-                <el-form ref="editDataForm" :model="editDataForm" label-width="100px">
+                <el-form ref="editDataForm" :model="editDataForm" label-width="180px">
                     <el-form-item label="银行名称：">
-                        <el-input v-model.trim="editDataForm.bankName"></el-input>
+                        <el-input clearable v-model.trim="editDataForm.bankName" maxlength="32"
+                                  placeholder="不超过32位"></el-input>
                     </el-form-item>
                     <el-form-item label="联行号：">
-                        <el-input v-model.trim="editDataForm.bankNumber"></el-input>
+                        <el-input type="number" v-model.trim="editDataForm.bankNumber" maxlength="12"
+                                  placeholder="12位的纯数字"></el-input>
                     </el-form-item>
                     <el-form-item label="银行代码：">
-                        <el-input v-model.trim="editDataForm.bankCode"></el-input>
+                        <el-input clearable v-model.trim="editDataForm.bankCode" maxlength="10"
+                                  placeholder="不超过10位的大写英文字母"></el-input>
                     </el-form-item>
                     <el-form-item label="银行编号：">
-                        <el-input v-model.trim="editDataForm.numbers"></el-input>
+                        <el-input type="number" v-model.trim="editDataForm.numbers" maxlength="32"
+                                  placeholder="不超过32位的纯数字"></el-input>
                     </el-form-item>
                     <el-form-item label="收款方账户所属机构标识：">
-                        <el-input v-model.trim="editDataForm.identity"></el-input>
+                        <el-input clearable v-model.trim="editDataForm.identity" maxlength="14"
+                                  placeholder="14位的大写英文字母加数字组合"></el-input>
                     </el-form-item>
                 </el-form>
             </div>
@@ -190,22 +200,43 @@
                     this.$message.warning('银行名称不能为空！');
                     return false;
                 }
+                if (this.addDataForm.bankName.length > 32) {
+                    this.$message.warning('银行名称不超过32位！');
+                    return false;
+                }
                 if (!this.addDataForm.bankNumber) {
                     this.$message.warning('联行号不能为空！');
+                    return false;
+                }
+                if (!/^\d{12}$/.test(vm.addDataForm.bankNumber)) {
+                    this.$message.warning('联行号为12位的纯数字！');
                     return false;
                 }
                 if (!this.addDataForm.bankCode) {
                     this.$message.warning('银行代码不能为空！');
                     return false;
                 }
+                if (!/^[A-Z]{1,10}$/.test(vm.addDataForm.bankCode)) {
+                    this.$message.warning('银行代码不超过10位的大写英文字母！');
+                    return false;
+                }
                 if (!this.addDataForm.numbers) {
                     this.$message.warning('银行编号不能为空！');
+                    return false;
+                }
+                if (!/^\d{4}$/.test(vm.addDataForm.numbers)) {
+                    this.$message.warning('银行编号为4位纯数字！');
                     return false;
                 }
                 if (!this.addDataForm.identity) {
                     this.$message.warning('收款方账户所属机构标识不能为空！');
                     return false;
                 }
+                if (!/^(?![0-9]+$)(?![A-Z]+$)[0-9A-Z]{14}$/.test(vm.addDataForm.identity)) {
+                    this.$message.warning('收款方账户所属机构标识为14位的大写英文字母加数字组合！');
+                    return false;
+                }
+
                 this.$httpPost('/admin/epay/unionBankNumber/save', {
                     bankName: this.addDataForm.bankName,
                     bankNumber: this.addDataForm.bankNumber,
@@ -243,20 +274,40 @@
                     this.$message.warning('银行名称不能为空！');
                     return false;
                 }
+                if (this.editDataForm.bankName.length > 32) {
+                    this.$message.warning('银行名称不超过32位！');
+                    return false;
+                }
                 if (!this.editDataForm.bankNumber) {
                     this.$message.warning('联行号不能为空！');
+                    return false;
+                }
+                if (!/^\d{12}$/.test(vm.editDataForm.bankNumber)) {
+                    this.$message.warning('联行号为12位的纯数字！');
                     return false;
                 }
                 if (!this.editDataForm.bankCode) {
                     this.$message.warning('银行代码不能为空！');
                     return false;
                 }
+                if (!/^[A-Z]{1,10}$/.test(vm.editDataForm.bankCode)) {
+                    this.$message.warning('银行代码不超过10位的大写英文字母！');
+                    return false;
+                }
                 if (!this.editDataForm.numbers) {
                     this.$message.warning('银行编号不能为空！');
                     return false;
                 }
+                if (!/^\d{4}$/.test(vm.editDataForm.numbers)) {
+                    this.$message.warning('银行编号为4位纯数字！');
+                    return false;
+                }
                 if (!this.editDataForm.identity) {
                     this.$message.warning('收款方账户所属机构标识不能为空！');
+                    return false;
+                }
+                if (!/^(?![0-9]+$)(?![A-Z]+$)[0-9A-Z]{14}$/.test(vm.editDataForm.identity)) {
+                    this.$message.warning('收款方账户所属机构标识为14位的大写英文字母加数字组合！');
                     return false;
                 }
                 this.$httpPost('/admin/epay/unionBankNumber/update', {

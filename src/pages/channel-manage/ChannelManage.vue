@@ -30,6 +30,10 @@
                 </el-table-column>
                 <el-table-column prop="bankUrl" label="通道接入请求地址">
                 </el-table-column>
+                <el-table-column prop="unionMerNo" label="商户号">
+                </el-table-column>
+                <el-table-column prop="acqInsCode" label="机构号">
+                </el-table-column>
                 <el-table-column prop="channelState" label="使用状态">
                     <template slot-scope="scope">
                         <span v-if="scope.row.channelState">开启</span>
@@ -40,7 +44,10 @@
                 </el-table-column>
                 <el-table-column prop="operator" label="操作人">
                 </el-table-column>
-                <el-table-column prop="localFee" label="银行收取费率（最多4位整数，2位小数）">
+                <el-table-column prop="localFee" label="银行收取费率">
+                    <template slot-scope="scope">
+                        <span>{{ scope.row.localFee * 100 }}%</span>
+                    </template>
                 </el-table-column>
                 <el-table-column prop="computeMode" label="收费方式">
                     <template slot-scope="scope">
@@ -70,7 +77,7 @@
             </div>
         </div>
         <!--增加-->
-        <el-dialog title="增加通道信息" :visible.sync="isShowAdd" :before-close="cancelAdd" width="600px" center>
+        <el-dialog title="增加通道信息" :visible.sync="isShowAdd" :before-close="cancelAdd" width="720px" center>
             <div class="form-content" style="margin: 0 auto;width: 90%;">
                 <el-form ref="addDataForm" :model="addDataForm" label-width="150px">
                     <el-form-item label="通道名称：">
@@ -82,9 +89,17 @@
                     <el-form-item label="通道接入请求地址：">
                         <el-input clearable v-model.trim="addDataForm.bankUrl"></el-input>
                     </el-form-item>
+                    <el-form-item label="商户号：">
+                        <el-input type="number" v-model.trim="addDataForm.unionMerNo" maxlength="20"
+                                  placeholder="20位以内的数字"></el-input>
+                    </el-form-item>
+                    <el-form-item label="机构号：">
+                        <el-input type="number" v-model.trim="addDataForm.acqInsCode" maxlength="10"
+                                  placeholder="10位以内的数字"></el-input>
+                    </el-form-item>
                     <el-form-item label="银行收取费率：">
-                        <el-input clearable v-model.number="addDataForm.localFee" type="number"
-                                  placeholder="最多4位整数，2位小数"></el-input>
+                        <el-input v-model.number="addDataForm.localFee" type="number"
+                                  placeholder="不能为负数,整数最多10位，小数最多5位,>=1时，收费方式只能是定额"></el-input>
                     </el-form-item>
                     <el-form-item label="使用状态：">
                         <el-select clearable v-model="addDataForm.channelState" placeholder="使用状态">
@@ -98,11 +113,15 @@
                     </el-form-item>
                     <el-form-item label="收费方式：">
                         <el-select clearable v-model="addDataForm.computeMode" placeholder="收费方式">
-                            <el-option
-                                v-for="item in computeModeList"
-                                :key="item.id"
-                                :label="item.name"
-                                :value="item.id">
+                            <el-option v-if="addDataForm.localFee >= 1" v-for="item in otherComputeModeList"
+                                       :key="item.id"
+                                       :label="item.name"
+                                       :value="item.id">
+                            </el-option>
+                            <el-option v-else v-for="item in computeModeList"
+                                       :key="item.id"
+                                       :label="item.name"
+                                       :value="item.id">
                             </el-option>
                         </el-select>
                     </el-form-item>
@@ -119,7 +138,7 @@
         </el-dialog>
 
         <!--编辑-->
-        <el-dialog title="编辑通道信息" :visible.sync="isShowEdit" :before-close="cancelEdit" width="600px" center>
+        <el-dialog title="编辑通道信息" :visible.sync="isShowEdit" :before-close="cancelEdit" width="720px" center>
             <div class="form-content" style="margin: 0 auto;width: 90%;">
                 <el-form ref="editDataForm" :model="editDataForm" label-width="150px">
                     <el-form-item label="通道名称：">
@@ -131,9 +150,17 @@
                     <el-form-item label="通道接入请求地址：">
                         <el-input clearable v-model.trim="editDataForm.bankUrl"></el-input>
                     </el-form-item>
+                    <el-form-item label="商户号：">
+                        <el-input type="number" v-model.trim="editDataForm.unionMerNo" maxlength="20"
+                                  placeholder="20位以内的数字"></el-input>
+                    </el-form-item>
+                    <el-form-item label="机构号：">
+                        <el-input type="number" v-model.trim="editDataForm.acqInsCode" maxlength="10"
+                                  placeholder="10位以内的数字"></el-input>
+                    </el-form-item>
                     <el-form-item label="银行收取费率：">
-                        <el-input clearable v-model.number="editDataForm.localFee" type="number"
-                                  placeholder="最多4位整数，2位小数"></el-input>
+                        <el-input v-model.number="editDataForm.localFee" type="number"
+                                  placeholder="不能为负数,整数最多10位，小数最多5位,>=1时，收费方式只能是定额"></el-input>
                     </el-form-item>
                     <el-form-item label="使用状态：">
                         <el-select clearable v-model="editDataForm.channelState" placeholder="使用状态">
@@ -147,11 +174,15 @@
                     </el-form-item>
                     <el-form-item label="收费方式：">
                         <el-select clearable v-model="editDataForm.computeMode" placeholder="收费方式">
-                            <el-option
-                                v-for="item in computeModeList"
-                                :key="item.id"
-                                :label="item.name"
-                                :value="item.id">
+                            <el-option v-if="editDataForm.localFee >= 1" v-for="item in otherComputeModeList"
+                                       :key="item.id"
+                                       :label="item.name"
+                                       :value="item.id">
+                            </el-option>
+                            <el-option v-else v-for="item in computeModeList"
+                                       :key="item.id"
+                                       :label="item.name"
+                                       :value="item.id">
                             </el-option>
                         </el-select>
                     </el-form-item>
@@ -189,7 +220,18 @@
                 addDataForm: {},
                 num: null,
                 // 编辑参数
-                editDataForm: {},
+                editDataForm: {
+                    id: '',
+                    channelName: '',
+                    channelAccessCode: '',
+                    bankUrl: '',
+                    unionMerNo: '',
+                    acqInsCode: '',
+                    localFee: '',
+                    channelState: '',
+                    computeMode: '',
+                    remark: ''
+                },
                 channelStateList: [
                     {
                         id: 1,
@@ -209,6 +251,12 @@
                         id: 2,
                         name: '借贷比例'
                     },
+                    {
+                        id: 3,
+                        name: '定额'
+                    },
+                ],
+                otherComputeModeList: [
                     {
                         id: 3,
                         name: '定额'
@@ -286,12 +334,28 @@
                     this.$message.warning('通道接入请求地址不能为空！');
                     return false;
                 }
+                if (!this.addDataForm.unionMerNo) {
+                    this.$message.warning('商户号不能为空！');
+                    return false;
+                }
+                if (!/^\d{1,20}$/.test(vm.addDataForm.unionMerNo)) {
+                    this.$message.warning('商户号20位以内的数字！');
+                    return false;
+                }
+                if (!this.addDataForm.acqInsCode) {
+                    this.$message.warning('机构号不能为空！');
+                    return false;
+                }
+                if (!/^\d{1,10}$/.test(vm.addDataForm.acqInsCode)) {
+                    this.$message.warning('机构号10位以内的数字！');
+                    return false;
+                }
                 if (!this.addDataForm.localFee) {
                     this.$message.warning('银行收取费率不能为空！');
                     return false;
                 }
-                if (Number(this.addDataForm.localFee) == NaN) {
-                    this.$message.warning('类型不对，只能是正整数和小数！');
+                if (!/^\d{1,10}(\.\d{1,5})?$/.test(vm.addDataForm.localFee)) {
+                    this.$message.warning('银行收取费率整数最多10位，小数最多为5位！');
                     return false;
                 }
                 if (!this.addDataForm.channelState) {
@@ -309,7 +373,9 @@
                     localFee: Number(this.addDataForm.localFee),
                     channelState: this.addDataForm.channelState,
                     computeMode: this.addDataForm.computeMode,
-                    remark: this.addDataForm.remark
+                    remark: this.addDataForm.remark,
+                    unionMerNo: this.addDataForm.unionMerNo,
+                    acqInsCode: this.addDataForm.acqInsCode
                 }).then((data) => {
                     vm.$message.success(data.message);
                     vm.isShowAdd = false;
@@ -329,10 +395,11 @@
                 this.editDataForm.channelState = row.channelState;
                 this.editDataForm.computeMode = row.computeMode;
                 this.editDataForm.remark = row.remark;
+                this.editDataForm.unionMerNo = row.unionMerNo;
+                this.editDataForm.acqInsCode = row.acqInsCode
             },
             cancelEdit() {
                 this.isShowEdit = false;
-                this.editDataForm = {};
             },
             submitEdit() {
                 let vm = this;
@@ -348,12 +415,28 @@
                     this.$message.warning('通道接入请求地址不能为空！');
                     return false;
                 }
+                if (!this.editDataForm.unionMerNo) {
+                    this.$message.warning('商户号不能为空！');
+                    return false;
+                }
+                if (!/^\d{1,20}$/.test(vm.editDataForm.unionMerNo)) {
+                    this.$message.warning('商户号20位以内的数字！');
+                    return false;
+                }
+                if (!this.editDataForm.acqInsCode) {
+                    this.$message.warning('机构号不能为空！');
+                    return false;
+                }
+                if (!/^\d{1,10}$/.test(vm.editDataForm.acqInsCode)) {
+                    this.$message.warning('机构号10位以内的数字！');
+                    return false;
+                }
                 if (!this.editDataForm.localFee) {
                     this.$message.warning('银行收取费率不能为空！');
                     return false;
                 }
-                if (Number(this.editDataForm.localFee) == NaN) {
-                    this.$message.warning('类型不对，只能是正整数和小数！');
+                if (!/^\d{1,10}(\.\d{1,5})?$/.test(vm.editDataForm.localFee)) {
+                    this.$message.warning('银行收取费率整数最多10位，小数最多为5位！');
                     return false;
                 }
                 if (!this.editDataForm.channelState) {
@@ -372,11 +455,12 @@
                     localFee: this.editDataForm.localFee,
                     channelState: this.editDataForm.channelState,
                     computeMode: this.editDataForm.computeMode,
-                    remark: this.editDataForm.remark
+                    remark: this.editDataForm.remark,
+                    unionMerNo: this.editDataForm.unionMerNo,
+                    acqInsCode: this.editDataForm.acqInsCode
                 }).then((data) => {
                     vm.$message.success(data.message);
-                    vm.isShowEdit = false;
-                    vm.editDataForm = {};
+                    vm.cancelEdit();
                     vm.getData();
                 }).catch((data) => {
                     console.log(data)

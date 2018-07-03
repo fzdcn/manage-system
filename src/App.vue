@@ -4,9 +4,9 @@
     </div>
 </template>
 <style>
-    @import "../static/css/main.css";
+    @import "./assets/main.css";
     /*深色主题*/
-    @import "../static/css/color-dark.css";
+    @import "./assets/color-dark.css";
     /*浅绿色主题*/
     /*@import "../static/css/theme-green/color-green.css";*/
 </style>

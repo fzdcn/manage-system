@@ -6,6 +6,7 @@
 let baseURL
 if (process.env.NODE_ENV === 'development') {
     // 开发环境
+    baseURL = "http://10.62.22.131:8081";
     baseURL = "http://10.62.10.101:8081";
 // 编译环境
 } else {
@@ -18,8 +19,6 @@ if (process.env.NODE_ENV === 'development') {
     }
 }
 export const API_BASE = baseURL;
-console.log(process.env.NODE_ENV);
-console.log(process.env.type);
 // 正式
 // export const API_BASE = DEBUG ? 'http://10.62.10.101:8081' : "https://adminapi.95epay.com"
 // 曹
