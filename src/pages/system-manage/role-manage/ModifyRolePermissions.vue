@@ -1,7 +1,7 @@
 <template>
     <div class="table">
         <div class="container">
-            <el-table :data="getDataList" ref="itemTable" border style="width: 100%;"
+            <!--<el-table :data="getDataList" ref="itemTable" border style="width: 100%;"
                       @selection-change="handleSelectionAllChange" @select="handleSelectionChange"
                       @select-all="handleSelectionChange">
                 <el-table-column type="selection" width="55">
@@ -24,23 +24,23 @@
             <el-row style="margin: 50px auto">
                 <el-button @click="submitAdd" size="medium" type="success">提交</el-button>
                 <el-button @click="cancelAdd" size="medium" type="primary">返回</el-button>
+            </el-row>-->
+
+
+            <el-tree
+                :data="getData"
+                show-checkbox
+                node-key="id"
+                ref="tree"
+                highlight-current
+                :default-expand-all="true"
+                :default-checked-keys="defaultSelectedMenu"
+                :props="defaultProps">
+            </el-tree>
+            <el-row style="margin: 50px auto">
+                <el-button @click="submit" size="medium" type="success">提交</el-button>
+                <el-button @click="cancelAdd" size="medium" type="primary">返回</el-button>
             </el-row>
-
-
-            <!--<el-tree-->
-                <!--:data="data2"-->
-                <!--show-checkbox-->
-                <!--node-key="id"-->
-                <!--ref="tree"-->
-                <!--highlight-current-->
-                <!--:default-expand-all="true"-->
-                <!--:default-checked-keys="defaultSelectedMenu"-->
-                <!--:props="defaultProps">-->
-            <!--</el-tree>-->
-            <!--<div class="buttons">-->
-                <!--<el-button @click="getCheckedNodes">通过 node 获取</el-button>-->
-                <!--<el-button @click="getCheckedKeys">通过 key 获取</el-button>-->
-            <!--</div>-->
         </div>
     </div>
 </template>
@@ -66,69 +66,62 @@
                     }
                 ],
                 pids: [],
-                data2: [],
+                selectedPid: [],
+                getData: [],
                 defaultProps: {
                     children: 'subs',
                     label: 'name'
                 },
+                //初始话选中的菜单
                 defaultSelectedMenu: []
             }
         },
         methods: {
-            getCheckedNodes() {
-                console.log(this.$refs.tree.getCheckedNodes());
-            },
-            getCheckedKeys() {
-                console.log(this.$refs.tree.getCheckedKeys());
-                console.log(this.$refs.tree.getNode('98'));
-            },
+            // 初始化数据
             getDefaultSelectedMenuList() {
                 let vm = this;
+                let defaultSelectedMenuOne = [];
+                let defaultSelectedMenuTwo = [];
                 this.$httpGet('/admin/role/getAllMenuByRoleId', {
                     id: this.$route.params.id
                 }).then(({data}) => {
-                    vm.data2 = data;
-                    if (vm.data2.length > 0) {
-                        if (vm.data2[0].subs || vm.data2[0].subs.length > 0) {
-                            for (let valuesOuter of vm.data2[0].subs) {
-                                if (valuesOuter.subs || valuesOuter.subs.length > 0) {
-                                    for (let valuesInsideOne of valuesOuter.subs) {
+                    vm.getData = data;
+                    if (vm.getData || vm.getData.length > 0) {
+                        if (vm.getData[0].subs || vm.getData[0].subs.length > 0) {
+                            for (let valuesOuterOne of vm.getData[0].subs) {
+                                if (valuesOuterOne.subs || valuesOuterOne.subs.length > 0) {
+                                    for (let valuesInsideOne of valuesOuterOne.subs) {
                                         if (valuesInsideOne.subs || valuesInsideOne.subs.length > 0) {
+                                            valuesInsideOne.rid = "";
                                             for (let valuesInsideTwo of valuesInsideOne.subs) {
                                                 if (valuesInsideTwo.rid) {
-                                                    vm.defaultSelectedMenu.push(valuesInsideTwo.id);
+                                                    defaultSelectedMenuOne.push(valuesInsideTwo.id);
                                                 }
                                             }
                                         }
                                     }
                                 }
                             }
-                            for (let valuesOuter of vm.data2[0].subs) {
-                                if (valuesOuter.subs || valuesOuter.subs.length > 0) {
-                                    for (let valuesInsideOne of valuesOuter.subs) {
-                                        if (valuesInsideOne.subs || valuesInsideOne.subs.length > 0) {
-                                            if (valuesInsideOne.subs.length = 1) {
-
-                                            }
-                                            if (valuesInsideOne.rid) {
-                                                vm.defaultSelectedMenu.push(valuesInsideOne.id);
-                                            }
+                            for (let valuesOuterTwo of vm.getData[0].subs) {
+                                if (valuesOuterTwo.subs || valuesOuterTwo.subs.length > 0) {
+                                    valuesOuterTwo.rid = "";
+                                    for (let valuesInsideThree of valuesOuterTwo.subs) {
+                                        if (valuesInsideThree.rid) {
+                                            defaultSelectedMenuTwo.push(valuesInsideThree.id);
                                         }
                                     }
-                                }
-                            }
-                            for (let valuesOuter of vm.data2[0].subs) {
-                                if (valuesOuter.subs || valuesOuter.subs.length > 0) {
-                                    if (valuesOuter.rid) {
-                                        vm.defaultSelectedMenu.push(valuesOuter.id);
+                                } else {
+                                    if (valuesOuterTwo.rid) {
+                                        defaultSelectedMenuTwo.push(valuesOuterTwo.id);
                                     }
                                 }
                             }
+                            vm.defaultSelectedMenu = defaultSelectedMenuOne.concat(defaultSelectedMenuTwo);
                         } else {
-
+                            vm.defaultSelectedMenu = []
                         }
                     } else {
-
+                        vm.defaultSelectedMenu = []
                     }
                 }).catch((data) => {
                     console.log(data)
@@ -143,6 +136,37 @@
                 this.$httpPost('/admin/role/assignUpdate', {
                     id: this.$route.params.id,
                     pids: this.pids.join(',')
+                }).then((data) => {
+                    vm.$message.success(data.message);
+                    vm.getMenuList();
+                }).catch((data) => {
+                    console.log(data)
+                })
+            },
+            submit() {
+                let vm = this;
+                // 半选中的Keys
+                let getHalfCheckedKeys = [];
+                // 选中的Keys
+                let getCheckedKeys = this.$refs.tree.getCheckedKeys();
+                let getHalfCheckedNodes = this.$refs.tree.getHalfCheckedNodes();
+                if (getHalfCheckedNodes.length > 0 || getHalfCheckedNodes) {
+                    for (let values of getHalfCheckedKeys) {
+                        getHalfCheckedKeys.push(values.id);
+                    }
+                } else {
+                    getHalfCheckedKeys = [];
+                }
+                this.selectedPid = getCheckedKeys.concat(getHalfCheckedKeys);
+                // 数组去重
+                this.selectedPid = Array.from(new Set(vm.selectedPid));
+                // 过滤数组里面的1
+                this.selectedPid = this.selectedPid.filter((value) => {
+                    return value != 1;
+                });
+                this.$httpPost('/admin/role/assignUpdate', {
+                    id: this.$route.params.id,
+                    pids: this.selectedPid.join(',')
                 }).then((data) => {
                     vm.$message.success(data.message);
                     vm.getMenuList();
@@ -168,45 +192,6 @@
             // 单选
             handleSelectionChange(val, row) {
                 this.pids = [];
-                /*if (row.grade == 1) {
-                    for (var i = row.index; i < this.getDataList.length; i++) {
-                        if (i + 1 < this.getDataList.length) {
-                            if (this.getDataList[i + 1].grade >= 2) {
-                                this.$refs.itemTable.toggleRowSelection(this.getDataList[i + 1]);
-                            } else {
-                                break;
-                            }
-                        }
-                    }
-                } else if (row.grade == 2) {
-                    for (var i = row.index; i < this.getDataList.length; i++) {
-                        if (i + 1 < this.getDataList.length) {
-                            if (this.getDataList[i + 1].grade >= 3) {
-                                let nameArray = [];
-                                for (let values of val) {
-                                    nameArray.push(values.name);
-                                }
-                                if (nameArray.includes(this.getDataList[i + 1].name)) {
-                                    this.$refs.itemTable.toggleRowSelection(this.getDataList[i + 1]);
-                                } else {
-                                    this.$refs.itemTable.toggleRowSelection(this.getDataList[i + 1], false);
-                                }
-                            } else {
-                                break;
-                            }
-                        }
-                    }
-                } else if (row.grade == 3) {
-                    for (var i = row.index; i < this.getDataList.length; i++) {
-                        if (i + 1 < this.getDataList.length) {
-                            if (this.getDataList[i + 1].grade >= 3) {
-                                this.$refs.itemTable.toggleRowSelection(this.getDataList[i + 1]);
-                            } else {
-                                break;
-                            }
-                        }
-                    }
-                }*/
                 for (let values of val) {
                     if (values) {
                         this.pids.push(values.id);
@@ -245,8 +230,8 @@
             }
         },
         mounted() {
-            this.getPermissionsData();
-            // this.getDefaultSelectedMenuList();
+            // this.getPermissionsData();
+            this.getDefaultSelectedMenuList();
         }
     }
 

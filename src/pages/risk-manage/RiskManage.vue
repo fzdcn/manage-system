@@ -7,14 +7,29 @@
 
             <div class="handle-box" style="margin-bottom: 20px;display: flex;flex-flow: row wrap;">
                 <div style="margin: 0px 20px 10px 0;">
-                    <span>IP：</span>
-                    <el-input style="width: 150px;" class="username" v-model.trim="searchDataForm.ip"
-                              clearable placeholder="IP">
+                    <span>平台名称：</span>
+                    <el-input style="width: 150px;" class="username" v-model.trim="searchDataForm.platformName"
+                              clearable placeholder="">
                     </el-input>
                 </div>
+
+                <div style="margin: 0px 20px 10px 0;">
+                    <span>平台IP：</span>
+                    <el-input style="width: 150px;" class="username" v-model.trim="searchDataForm.platformIp"
+                              clearable placeholder="">
+                    </el-input>
+                </div>
+
+                <div style="margin: 0px 20px 10px 0;">
+                    <span>商户IP：</span>
+                    <el-input style="width: 150px;" class="username" v-model.trim="searchDataForm.merchantIp"
+                              clearable placeholder="">
+                    </el-input>
+                </div>
+
                 <div style="margin: 0px 20px 10px 0;">
                     <span>类型：</span>
-                    <el-select clearable style="width: 150px;" v-model="searchDataForm.type" placeholder="类型">
+                    <el-select clearable style="width: 150px;" v-model="searchDataForm.type" placeholder="">
                         <el-option
                             v-for="item in typeList"
                             :key="item.type"
@@ -29,7 +44,9 @@
             </div>
 
             <el-table :data="getDataList" border style="width: 100%;text-align: center;">
-                <el-table-column prop="ip" label="IP" header-align="center"/>
+                <el-table-column prop="platformName" label="平台名称" header-align="center"/>
+                <el-table-column prop="platformIp" label="平台IP" header-align="center"/>
+                <el-table-column prop="merchantIp" label="商户IP" header-align="center"/>
                 <el-table-column prop="type" label="类型" header-align="center">
                     <template slot-scope="scope">
                         <span v-if="scope.row.type==1">黑名单</span>
@@ -58,8 +75,24 @@
         <el-dialog title="增加风控信息" :visible.sync="isShowAdd" :before-close="cancelAdd" width="500px" center>
             <div class="form-content" style="margin: 0 auto;width: 90%;">
                 <el-form ref="addDataForm" :model="addDataForm" label-width="120px">
-                    <el-form-item label="IP：">
-                        <el-input clearable v-model.trim="addDataForm.ip" placeholder="ip格式应该位xxx.xxx.xxx.xxx">
+                    <el-form-item label="平台名称：">
+                        <el-select clearable v-model="addDataForm.platformNo"
+                                   placeholder="平台名称">
+                            <el-option
+                                v-for="item in platformIdList"
+                                :key="item.platformNo"
+                                :label="item.platformName"
+                                :value="item.platformNo">
+                            </el-option>
+                        </el-select>
+                    </el-form-item>
+
+                    <el-form-item label="平台IP：">
+                        <el-input clearable v-model.trim="addDataForm.platformIp" placeholder="ip格式应该位xxx.xxx.xxx.xxx">
+                        </el-input>
+                    </el-form-item>
+                    <el-form-item label="商户IP：">
+                        <el-input clearable v-model.trim="addDataForm.merchantIp" placeholder="ip格式应该位xxx.xxx.xxx.xxx">
                         </el-input>
                     </el-form-item>
                     <el-form-item label="类型：">
@@ -84,8 +117,25 @@
         <el-dialog title="编辑风控信息" :visible.sync="isShowEdit" :before-close="cancelEdit" width="500px" center>
             <div class="form-content" style="margin: 0 auto;width: 90%;">
                 <el-form ref="ditDataForm" :model="ditDataForm" label-width="120px">
-                    <el-form-item label="IP：">
-                        <el-input clearable v-model.trim="ditDataForm.ip"
+                    <el-form-item label="平台名称：">
+                        <el-select clearable v-model="ditDataForm.platformNo" placeholder="平台名称">
+                            <el-option
+                                v-for="item in platformIdList"
+                                :key="item.platformNo"
+                                :label="item.platformName"
+                                :value="item.platformNo">
+                            </el-option>
+                        </el-select>
+                    </el-form-item>
+
+                    <el-form-item label="平台IP：">
+                        <el-input clearable v-model.trim="ditDataForm.platformIp"
+                                  placeholder="ip格式应该位xxx.xxx.xxx.xxx">
+                        </el-input>
+                    </el-form-item>
+
+                    <el-form-item label="商户IP：">
+                        <el-input clearable v-model.trim="ditDataForm.merchantIp"
                                   placeholder="ip格式应该位xxx.xxx.xxx.xxx">
                         </el-input>
                     </el-form-item>
@@ -127,8 +177,9 @@
                 // 增加
                 addDataForm: {},
                 searchDataForm: {
-                    ip: '',
-                    type: ''
+                    platformIp: "",
+                    merchantIp: "",
+                    type: ""
                 },
                 typeList: [
                     {
@@ -143,9 +194,15 @@
                 // 编辑
                 ditDataForm: {
                     id: "",
-                    ip: "",
+                    platformNo:"",
+                    platformIp: "",
+                    merchantIp: "",
                     type: ""
-                }
+                },
+                // 平台列表
+                platformIdList: [],
+                //平台名称
+                platformName:""
             }
         },
         methods: {
@@ -177,12 +234,24 @@
                     });
                 });
             },
+            // 平台名称
+            getPlatFormList() {
+                let vm = this;
+                this.$httpGet('/admin/platformInfo/option', {})
+                    .then(({data}) => {
+                        vm.platformIdList = data;
+                    }).catch((data) => {
+                    console.log(data)
+                })
+            },
             getData() {
                 let vm = this;
                 this.$httpGet('/admin/epay/riskInfo/listRisk', {
                     pageNo: this.cur_page,
                     pageSize: 10,
-                    ip: this.searchDataForm.ip,
+                    platformIp: this.searchDataForm.platformIp,
+                    merchantIp: this.searchDataForm.merchantIp,
+                    platformName: this.searchDataForm.platformName,
                     type: this.searchDataForm.type
                 }).then(({data}) => {
                     vm.getDataList = data.list;
@@ -201,20 +270,42 @@
             },
             submitAdd() {
                 let vm = this;
-                if (!this.addDataForm.ip) {
-                    this.$message.warning('ip不能为空！');
+                if (!this.addDataForm.platformNo) {
+                    this.$message.warning('平台名称不能为空！');
                     return false;
                 }
-                if (!/^(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])$/.test(vm.addDataForm.ip)) {
-                    this.$message.warning('ip格式不对！');
+                if (!this.addDataForm.platformIp) {
+                    this.$message.warning('平台ip不能为空！');
+                    return false;
+                }
+                if (!this.addDataForm.merchantIp) {
+                    this.$message.warning('商户ip不能为空！');
+                    return false;
+                }
+                if (!/^(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])$/.test(vm.addDataForm.platformIp)) {
+                    this.$message.warning('平台ip格式不对！');
+                    return false;
+                }
+                if (!/^(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])$/.test(vm.addDataForm.merchantIp)) {
+                    this.$message.warning('商户ip格式不对！');
                     return false;
                 }
                 if (!this.addDataForm.type) {
                     this.$message.warning('类型不能为空！');
                     return false;
                 }
+
+                // 取平台名称
+                let object = {};
+                object = this.platformIdList.find((item => {
+                    return item.platformNo == this.addDataForm.platformNo;
+                }));
+
                 this.$httpPost('/admin/epay/riskInfo/insertRisk', {
-                    ip: this.addDataForm.ip,
+                    platformNo: this.addDataForm.platformNo,
+                    platformName: object.platformName,
+                    merchantIp: this.addDataForm.merchantIp,
+                    platformIp: this.addDataForm.platformIp,
                     type: this.addDataForm.type
                 }).then((data) => {
                     vm.$message.success(data.message);
@@ -227,7 +318,9 @@
             handleEdit(row) {
                 this.isShowEdit = true;
                 this.ditDataForm.id = row.id;
-                this.ditDataForm.ip = row.ip;
+                this.ditDataForm.platformNo = row.platformNo;
+                this.ditDataForm.merchantIp = row.merchantIp;
+                this.ditDataForm.platformIp = row.platformIp;
                 this.ditDataForm.type = row.type;
             },
             cancelEdit() {
@@ -235,21 +328,43 @@
             },
             submitEdit() {
                 let vm = this;
-                if (!this.ditDataForm.ip) {
-                    this.$message.warning('ip不能为空！');
+                if (!this.ditDataForm.platformNo) {
+                    this.$message.warning('平台名称不能为空！');
                     return false;
                 }
-                if (!/^(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])$/.test(vm.ditDataForm.ip)) {
-                    this.$message.warning('ip格式不对！');
+                if (!this.ditDataForm.platformIp) {
+                    this.$message.warning('平台ip不能为空！');
+                    return false;
+                }
+                if (!this.ditDataForm.merchantIp) {
+                    this.$message.warning('商户ip不能为空！');
+                    return false;
+                }
+                if (!/^(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])$/.test(vm.ditDataForm.platformIp)) {
+                    this.$message.warning('平台ip格式不对！');
+                    return false;
+                }
+                if (!/^(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])$/.test(vm.ditDataForm.merchantIp)) {
+                    this.$message.warning('商户ip格式不对！');
                     return false;
                 }
                 if (!this.ditDataForm.type) {
                     this.$message.warning('类型不能为空！');
                     return false;
                 }
+
+                // 取平台名称
+                let object = {};
+                object = this.platformIdList.find((item => {
+                    return item.platformNo == this.ditDataForm.platformNo;
+                }));
+
                 this.$httpPost('/admin/epay/riskInfo/updateRisk', {
                     id: this.ditDataForm.id,
-                    ip: this.ditDataForm.ip,
+                    platformNo: this.ditDataForm.platformNo,
+                    platformName: object.platformName,
+                    merchantIp: this.ditDataForm.merchantIp,
+                    platformIp: this.ditDataForm.platformIp,
                     type: this.ditDataForm.type
                 }).then((data) => {
                     vm.$message.success(data.message);
@@ -263,6 +378,8 @@
         ,
         created() {
             this.getData();
+            this.getPlatFormList();
+
         }
     }
 

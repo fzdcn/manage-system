@@ -46,7 +46,8 @@
                 </el-table-column>
                 <el-table-column prop="localFee" label="银行收取费率">
                     <template slot-scope="scope">
-                        <span>{{ scope.row.localFee * 100 }}%</span>
+                        <span v-if="scope.row.localFee < 1">{{ scope.row.localFee * 100 }}%</span>
+                        <span v-else>{{ scope.row.localFee }}</span>
                     </template>
                 </el-table-column>
                 <el-table-column prop="computeMode" label="收费方式">
@@ -354,6 +355,10 @@
                     this.$message.warning('银行收取费率不能为空！');
                     return false;
                 }
+                if (/^\-\d+\.?\d*$/.test(vm.addDataForm.localFee)) {
+                    this.$message.warning('银行收取费率不能是负数');
+                    return false;
+                }
                 if (!/^\d{1,10}(\.\d{1,5})?$/.test(vm.addDataForm.localFee)) {
                     this.$message.warning('银行收取费率整数最多10位，小数最多为5位！');
                     return false;
@@ -433,6 +438,10 @@
                 }
                 if (!this.editDataForm.localFee) {
                     this.$message.warning('银行收取费率不能为空！');
+                    return false;
+                }
+                if (/^\-\d+\.?\d*$/.test(vm.editDataForm.localFee)) {
+                    this.$message.warning('银行收取费率不能是负数');
                     return false;
                 }
                 if (!/^\d{1,10}(\.\d{1,5})?$/.test(vm.editDataForm.localFee)) {

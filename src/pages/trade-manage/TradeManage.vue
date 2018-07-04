@@ -121,7 +121,7 @@
                         <span v-if="scope.row.tradeState==8">异常</span>
                     </template>
                 </el-table-column>
-                <el-table-column prop="tradeTime" label="交易时间" :formatter="dateFormatter">
+                <el-table-column prop="tradeTime" label="交易时间" :formatter="tradeTimeForMatter">
                 </el-table-column>
                 <el-table-column prop="tradeAmount" label="交易金额">
                 </el-table-column>
@@ -130,6 +130,10 @@
                 <el-table-column prop="tradeFee" label="交易手续费">
                 </el-table-column>
                 <el-table-column prop="bankOrderNo" label="银行订单号">
+                </el-table-column>
+                <el-table-column prop="bankReturnTime" label="银行返回时间" :formatter="bankReturnTimeForMatter">
+                </el-table-column>
+                <el-table-column prop="upplementTime" label="补单时间" :formatter="upPlementTimeForMatter">
                 </el-table-column>
                 <el-table-column prop="channelName" label="银行支付通道">
                 </el-table-column>
@@ -145,6 +149,8 @@
                         <span v-if="scope.row.payType==5">微信支付</span>
                         <span v-if="scope.row.payType==6">支付宝支付</span>
                     </template>
+                </el-table-column>
+                <el-table-column prop="saleCode" label="业务员code">
                 </el-table-column>
                 <el-table-column prop="platformNo" label="平台名称">
                     <template slot-scope="scope">
@@ -284,10 +290,20 @@
                     + "&constchannelAccessCode=" + constchannelAccessCode
                     + "&platformNo=" + platformNo;
             },
-            dateFormatter(row, column) {
+            tradeTimeForMatter(row, column) {
                 let tradeTime = row.tradeTime;
                 if (tradeTime)
                     return this.$moment(tradeTime).format('YYYY-MM-DD HH:mm:ss');
+            },
+            bankReturnTimeForMatter(row, column) {
+                let bankReturnTime = row.bankReturnTime;
+                if (bankReturnTime)
+                    return this.$moment(bankReturnTime).format('YYYY-MM-DD HH:mm:ss');
+            },
+            upPlementTimeForMatter(row, column) {
+                let upplementTime = row.upplementTime;
+                if (upplementTime)
+                    return this.$moment(upplementTime).format('YYYY-MM-DD HH:mm:ss');
             },
             // 分页导航
             handleCurrentChange(val) {
