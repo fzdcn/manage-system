@@ -36,37 +36,26 @@
                 </div>
             </div>
             <el-table :data="getDataList" border style="width: 100%;">
-                <el-table-column prop="platformId" label="平台标识">
+                <el-table-column show-overflow-tooltip prop="platformId" label="平台标识">
                     <template slot-scope="scope">
                         <span v-if="scope.row.platformId == item.id" v-for="(item,index) in platformIdList">{{ item.platformName }}</span>
                     </template>
                 </el-table-column>
-                <el-table-column prop="sysTemplateCode" label="系统模板号">
+                <el-table-column show-overflow-tooltip prop="sysTemplateCode" label="系统模板号">
                 </el-table-column>
-                <el-table-column prop="templateCode" label="渠道模板号">
+                <el-table-column show-overflow-tooltip prop="templateCode" label="渠道模板号">
                 </el-table-column>
-                <el-table-column prop="explain" label="短信说明">
+                <el-table-column show-overflow-tooltip prop="explain" label="短信说明">
                 </el-table-column>
-                <el-table-column prop="content" label="短信模板内容" align="center">
-                    <template slot-scope="scope">
-                        <el-popover trigger="hover" placement="top">
-                            <p>{{ scope.row.content }}</p>
-                            <div slot="reference">
-                                <el-tag
-                                    style="width: 150px;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;"
-                                    size="medium">{{ scope.row.content }}
-                                </el-tag>
-                            </div>
-                        </el-popover>
-                    </template>
+                <el-table-column show-overflow-tooltip prop="content" label="短信模板内容">
                 </el-table-column>
-                <el-table-column prop="channel" label="短信通道">
+                <el-table-column show-overflow-tooltip prop="channel" label="短信通道">
                     <template slot-scope="scope">
                         <span v-if="scope.row.channel == item.id"
                               v-for="(item,index) in smsChannel">{{ item.name }}</span>
                     </template>
                 </el-table-column>
-                <el-table-column prop="sysRemark" label="系统备注">
+                <el-table-column show-overflow-tooltip prop="sysRemark" label="系统备注">
                 </el-table-column>
                 <el-table-column label="操作" width="100px" align="center">
                     <template v-if="getDataList.length > 0" slot-scope="scope">

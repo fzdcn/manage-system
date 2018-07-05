@@ -5,7 +5,7 @@
                 <el-button type="primary" size="medium" icon="el-icon-plus" @click="add">增加</el-button>
             </div>
             <el-table :data="getDataList" ref="itemTable" border style="width: 100%;">
-                <el-table-column prop="name" label="名称">
+                <el-table-column show-overflow-tooltip prop="name" label="名称">
                     <template slot-scope="scope">
                         <span v-if="scope.row.grade == 1"
                               style="color: dodgerblue">{{ scope.row.name }}</span>
@@ -13,16 +13,16 @@
                         <span v-if="scope.row.grade == 3" style="color: lightskyblue">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ scope.row.name }}</span>
                     </template>
                 </el-table-column>
-                <el-table-column label="类型">
+                <el-table-column show-overflow-tooltip label="类型">
                     <template slot-scope="scope">{{ scope.row.type ===1 ? '菜单' : '按钮' }}</template>
                 </el-table-column>
-                <el-table-column prop="permission" label="权限key">
+                <el-table-column show-overflow-tooltip prop="permission" label="权限key">
                 </el-table-column>
-                <el-table-column prop="url" label="URL">
+                <el-table-column show-overflow-tooltip prop="url" label="URL">
                 </el-table-column>
-                <el-table-column prop="icon" label="ICON">
+                <el-table-column show-overflow-tooltip prop="icon" label="ICON">
                 </el-table-column>
-                <el-table-column prop="orders" label="排序">
+                <el-table-column show-overflow-tooltip prop="orders" label="排序">
                 </el-table-column>
                 <el-table-column label="操作" width="200px" align="center">
                     <template v-if="getDataList.length > 0" slot-scope="scope">
@@ -259,6 +259,10 @@
                     this.$message.warning('权限key不能为空！');
                     return false;
                 }
+                if (!this.editDataForm.url) {
+                    this.$message.warning('url不能为空！');
+                    return false;
+                }
                 if (!this.editDataForm.parentId) {
                     this.$message.warning('父节点不能为空！');
                     return false;
@@ -329,6 +333,10 @@
                 }
                 if (!this.addDataForm.permission) {
                     this.$message.warning('权限key不能为空！');
+                    return false;
+                }
+                if (!this.addDataForm.url) {
+                    this.$message.warning('url不能为空！');
                     return false;
                 }
                 if (!this.addDataForm.parentId) {

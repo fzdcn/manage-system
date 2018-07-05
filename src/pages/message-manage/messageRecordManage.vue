@@ -62,26 +62,26 @@
                 </div>
             </div>
             <el-table :data="getDataList" border style="width: 100%;">
-                <el-table-column prop="platformId" label="平台名称">
+                <el-table-column show-overflow-tooltip prop="platformId" label="平台名称">
                     <template slot-scope="scope">
                         <span v-if="scope.row.platformId == item.id" v-for="(item,index) in platformIdList">{{ item.platformName }}</span>
                     </template>
                 </el-table-column>
-                <el-table-column prop="channel" label="短信通道">
+                <el-table-column show-overflow-tooltip prop="channel" label="短信通道">
                     <template slot-scope="scope">
                         <span v-if="scope.row.channel == item.id"
                               v-for="(item,index) in smsChannel">{{ item.name }}</span>
                     </template>
                 </el-table-column>
-                <el-table-column prop="content" label="短信内容">
+                <el-table-column show-overflow-tooltip prop="content" label="短信内容">
                 </el-table-column>
-                <el-table-column prop="phone" label="手机号">
+                <el-table-column show-overflow-tooltip prop="phone" label="手机号">
                 </el-table-column>
-                <el-table-column prop="templateCode" label="模板code">
+                <el-table-column show-overflow-tooltip prop="templateCode" label="模板code">
                 </el-table-column>
-                <el-table-column prop="sendTime" label="发送时间" :formatter="dateFormatter">
+                <el-table-column show-overflow-tooltip prop="sendTime" label="发送时间" :formatter="dateFormatter">
                 </el-table-column>
-                <el-table-column prop="result" label="短信返回">
+                <el-table-column show-overflow-tooltip prop="result" label="短信返回">
                 </el-table-column>
             </el-table>
             <div class="pagination" style="overflow: hidden;">

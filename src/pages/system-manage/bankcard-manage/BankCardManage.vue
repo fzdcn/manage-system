@@ -35,9 +35,9 @@
             </div>
 
             <el-table :data="getDataList" border style="width: 100%;text-align: center;">
-                <el-table-column prop="cardNoMark" label="银行卡号标识" header-align="center"/>
-                <el-table-column prop="bankName" label="银行名称" header-align="center"/>
-                <el-table-column prop="cardType" label="银行卡类型" header-align="center">
+                <el-table-column show-overflow-tooltip prop="cardNoMark" label="银行卡号标识" header-align="center"/>
+                <el-table-column show-overflow-tooltip prop="bankName" label="银行名称" header-align="center"/>
+                <el-table-column show-overflow-tooltip prop="cardType" label="银行卡类型" header-align="center">
                     <template slot-scope="scope">
                         <span v-if="scope.row.cardType==1">借记卡</span>
                         <span v-if="scope.row.cardType==2">贷记卡</span>
@@ -45,9 +45,9 @@
                         <span v-if="scope.row.cardType==4">预付费卡</span>
                     </template>
                 </el-table-column>
-                <el-table-column prop="cardExplain" label="银行卡说明" header-align="center"/>
-                <el-table-column prop="bankCode" label="银行代码" header-align="center"/>
-                <el-table-column prop="bankNumber" label="银行编号" header-align="center"/>
+                <el-table-column show-overflow-tooltip prop="cardExplain" label="银行卡说明" header-align="center"/>
+                <el-table-column show-overflow-tooltip prop="bankCode" label="银行代码" header-align="center"/>
+                <el-table-column show-overflow-tooltip prop="bankNumber" label="银行编号" header-align="center"/>
 
                 <el-table-column label="操作" width="200px" align="center">
                     <template v-if="getDataList.length > 0" slot-scope="scope">

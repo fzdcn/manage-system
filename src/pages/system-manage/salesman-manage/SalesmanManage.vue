@@ -5,19 +5,19 @@
                 <el-button type="primary" size="medium" icon="el-icon-plus" @click="add">增加</el-button>
             </div>
             <el-table :data="getDataList" border style="width: 100%;">
-                <el-table-column prop="name" label="名字">
+                <el-table-column show-overflow-tooltip prop="name" label="名字">
                 </el-table-column>
-                <el-table-column prop="phone" label="电话">
+                <el-table-column show-overflow-tooltip prop="phone" label="电话">
                 </el-table-column>
-                <el-table-column prop="email" label="邮箱">
+                <el-table-column show-overflow-tooltip prop="email" label="邮箱">
                 </el-table-column>
-                <el-table-column prop="type" label="业务员类型">
+                <el-table-column show-overflow-tooltip prop="type" label="业务员类型">
                     <template slot-scope="scope">
                         <span v-if="scope.row.type==1">销售</span>
                         <span v-if="scope.row.type==2">客服</span>
                     </template>
                 </el-table-column>
-                <el-table-column prop="status" label="状态">
+                <el-table-column show-overflow-tooltip prop="status" label="状态">
                     <template slot-scope="scope">
                         <span v-if="scope.row.status==1">开通</span>
                         <span v-if="scope.row.status==2">关闭</span>

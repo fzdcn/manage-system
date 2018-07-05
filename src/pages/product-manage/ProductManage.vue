@@ -24,32 +24,28 @@
                 </div>
             </div>
             <el-table :data="getDataList" border style="width: 100%;">
-                <el-table-column prop="productName" label="产品名称">
+                <el-table-column show-overflow-tooltip prop="productName" label="产品名称">
                 </el-table-column>
-                <el-table-column prop="productAccessCode" label="产品接入码">
+                <el-table-column show-overflow-tooltip prop="productAccessCode" label="产品接入码">
                 </el-table-column>
-                <el-table-column prop="productState" label="产品状态">
+                <el-table-column show-overflow-tooltip prop="productState" label="产品状态">
                     <template slot-scope="scope">
                         <span v-if="scope.row.productState">开启</span>
                         <span v-else>关闭</span>
                     </template>
                 </el-table-column>
-                <el-table-column prop="localFee" label="基础参考费率">
-                    <template slot-scope="scope">
-                        <span v-if="scope.row.localFee < 1">{{ scope.row.localFee * 100 }}%</span>
-                        <span v-else>{{ scope.row.localFee }}</span>
-                    </template>
+                <el-table-column show-overflow-tooltip prop="localFee" label="基础参考费率" :formatter="localFee">
                 </el-table-column>
-                <el-table-column prop="computeMode" label="收费方式">
+                <el-table-column show-overflow-tooltip prop="computeMode" label="收费方式">
                     <template slot-scope="scope">
                         <span v-if="scope.row.computeMode == 1">通用比例</span>
                         <span v-if="scope.row.computeMode == 2">借贷比例</span>
                         <span v-if="scope.row.computeMode == 3">定额</span>
                     </template>
                 </el-table-column>
-                <el-table-column prop="productDesc" label="产品描述">
+                <el-table-column show-overflow-tooltip prop="productDesc" label="产品描述">
                 </el-table-column>
-                <el-table-column prop="remark" label="备注">
+                <el-table-column show-overflow-tooltip prop="remark" label="备注">
                 </el-table-column>
                 <el-table-column label="操作" width="200px" align="center">
                     <template v-if="getDataList.length > 0" slot-scope="scope">
@@ -243,10 +239,12 @@
             }
         },
         methods: {
-            dateFormatter(row, column) {
-                let date = row.executeTime;
-                if (date)
-                    return this.$moment(date).format('YYYY-MM-DD HH:mm:ss');
+            localFee(row) {
+                if (row.computeMode == 3) {
+                    return row.localFee;
+                } else {
+                    return row.localFee * 100 + '%';
+                }
             },
             // 分页导航
             handleCurrentChange(val) {
@@ -328,6 +326,10 @@
                     this.$message.warning('收费方式不能为空！');
                     return false;
                 }
+                if ((Number(this.addDataForm.localFee) >= 1 && this.addDataForm.computeMode == 1) || (Number(this.addDataForm.localFee) >= 1 && this.addDataForm.computeMode == 2)) {
+                    this.$message.warning('银行收取费率大于等于1时，收费方式只能是定额！');
+                    return false;
+                }
                 if (!this.addDataForm.productDesc) {
                     this.$message.warning('产品描述不能为空！');
                     return false;
@@ -392,6 +394,10 @@
                 }
                 if (!this.editDataForm.computeMode) {
                     this.$message.warning('收费方式不能为空！');
+                    return false;
+                }
+                if ((Number(this.editDataForm.localFee) >= 1 && this.editDataForm.computeMode == 1) || (Number(this.editDataForm.localFee) >= 1 && this.editDataForm.computeMode == 2)) {
+                    this.$message.warning('银行收取费率大于等于1时，收费方式只能是定额！');
                     return false;
                 }
                 if (!this.editDataForm.productDesc) {

@@ -38,23 +38,23 @@
                 </div>
             </div>
             <el-table :data="getDataList" border style="width: 100%;">
-                <el-table-column prop="id" label="ID">
+                <el-table-column show-overflow-tooltip prop="id" label="ID">
                 </el-table-column>
-                <el-table-column prop="username" label="用户名">
+                <el-table-column show-overflow-tooltip prop="username" label="用户名">
                 </el-table-column>
-                <el-table-column prop="roleName" label="角色">
+                <el-table-column show-overflow-tooltip prop="roleName" label="角色">
                 </el-table-column>
-                <el-table-column prop="name" label="姓名">
+                <el-table-column show-overflow-tooltip prop="name" label="姓名">
                 </el-table-column>
-                <el-table-column prop="phone" label="手机号码">
+                <el-table-column show-overflow-tooltip prop="phone" label="手机号码">
                 </el-table-column>
-                <el-table-column prop="email" label="邮箱">
+                <el-table-column show-overflow-tooltip prop="email" label="邮箱">
                 </el-table-column>
-                <el-table-column prop="loginDate" label="最后登录时间" sortable :formatter="loginDateFormatter">
+                <el-table-column show-overflow-tooltip prop="loginDate" label="最后登录时间" sortable :formatter="loginDateFormatter">
                 </el-table-column>
-                <el-table-column prop="status" label="状态" :formatter="statusFormatter">
+                <el-table-column show-overflow-tooltip prop="status" label="状态" :formatter="statusFormatter">
                 </el-table-column>
-                <el-table-column prop="lockedOrNo" label="是否被锁" :formatter="lockedOrNoFormatter">
+                <el-table-column show-overflow-tooltip prop="lockedOrNo" label="是否被锁" :formatter="lockedOrNoFormatter">
                 </el-table-column>
                 <el-table-column label="操作" width="300px" align="center">
                     <template v-if="getDataList.length > 0" slot-scope="scope">

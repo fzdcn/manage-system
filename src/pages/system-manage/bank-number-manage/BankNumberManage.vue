@@ -28,15 +28,15 @@
                 </div>
             </div>
             <el-table :data="getDataList" border style="width: 100%;">
-                <el-table-column prop="bankName" label="银行名称">
+                <el-table-column show-overflow-tooltip prop="bankName" label="银行名称">
                 </el-table-column>
-                <el-table-column prop="bankNumber" label="联行号">
+                <el-table-column show-overflow-tooltip prop="bankNumber" label="联行号">
                 </el-table-column>
-                <el-table-column prop="bankCode" label="银行代码">
+                <el-table-column show-overflow-tooltip prop="bankCode" label="银行代码">
                 </el-table-column>
-                <el-table-column prop="numbers" label="银行编号">
+                <el-table-column show-overflow-tooltip prop="numbers" label="银行编号">
                 </el-table-column>
-                <el-table-column prop="identity" label="收款方账户所属机构标识">
+                <el-table-column show-overflow-tooltip prop="identity" label="收款方账户所属机构标识">
                 </el-table-column>
                 <el-table-column label="操作" width="100px" align="center">
                     <template v-if="getDataList.length > 0" slot-scope="scope">

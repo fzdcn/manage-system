@@ -24,10 +24,10 @@
                             <div class="grid-content grid-con-1">
                                 <i class="el-icon-view grid-con-icon"></i>
                                 <div class="grid-cont-right">
-                                    <count-to class="card-panel-num grid-num" :startVal="0"
+                                    <count-to class="card-panel-num grid-num" :decimals="2" :startVal="0"
                                               :endVal="currentDaySuccessPayMoney"
-                                              :duration="3000"></count-to>
-                                    <div>当天交易成功金额</div>
+                                              :duration="5000"></count-to>
+                                    <div>当天交易成功金额(元)</div>
                                 </div>
                             </div>
                         </el-card>
@@ -39,7 +39,7 @@
                                 <div class="grid-cont-right">
                                     <count-to class="card-panel-num grid-num" :startVal="0"
                                               :endVal="currentDaySuccessPayNumber"
-                                              :duration="3000"></count-to>
+                                              :duration="5000"></count-to>
                                     <div>当天交易成功笔数</div>
                                 </div>
                             </div>
@@ -50,9 +50,10 @@
                             <div class="grid-content grid-con-3">
                                 <i class="el-icon-goods grid-con-icon"></i>
                                 <div class="grid-cont-right">
-                                    <count-to class="card-panel-num grid-num" :startVal="0" :endVal="AllSuccessPayMoney"
+                                    <count-to class="card-panel-num grid-num" :decimals="2" :startVal="0"
+                                              :endVal="AllSuccessPayMoney"
                                               :duration="3000"></count-to>
-                                    <div>历史交易成功总金额</div>
+                                    <div>历史交易成功总金额(元)</div>
                                 </div>
                             </div>
                         </el-card>

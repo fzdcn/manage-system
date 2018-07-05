@@ -44,10 +44,10 @@
             </div>
 
             <el-table :data="getDataList" border style="width: 100%;text-align: center;">
-                <el-table-column prop="platformName" label="平台名称" header-align="center"/>
-                <el-table-column prop="platformIp" label="平台IP" header-align="center"/>
-                <el-table-column prop="merchantIp" label="商户IP" header-align="center"/>
-                <el-table-column prop="type" label="类型" header-align="center">
+                <el-table-column show-overflow-tooltip prop="platformName" label="平台名称" header-align="center"/>
+                <el-table-column show-overflow-tooltip prop="platformIp" label="平台IP" header-align="center"/>
+                <el-table-column show-overflow-tooltip prop="merchantIp" label="商户IP" header-align="center"/>
+                <el-table-column show-overflow-tooltip prop="type" label="类型" header-align="center">
                     <template slot-scope="scope">
                         <span v-if="scope.row.type==1">黑名单</span>
                         <span v-if="scope.row.type==2">白名单</span>

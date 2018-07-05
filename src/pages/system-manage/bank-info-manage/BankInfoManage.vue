@@ -37,11 +37,10 @@
             </div>
 
             <el-table :data="getDataList" border style="width: 100%;text-align: center;">
-                <el-table-column prop="bankName" label="银行名称" header-align="center"/>
-                <el-table-column prop="bankCode" label="银行代码" header-align="center"/>
-                <el-table-column prop="bankNumber" label="银行编号" header-align="center"/>
-                <el-table-column prop="uniBankNum" label="联行号" header-align="center"/>
-
+                <el-table-column show-overflow-tooltip prop="bankName" label="银行名称" header-align="center"/>
+                <el-table-column show-overflow-tooltip prop="bankCode" label="银行代码" header-align="center"/>
+                <el-table-column show-overflow-tooltip prop="bankNumber" label="银行编号" header-align="center"/>
+                <el-table-column show-overflow-tooltip prop="uniBankNum" label="联行号" header-align="center"/>
                 <el-table-column label="操作" width="200px" align="center">
                     <template v-if="getDataList.length > 0" slot-scope="scope">
                         <el-button @click="handleEdit(scope.row)" type="primary" icon="el-icon-edit" size="small">编辑

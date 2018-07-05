@@ -151,7 +151,7 @@
                 let getCheckedKeys = this.$refs.tree.getCheckedKeys();
                 let getHalfCheckedNodes = this.$refs.tree.getHalfCheckedNodes();
                 if (getHalfCheckedNodes.length > 0 || getHalfCheckedNodes) {
-                    for (let values of getHalfCheckedKeys) {
+                    for (let values of getHalfCheckedNodes) {
                         getHalfCheckedKeys.push(values.id);
                     }
                 } else {

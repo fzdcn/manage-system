@@ -104,11 +104,11 @@
                 </div>
             </div>
             <el-table :data="getDataList" border style="width: 100%;">
-                <el-table-column prop="merchantCode" label="商户号">
+                <el-table-column show-overflow-tooltip prop="merchantCode" label="商户号">
                 </el-table-column>
-                <el-table-column prop="merchantOrderNo" label="商户订单号">
+                <el-table-column show-overflow-tooltip prop="merchantOrderNo" label="商户订单号">
                 </el-table-column>
-                <el-table-column prop="orderNo" label="双乾流水号">
+                <el-table-column show-overflow-tooltip prop="orderNo" label="双乾流水号">
                 </el-table-column>
                 <el-table-column prop="tradeState" label="交易状态">
                     <template slot-scope="scope">
@@ -121,25 +121,27 @@
                         <span v-if="scope.row.tradeState==8">异常</span>
                     </template>
                 </el-table-column>
-                <el-table-column prop="tradeTime" label="交易时间" :formatter="tradeTimeForMatter">
+                <el-table-column show-overflow-tooltip prop="tradeTime" label="交易时间" :formatter="tradeTimeForMatter">
                 </el-table-column>
-                <el-table-column prop="tradeAmount" label="交易金额">
+                <el-table-column show-overflow-tooltip prop="tradeAmount" label="交易金额">
                 </el-table-column>
-                <el-table-column prop="tradeRate" label="交易费率">
+                <el-table-column show-overflow-tooltip prop="tradeRate" label="交易费率">
                 </el-table-column>
-                <el-table-column prop="tradeFee" label="交易手续费">
+                <el-table-column show-overflow-tooltip prop="tradeFee" label="交易手续费">
                 </el-table-column>
-                <el-table-column prop="bankOrderNo" label="银行订单号">
+                <el-table-column show-overflow-tooltip prop="bankOrderNo" label="银行订单号">
                 </el-table-column>
-                <el-table-column prop="bankReturnTime" label="银行返回时间" :formatter="bankReturnTimeForMatter">
+                <el-table-column show-overflow-tooltip prop="bankReturnTime" label="银行返回时间"
+                                 :formatter="bankReturnTimeForMatter">
                 </el-table-column>
-                <el-table-column prop="upplementTime" label="补单时间" :formatter="upPlementTimeForMatter">
+                <el-table-column show-overflow-tooltip prop="upplementTime" label="补单时间"
+                                 :formatter="upPlementTimeForMatter">
                 </el-table-column>
-                <el-table-column prop="channelName" label="银行支付通道">
+                <el-table-column show-overflow-tooltip prop="channelName" label="银行支付通道">
                 </el-table-column>
-                <el-table-column prop="bankCode" label="银行编码">
+                <el-table-column show-overflow-tooltip prop="bankCode" label="银行编码">
                 </el-table-column>
-                <el-table-column prop="payType" label="支付类型">
+                <el-table-column show-overflow-tooltip prop="payType" label="支付类型">
                     <template slot-scope="scope">
                         <span v-if="scope.row.payType==0">个人网银</span>
                         <span v-if="scope.row.payType==1">企业网银</span>
@@ -150,24 +152,24 @@
                         <span v-if="scope.row.payType==6">支付宝支付</span>
                     </template>
                 </el-table-column>
-                <el-table-column prop="saleCode" label="业务员code">
+                <el-table-column show-overflow-tooltip prop="saleCode" label="业务员code">
                 </el-table-column>
-                <el-table-column prop="platformNo" label="平台名称">
+                <el-table-column show-overflow-tooltip prop="platformNo" label="平台名称">
                     <template slot-scope="scope">
                         <span v-if="scope.row.platformNo==item.platformNo" v-for="item in platformIdList">{{ item.platformName }}</span>
                     </template>
                 </el-table-column>
-                <el-table-column prop="tradeDesc" label="产品备注">
+                <el-table-column show-overflow-tooltip prop="tradeDesc" label="产品备注">
                 </el-table-column>
-                <el-table-column prop="merchantRemark" label="商户备注">
+                <el-table-column show-overflow-tooltip prop="merchantRemark" label="商户备注">
                 </el-table-column>
-                <el-table-column prop="sysRemark" label="系统备注">
+                <el-table-column show-overflow-tooltip prop="sysRemark" label="系统备注">
                 </el-table-column>
-                <el-table-column prop="ip" label="ip">
+                <el-table-column show-overflow-tooltip prop="ip" label="ip">
                 </el-table-column>
-                <el-table-column prop="returnUrl" label="前台返回地址">
+                <el-table-column show-overflow-tooltip prop="returnUrl" label="前台返回地址">
                 </el-table-column>
-                <el-table-column prop="notifyUrl" label="后台返回地址">
+                <el-table-column show-overflow-tooltip prop="notifyUrl" label="后台返回地址">
                 </el-table-column>
             </el-table>
             <div class="pagination" style="overflow: hidden;">

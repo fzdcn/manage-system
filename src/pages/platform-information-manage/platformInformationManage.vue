@@ -16,37 +16,15 @@
                 </div>
             </div>
             <el-table :data="getDataList" border style="width: 100%;">
-                <el-table-column prop="platformNo" label="平台号">
+                <el-table-column show-overflow-tooltip prop="platformNo" label="平台号">
                 </el-table-column>
-                <el-table-column prop="name" label="平台名称">
+                <el-table-column show-overflow-tooltip prop="name" label="平台名称">
                 </el-table-column>
-                <el-table-column prop="md5Key" label="md5Key">
+                <el-table-column show-overflow-tooltip prop="md5Key" label="md5Key">
                 </el-table-column>
-                <el-table-column prop="publicKey" label="公钥" align="center">
-                    <template slot-scope="scope">
-                        <el-popover trigger="hover" placement="top">
-                            <p>{{ scope.row.publicKey }}</p>
-                            <div slot="reference">
-                                <el-tag
-                                    style="width: 150px;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;"
-                                    size="medium">{{ scope.row.publicKey }}
-                                </el-tag>
-                            </div>
-                        </el-popover>
-                    </template>
+                <el-table-column show-overflow-tooltip prop="publicKey" label="公钥">
                 </el-table-column>
-                <el-table-column prop="privateKey" label="私钥" align="center">
-                    <template slot-scope="scope">
-                        <el-popover trigger="hover" placement="top">
-                            <p>{{ scope.row.privateKey }}</p>
-                            <div slot="reference">
-                                <el-tag
-                                    style="width: 150px;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;"
-                                    size="medium">{{ scope.row.privateKey }}
-                                </el-tag>
-                            </div>
-                        </el-popover>
-                    </template>
+                <el-table-column show-overflow-tooltip prop="privateKey" label="私钥" align="center">
                 </el-table-column>
                 <el-table-column label="操作" width="100px" align="center">
                     <template v-if="getDataList.length > 0" slot-scope="scope">

@@ -5,11 +5,11 @@
                 <el-button type="primary" size="medium" icon="el-icon-plus" @click="add">增加</el-button>
             </div>
             <el-table :data="getDataList" border style="width: 100%;">
-                <el-table-column prop="id" label="ID">
+                <el-table-column show-overflow-tooltip prop="id" label="ID">
                 </el-table-column>
-                <el-table-column prop="name" label="角色">
+                <el-table-column show-overflow-tooltip prop="name" label="角色">
                 </el-table-column>
-                <el-table-column prop="defaultOrNo" label="是否默认" :formatter="defaultOrNoFormatter">
+                <el-table-column show-overflow-tooltip prop="defaultOrNo" label="是否默认" :formatter="defaultOrNoFormatter">
                 </el-table-column>
                 <el-table-column label="操作" width="300px" align="center">
                     <template v-if="getDataList.length > 0" slot-scope="scope">

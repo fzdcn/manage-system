@@ -24,40 +24,36 @@
                 </div>
             </div>
             <el-table :data="getDataList" border style="width: 100%;">
-                <el-table-column prop="channelName" label="通道名称">
+                <el-table-column show-overflow-tooltip prop="channelName" label="通道名称">
                 </el-table-column>
-                <el-table-column prop="channelAccessCode" label="通道接入码">
+                <el-table-column show-overflow-tooltip prop="channelAccessCode" label="通道接入码">
                 </el-table-column>
-                <el-table-column prop="bankUrl" label="通道接入请求地址">
+                <el-table-column show-overflow-tooltip prop="bankUrl" label="通道接入请求地址">
                 </el-table-column>
-                <el-table-column prop="unionMerNo" label="商户号">
+                <el-table-column show-overflow-tooltip prop="unionMerNo" label="商户号">
                 </el-table-column>
-                <el-table-column prop="acqInsCode" label="机构号">
+                <el-table-column show-overflow-tooltip prop="acqInsCode" label="机构号">
                 </el-table-column>
-                <el-table-column prop="channelState" label="使用状态">
+                <el-table-column show-overflow-tooltip prop="channelState" label="使用状态">
                     <template slot-scope="scope">
                         <span v-if="scope.row.channelState">开启</span>
                         <span v-else>关闭</span>
                     </template>
                 </el-table-column>
-                <el-table-column prop="executeTime" label="操作时间" :formatter="dateFormatter">
+                <el-table-column show-overflow-tooltip prop="executeTime" label="操作时间" :formatter="dateFormatter">
                 </el-table-column>
-                <el-table-column prop="operator" label="操作人">
+                <el-table-column show-overflow-tooltip prop="operator" label="操作人">
                 </el-table-column>
-                <el-table-column prop="localFee" label="银行收取费率">
-                    <template slot-scope="scope">
-                        <span v-if="scope.row.localFee < 1">{{ scope.row.localFee * 100 }}%</span>
-                        <span v-else>{{ scope.row.localFee }}</span>
-                    </template>
+                <el-table-column show-overflow-tooltip prop="localFee" label="银行收取费率" :formatter="localFee">
                 </el-table-column>
-                <el-table-column prop="computeMode" label="收费方式">
+                <el-table-column show-overflow-tooltip prop="computeMode" label="收费方式">
                     <template slot-scope="scope">
                         <span v-if="scope.row.computeMode == 1">通用比例</span>
                         <span v-if="scope.row.computeMode == 2">借贷比例</span>
                         <span v-if="scope.row.computeMode == 3">定额</span>
                     </template>
                 </el-table-column>
-                <el-table-column prop="remark" label="备注">
+                <el-table-column show-overflow-tooltip prop="remark" label="备注">
                 </el-table-column>
                 <el-table-column label="操作" width="200px" align="center">
                     <template v-if="getDataList.length > 0" slot-scope="scope">
@@ -266,7 +262,14 @@
             }
         },
         methods: {
-            dateFormatter(row, column) {
+            localFee(row) {
+                if (row.computeMode == 3) {
+                    return row.localFee;
+                } else {
+                    return row.localFee * 100 + '%';
+                }
+            },
+            dateFormatter(row) {
                 let date = row.executeTime;
                 if (date)
                     return this.$moment(date).format('YYYY-MM-DD HH:mm:ss');
@@ -371,6 +374,10 @@
                     this.$message.warning('收费方式不能为空！');
                     return false;
                 }
+                if ((Number(this.addDataForm.localFee) >= 1 && this.addDataForm.computeMode == 1) || (Number(this.addDataForm.localFee) >= 1 && this.addDataForm.computeMode == 2)) {
+                    this.$message.warning('银行收取费率大于等于1时，收费方式只能是定额！');
+                    return false;
+                }
                 this.$httpPost('/admin/epay/channelInfo/save', {
                     channelName: this.addDataForm.channelName,
                     channelAccessCode: this.addDataForm.channelAccessCode,
@@ -454,6 +461,10 @@
                 }
                 if (!this.editDataForm.computeMode) {
                     this.$message.warning('收费方式不能为空！');
+                    return false;
+                }
+                if ((Number(this.editDataForm.localFee) >= 1 && this.editDataForm.computeMode == 1) || (Number(this.editDataForm.localFee) >= 1 && this.editDataForm.computeMode == 2)) {
+                    this.$message.warning('银行收取费率大于等于1时，收费方式只能是定额！');
                     return false;
                 }
                 this.$httpPost('/admin/epay/channelInfo/update', {

@@ -52,38 +52,38 @@
                 </div>
             </div>
             <el-table :data="getDataList" border style="width: 100%;">
-                <el-table-column prop="id" label="编号">
+                <el-table-column show-overflow-tooltip prop="id" label="编号">
                 </el-table-column>
-                <el-table-column prop="bankName" label="银行名称">
+                <el-table-column show-overflow-tooltip prop="bankName" label="银行名称">
                 </el-table-column>
-                <el-table-column prop="cardType" label="卡类型">
+                <el-table-column show-overflow-tooltip prop="cardType" label="卡类型">
                     <template slot-scope="scope">
                         <span v-if="scope.row.cardType==1">借记卡</span>
                         <span v-if="scope.row.cardType==2">贷记卡</span>
                         <span v-if="scope.row.cardType==9">通用</span>
                     </template>
                 </el-table-column>
-                <el-table-column prop="platformName" label="平台名称">
+                <el-table-column show-overflow-tooltip prop="platformName" label="平台名称">
                 </el-table-column>
-                <el-table-column prop="productName" label="产品名称">
+                <el-table-column show-overflow-tooltip prop="productName" label="产品名称">
                 </el-table-column>
-                <el-table-column prop="channelName" label="银行支付通道">
+                <el-table-column show-overflow-tooltip prop="channelName" label="银行支付通道">
                 </el-table-column>
-                <el-table-column prop="amountMin" label="交易下限（元）">
+                <el-table-column show-overflow-tooltip prop="amountMin" label="交易下限（元）">
                 </el-table-column>
-                <el-table-column prop="amountMax" label="交易上限（元）">
+                <el-table-column show-overflow-tooltip prop="amountMax" label="交易上限（元）">
                 </el-table-column>
-                <el-table-column prop="remark" label="备注">
+                <el-table-column show-overflow-tooltip prop="remark" label="备注">
                 </el-table-column>
-                <el-table-column prop="status" label="状态">
+                <el-table-column show-overflow-tooltip prop="status" label="状态">
                     <template slot-scope="scope">
                         <span v-if="scope.row.status==1">可用</span>
                         <span v-else>不可用</span>
                     </template>
                 </el-table-column>
-                <el-table-column prop="createBy" label="创建人">
+                <el-table-column show-overflow-tooltip prop="createBy" label="创建人">
                 </el-table-column>
-                <el-table-column prop="createAt" label="创建时间">
+                <el-table-column show-overflow-tooltip prop="createAt" label="创建时间">
                 </el-table-column>
                 <el-table-column label="操作" width="100px" align="center">
                     <template v-if="getDataList.length > 0" slot-scope="scope">
@@ -355,7 +355,7 @@
                     return false;
                 }
                 if (!this.addDataForm.productAccessCode) {
-                    this.$message.warning('产品通道不能为空！');
+                    this.$message.warning('产品名称不能为空！');
                     return false;
                 }
                 if (!this.addDataForm.channelAccessCode) {

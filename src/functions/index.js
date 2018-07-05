@@ -3,6 +3,7 @@ import Vue from 'vue';
 import router from '../router/index';
 
 // Vue.use(Toasted)
+
 /**
  * 显示alert
  * @param msg
