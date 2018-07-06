@@ -60,7 +60,7 @@
                         <el-input clearable v-model.trim="addDataForm.permission"
                                   placeholder="如common:index"></el-input>
                     </el-form-item>
-                    <el-form-item label="链接：">
+                    <el-form-item label="URL：">
                         <el-input clearable type="tel" v-model.trim="addDataForm.url"
                                   placeholder="如common:index"></el-input>
                     </el-form-item>
@@ -118,7 +118,7 @@
                         <el-input clearable v-model.trim="editDataForm.permission"
                                   placeholder="如common:index"></el-input>
                     </el-form-item>
-                    <el-form-item label="链接：">
+                    <el-form-item label="URL：">
                         <el-input clearable type="tel" v-model.trim="editDataForm.url"
                                   placeholder="如common:index"></el-input>
                     </el-form-item>
@@ -260,7 +260,7 @@
                     return false;
                 }
                 if (!this.editDataForm.url) {
-                    this.$message.warning('url不能为空！');
+                    this.$message.warning('URL不能为空！');
                     return false;
                 }
                 if (!this.editDataForm.parentId) {
@@ -336,7 +336,7 @@
                     return false;
                 }
                 if (!this.addDataForm.url) {
-                    this.$message.warning('url不能为空！');
+                    this.$message.warning('URL不能为空！');
                     return false;
                 }
                 if (!this.addDataForm.parentId) {

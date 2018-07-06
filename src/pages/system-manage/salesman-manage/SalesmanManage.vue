@@ -45,7 +45,7 @@
                    center>
             <div class="form-content" style="margin: 0 auto;width: 90%;">
                 <el-form ref="addDataForm" :model="addDataForm" label-width="100px">
-                    <el-form-item label="名称：">
+                    <el-form-item label="名字：">
                         <el-input clearable v-model.trim="addDataForm.name" maxlength="10"
                                   placeholder="名称只能是10位以内汉字"></el-input>
                     </el-form-item>
@@ -78,7 +78,7 @@
         <el-dialog title="编辑后台业务员" :visible.sync="isShowEdit" :before-close="cancelEdit" width="500px" center>
             <div class="form-content" style="margin: 0 auto;width: 90%;">
                 <el-form ref="editDataForm" :model="editDataForm" label-width="100px">
-                    <el-form-item label="名称：">
+                    <el-form-item label="名字：">
                         <el-input clearable v-model.trim="editDataForm.name" maxlength="10"
                                   placeholder="名称只能是10位以内汉字"></el-input>
                     </el-form-item>
@@ -226,11 +226,11 @@
             submitAdd() {
                 let vm = this;
                 if (!this.addDataForm.name) {
-                    this.$message.warning('名称不能为空！');
+                    this.$message.warning('名字不能为空！');
                     return false;
                 }
                 if (!/^[\u4e00-\u9fa5]{1,10}$/.test(vm.addDataForm.name)) {
-                    this.$message.warning('名称只能是10位以内汉字！');
+                    this.$message.warning('名字只能是10位以内汉字！');
                     return false;
                 }
                 if (!this.addDataForm.phone) {
@@ -294,7 +294,7 @@
             submitEdit() {
                 let vm = this;
                 if (!/^[\u4e00-\u9fa5]{1,10}$/.test(vm.editDataForm.name)) {
-                    this.$message.warning('名称只能是10位以内汉字！');
+                    this.$message.warning('名字只能是10位以内汉字！');
                     return false;
                 }
                 if (!this.editDataForm.phone) {
@@ -334,7 +334,7 @@
                     status: this.editDataForm.status
                 }).then((data) => {
                     vm.$message.success(data.message);
-                    vm.isShowEdit = false;
+                    vm.cancelEdit();
                     vm.getData();
                 }).catch((data) => {
                     console.log(data)

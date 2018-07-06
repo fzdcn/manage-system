@@ -69,8 +69,8 @@
                                   placeholder="12位的纯数字"></el-input>
                     </el-form-item>
                     <el-form-item label="银行代码：">
-                        <el-input clearable v-model.trim="addDataForm.bankCode" maxlength="10"
-                                  placeholder="不超过10位的大写英文字母"></el-input>
+                        <el-input clearable v-model.trim="addDataForm.bankCode" maxlength="15"
+                                  placeholder="不超过15位"></el-input>
                     </el-form-item>
                     <el-form-item label="银行编号：">
                         <el-input type="number" v-model.trim="addDataForm.numbers" maxlength="32"
@@ -101,8 +101,8 @@
                                   placeholder="12位的纯数字"></el-input>
                     </el-form-item>
                     <el-form-item label="银行代码：">
-                        <el-input clearable v-model.trim="editDataForm.bankCode" maxlength="10"
-                                  placeholder="不超过10位的大写英文字母"></el-input>
+                        <el-input clearable v-model.trim="editDataForm.bankCode" maxlength="15"
+                                  placeholder="不超过15位"></el-input>
                     </el-form-item>
                     <el-form-item label="银行编号：">
                         <el-input type="number" v-model.trim="editDataForm.numbers" maxlength="32"
@@ -138,7 +138,14 @@
                 // 是否显示编辑弹框
                 isShowEdit: false,
                 addDataForm: {},
-                editDataForm: {},
+                editDataForm: {
+                    id: '',
+                    bankName: '',
+                    bankNumber: '',
+                    bankCode: '',
+                    numbers: '',
+                    identity: ''
+                },
                 searchDataForm: {}
             }
         },
@@ -216,8 +223,8 @@
                     this.$message.warning('银行代码不能为空！');
                     return false;
                 }
-                if (!/^[A-Z]{1,10}$/.test(vm.addDataForm.bankCode)) {
-                    this.$message.warning('银行代码不超过10位的大写英文字母！');
+                if (this.addDataForm.bankCode.length > 15) {
+                    this.$message.warning('银行代码不超过15位！');
                     return false;
                 }
                 if (!this.addDataForm.numbers) {
@@ -245,8 +252,7 @@
                     identity: this.addDataForm.identity
                 }).then((data) => {
                     vm.$message.success(data.message);
-                    vm.isShowAdd = false;
-                    vm.addDataForm = {};
+                    vm.cancelAdd();
                     vm.handleCurrentChange(1);
                 }).catch((data) => {
                     console.log(data)
@@ -266,7 +272,6 @@
             },
             cancelEdit() {
                 this.isShowEdit = false;
-                this.editDataForm = {};
             },
             submitEdit() {
                 let vm = this;
@@ -290,8 +295,8 @@
                     this.$message.warning('银行代码不能为空！');
                     return false;
                 }
-                if (!/^[A-Z]{1,10}$/.test(vm.editDataForm.bankCode)) {
-                    this.$message.warning('银行代码不超过10位的大写英文字母！');
+                if (this.editDataForm.bankCode.length > 15) {
+                    this.$message.warning('银行代码不超过15位！');
                     return false;
                 }
                 if (!this.editDataForm.numbers) {
@@ -319,8 +324,7 @@
                     identity: this.editDataForm.identity,
                 }).then((data) => {
                     vm.$message.success(data.message);
-                    vm.isShowEdit = false;
-                    vm.editDataForm = {};
+                    vm.cancelEdit();
                     vm.getData();
                 }).catch((data) => {
                     console.log(data)

@@ -159,17 +159,12 @@
                         <span v-if="scope.row.platformNo==item.platformNo" v-for="item in platformIdList">{{ item.platformName }}</span>
                     </template>
                 </el-table-column>
-                <el-table-column show-overflow-tooltip prop="tradeDesc" label="产品备注">
-                </el-table-column>
-                <el-table-column show-overflow-tooltip prop="merchantRemark" label="商户备注">
-                </el-table-column>
-                <el-table-column show-overflow-tooltip prop="sysRemark" label="系统备注">
-                </el-table-column>
-                <el-table-column show-overflow-tooltip prop="ip" label="ip">
-                </el-table-column>
-                <el-table-column show-overflow-tooltip prop="returnUrl" label="前台返回地址">
-                </el-table-column>
-                <el-table-column show-overflow-tooltip prop="notifyUrl" label="后台返回地址">
+                <el-table-column align="center" label="操作" width="100px">
+                    <template v-if="getDataList.length > 0" slot-scope="scope">
+                        <el-button @click="handleDetail(scope.row)" type="primary" icon="el-icon-delete" size="small">
+                            查看
+                        </el-button>
+                    </template>
                 </el-table-column>
             </el-table>
             <div class="pagination" style="overflow: hidden;">
@@ -306,6 +301,9 @@
                 let upplementTime = row.upplementTime;
                 if (upplementTime)
                     return this.$moment(upplementTime).format('YYYY-MM-DD HH:mm:ss');
+            },
+            handleDetail(row) {
+                this.$router.push({name: 'trade-detail', params: {id: row.id}});
             },
             // 分页导航
             handleCurrentChange(val) {

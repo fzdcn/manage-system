@@ -111,7 +111,13 @@ const routes = [
                 path: '/trade-manage',
                 name: 'trade-manage',
                 component: resolve => require(['../pages/trade-manage/TradeManage.vue'], resolve),
-                meta: {title: '交易信息管理', permission: false},
+                meta: {title: '交易信息列表', permission: false},
+            },
+            {
+                path: '/trade-manage/trade-detail/:id',
+                name: 'trade-detail',
+                component: resolve => require(['../pages/trade-manage/TradeDetail.vue'], resolve),
+                meta: {title: '交易信息详情', permission: false},
             },
             {
                 path: '/bank-info-manage',

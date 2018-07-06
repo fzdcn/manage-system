@@ -94,7 +94,7 @@
                         <el-input clearable v-model.trim="addDataForm.cardExplain" maxlength="32"
                                   placeholder="不超过32位"></el-input>
                     </el-form-item>
-                    <el-form-item label="银行卡代码：">
+                    <el-form-item label="银行代码：">
                         <el-input clearable v-model.trim="addDataForm.bankCode" maxlength="15"
                                   placeholder="不超过15位"></el-input>
                     </el-form-item>
@@ -113,18 +113,18 @@
         <!--编辑-->
         <el-dialog title="编辑银行卡识别信息" :visible.sync="isShowEdit" :before-close="cancelEdit" width="500px" center>
             <div class="form-content" style="margin: 0 auto;width: 90%;">
-                <el-form ref="ditDataForm" :model="ditDataForm" label-width="120px">
+                <el-form ref="editDataForm" :model="editDataForm" label-width="120px">
                     <el-form-item label="银行卡号标识：">
-                        <el-input type="number" v-model.trim="ditDataForm.cardNoMark" maxlength="10"
+                        <el-input type="number" v-model.trim="editDataForm.cardNoMark" maxlength="10"
                                   placeholder="不超过10位纯数字">
                         </el-input>
                     </el-form-item>
                     <el-form-item label="银行名称：">
-                        <el-input clearable v-model.trim="ditDataForm.bankName" maxlength="32"
+                        <el-input clearable v-model.trim="editDataForm.bankName" maxlength="32"
                                   placeholder="不超过32位"></el-input>
                     </el-form-item>
                     <el-form-item label="银行卡类型：">
-                        <el-select clearable v-model="ditDataForm.cardType" placeholder="银行卡类型">
+                        <el-select clearable v-model="editDataForm.cardType" placeholder="银行卡类型">
                             <el-option
                                 v-for="item in cardTypeList"
                                 :key="item.cardType"
@@ -134,15 +134,15 @@
                         </el-select>
                     </el-form-item>
                     <el-form-item label="银行卡说明：">
-                        <el-input clearable v-model.trim="ditDataForm.cardExplain" maxlength="32"
+                        <el-input clearable v-model.trim="editDataForm.cardExplain" maxlength="32"
                                   placeholder="不超过32位"></el-input>
                     </el-form-item>
-                    <el-form-item label="银行卡代码：">
-                        <el-input clearable v-model.trim="ditDataForm.bankCode" maxlength="15"
+                    <el-form-item label="银行代码：">
+                        <el-input clearable v-model.trim="editDataForm.bankCode" maxlength="15"
                                   placeholder="不超过15位"></el-input>
                     </el-form-item>
                     <el-form-item label="银行编号：">
-                        <el-input clearable v-model.trim="ditDataForm.bankNumber" maxlength="32"
+                        <el-input clearable v-model.trim="editDataForm.bankNumber" maxlength="32"
                                   placeholder="不超过32位"></el-input>
                     </el-form-item>
                 </el-form>
@@ -192,7 +192,7 @@
                     },
                 ],
                 // 编辑
-                ditDataForm: {
+                editDataForm: {
                     id: "",
                     cardNoMark: "",
                     bankName: "",
@@ -286,18 +286,18 @@
                     return false;
                 }
                 if (!this.addDataForm.bankCode) {
-                    this.$message.warning('银行卡代码不能为空！');
+                    this.$message.warning('银行代码不能为空！');
                     return false;
                 }
-                if (this.addDataForm.bankCode > 15) {
-                    this.$message.warning('银行卡代码不超过15位！');
+                if (this.addDataForm.bankCode.length > 15) {
+                    this.$message.warning('银行代码不超过15位！');
                     return false;
                 }
                 if (!this.addDataForm.bankNumber) {
                     this.$message.warning('银行编号不能为空！');
                     return false;
                 }
-                if (this.addDataForm.bankNumber > 32) {
+                if (this.addDataForm.bankNumber.length > 32) {
                     this.$message.warning('银行编号不超过32位！');
                     return false;
                 }
@@ -311,8 +311,7 @@
                     uniBankNumId: this.addDataForm.uniBankNumId
                 }).then((data) => {
                     vm.$message.success(data.message);
-                    vm.isShowAdd = false;
-                    vm.addDataForm = {};
+                    vm.cancelAdd();
                     vm.handleCurrentChange(1);
                 }).catch((data) => {
                     console.log(data)
@@ -320,75 +319,75 @@
             },
             handleEdit(row) {
                 this.isShowEdit = true;
-                this.ditDataForm.id = row.id;
-                this.ditDataForm.cardNoMark = row.cardNoMark;
-                this.ditDataForm.bankName = row.bankName;
-                this.ditDataForm.cardType = row.cardType;
-                this.ditDataForm.cardExplain = row.cardExplain;
-                this.ditDataForm.bankCode = row.bankCode;
-                this.ditDataForm.bankNumber = row.bankNumber;
+                this.editDataForm.id = row.id;
+                this.editDataForm.cardNoMark = row.cardNoMark;
+                this.editDataForm.bankName = row.bankName;
+                this.editDataForm.cardType = row.cardType;
+                this.editDataForm.cardExplain = row.cardExplain;
+                this.editDataForm.bankCode = row.bankCode;
+                this.editDataForm.bankNumber = row.bankNumber;
             },
             cancelEdit() {
                 this.isShowEdit = false;
             },
             submitEdit() {
                 let vm = this;
-                if (!this.ditDataForm.cardNoMark) {
+                if (!this.editDataForm.cardNoMark) {
                     this.$message.warning('银行卡号标识不能为空！');
                     return false;
                 }
-                if (!/^\d{1,10}$/.test(vm.ditDataForm.cardNoMark)) {
+                if (!/^\d{1,10}$/.test(vm.editDataForm.cardNoMark)) {
                     this.$message.warning('银行卡号标识不超过10位纯数字！');
                     return false;
                 }
-                if (!this.ditDataForm.bankName) {
+                if (!this.editDataForm.bankName) {
                     this.$message.warning('银行名称不能为空！');
                     return false;
                 }
-                if (this.ditDataForm.bankName.length > 32) {
+                if (this.editDataForm.bankName.length > 32) {
                     this.$message.warning('银行名称不超过32位！');
                     return false;
                 }
-                if (!this.ditDataForm.cardType) {
+                if (!this.editDataForm.cardType) {
                     this.$message.warning('银行卡类型不能为空！');
                     return false;
                 }
-                if (!this.ditDataForm.cardExplain) {
+                if (!this.editDataForm.cardExplain) {
                     this.$message.warning('银行卡说明不能为空！');
                     return false;
                 }
-                if (this.ditDataForm.cardExplain.length > 32) {
+                if (this.editDataForm.cardExplain.length > 32) {
                     this.$message.warning('银行卡说明不超过32位！');
                     return false;
                 }
-                if (!this.ditDataForm.bankCode) {
-                    this.$message.warning('银行卡代码不能为空！');
+                if (!this.editDataForm.bankCode) {
+                    this.$message.warning('银行代码不能为空！');
                     return false;
                 }
-                if (this.ditDataForm.bankCode > 15) {
-                    this.$message.warning('银行卡代码不超过15位！');
+                if (this.editDataForm.bankCode.length > 15) {
+                    this.$message.warning('银行代码不超过15位！');
                     return false;
                 }
-                if (!this.ditDataForm.bankNumber) {
+                if (!this.editDataForm.bankNumber) {
                     this.$message.warning('银行编号不能为空！');
                     return false;
                 }
-                if (this.ditDataForm.bankNumber > 32) {
+                if (this.editDataForm.bankNumber.length > 32) {
                     this.$message.warning('银行编号不超过32位！');
                     return false;
                 }
                 this.$httpPost('/admin/epay/bankCard/updateBin', {
-                    id: this.ditDataForm.id,
-                    cardNoMark: this.ditDataForm.cardNoMark,
-                    bankName: this.ditDataForm.bankName,
-                    cardType: this.ditDataForm.cardType,
-                    cardExplain: this.ditDataForm.cardExplain,
-                    bankCode: this.ditDataForm.bankCode,
-                    bankNumber: this.ditDataForm.bankNumber,
-                    uniBankNumId: this.ditDataForm.uniBankNumId
+                    id: this.editDataForm.id,
+                    cardNoMark: this.editDataForm.cardNoMark,
+                    bankName: this.editDataForm.bankName,
+                    cardType: this.editDataForm.cardType,
+                    cardExplain: this.editDataForm.cardExplain,
+                    bankCode: this.editDataForm.bankCode,
+                    bankNumber: this.editDataForm.bankNumber,
+                    uniBankNumId: this.editDataForm.uniBankNumId
                 }).then((data) => {
                     vm.$message.success(data.message);
-                    vm.isShowEdit = false;
+                    vm.cancelEdit();
                     vm.getData();
                 }).catch((data) => {
                     console.log(data)
