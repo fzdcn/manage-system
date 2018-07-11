@@ -3,6 +3,7 @@
         <div class="container">
             <div class="add" style="margin-bottom: 30px;">
                 <el-button type="primary" size="medium" icon="el-icon-plus" @click="add">增加</el-button>
+                <el-button type="primary" size="medium" icon="el-icon-view" @click="handleDetail">iconFont</el-button>
             </div>
             <el-table :data="getDataList" ref="itemTable" border style="width: 100%;">
                 <el-table-column show-overflow-tooltip prop="name" label="名称">
@@ -200,6 +201,12 @@
             }
         },
         methods: {
+            handleDetail() {
+                const {href} = this.$router.resolve({
+                    name: 'icon-font',
+                })
+                window.open(href, '_blank');
+            },
             // 菜单列表,同步需要
             getMenuData() {
                 return this.$httpGet('/admin/permission/index', {});

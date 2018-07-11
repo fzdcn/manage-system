@@ -22,10 +22,10 @@
                 </div>
                 <div style="margin: 0px 20px 10px 0;">
                     <span>平台名称：</span>
-                    <el-select clearable style="width: 150px;" v-model="searchDataForm.platformNo"
+                    <el-select clearable style="width: 150px;" v-model="searchDataForm.platformId"
                                placeholder="请选择平台名称">
-                        <el-option v-for="item in platformIdList" :key="item.platformNo" :label="item.platformName"
-                                   :value="item.platformNo">
+                        <el-option v-for="item in platformIdList" :key="item.id" :label="item.platformName"
+                                   :value="item.id">
                         </el-option>
                     </el-select>
                 </div>
@@ -58,9 +58,8 @@
                 </el-table-column>
                 <el-table-column show-overflow-tooltip prop="cardType" label="卡类型">
                     <template slot-scope="scope">
-                        <span v-if="scope.row.cardType==1">借记卡</span>
-                        <span v-if="scope.row.cardType==2">贷记卡</span>
-                        <span v-if="scope.row.cardType==9">通用</span>
+                        <span v-if="scope.row.cardType=='00'">借记卡</span>
+                        <span v-if="scope.row.cardType=='01'">贷记卡</span>
                     </template>
                 </el-table-column>
                 <el-table-column show-overflow-tooltip prop="platformName" label="平台名称">
@@ -148,24 +147,25 @@
                         </el-select>
                     </el-form-item>
                     <el-form-item label="平台名称：">
-                        <el-select clearable v-model="addDataForm.platformCode" placeholder="平台名称"
+                        <el-select clearable v-model="addDataForm.platformId" placeholder="平台名称"
                                    style="width: 400px">
                             <el-option
                                 v-for="item in platformIdList"
-                                :key="item.platformNo"
+                                :key="item.id"
                                 :label="item.platformName"
-                                :value="item.platformNo">
+                                :value="item.id">
                             </el-option>
                         </el-select>
                     </el-form-item>
                     <el-form-item label="交易上限：">
-                        <el-input type="number" v-model.trim="addDataForm.amountMax"></el-input>
+                        <el-input type="number" v-model.trim="addDataForm.amountMax" placeholder="交易上限"></el-input>
                     </el-form-item>
                     <el-form-item label="交易下限：">
-                        <el-input type="number" v-model.trim="addDataForm.amountMin"></el-input>
+                        <el-input type="number" v-model.trim="addDataForm.amountMin" placeholder="交易下限"></el-input>
                     </el-form-item>
                     <el-form-item label="备注：">
-                        <el-input clearable type="textarea" v-model.trim="addDataForm.remark"></el-input>
+                        <el-input clearable type="textarea" v-model.trim="addDataForm.remark"
+                                  placeholder="备注"></el-input>
                     </el-form-item>
                 </el-form>
             </div>
@@ -223,24 +223,25 @@
                         </el-select>
                     </el-form-item>
                     <el-form-item label="平台名称：">
-                        <el-select clearable v-model="editDataForm.platformCode" placeholder="平台名称"
+                        <el-select clearable v-model="editDataForm.platformId" placeholder="平台名称"
                                    style="width: 400px">
                             <el-option
                                 v-for="item in platformIdList"
-                                :key="item.platformNo"
+                                :key="item.id"
                                 :label="item.platformName"
-                                :value="item.platformNo">
+                                :value="item.id">
                             </el-option>
                         </el-select>
                     </el-form-item>
                     <el-form-item label="交易上限：">
-                        <el-input type="number" v-model.trim="editDataForm.amountMax"></el-input>
+                        <el-input type="number" v-model.trim="editDataForm.amountMax" placeholder="交易上限"></el-input>
                     </el-form-item>
                     <el-form-item label="交易下限：">
-                        <el-input type="number" v-model.trim="editDataForm.amountMin"></el-input>
+                        <el-input type="number" v-model.trim="editDataForm.amountMin" placeholder="交易下限"></el-input>
                     </el-form-item>
                     <el-form-item label="备注：">
-                        <el-input clearable type="textarea" v-model.trim="editDataForm.remark"></el-input>
+                        <el-input clearable type="textarea" v-model.trim="editDataForm.remark"
+                                  placeholder="备注"></el-input>
                     </el-form-item>
                 </el-form>
             </div>
@@ -275,7 +276,7 @@
                     productAccessCode: "",
                     channelAccessCode: "",
                     cardType: "",
-                    platformCode: "",
+                    platformId: "",
                     remark: ""
                 },
                 searchDataForm: {},
@@ -290,16 +291,12 @@
                 // 卡类型
                 cardType: [
                     {
-                        id: '1',
+                        id: '00',
                         name: '借记卡'
                     },
                     {
-                        id: '2',
+                        id: '01',
                         name: '贷记卡'
-                    },
-                    {
-                        id: '9',
-                        name: '通用'
                     }
                 ],
             }
@@ -318,7 +315,7 @@
                     pageSize: 10,
                     bankCode: this.searchDataForm.bankCode,
                     cardType: this.searchDataForm.cardType,
-                    platformCode: this.searchDataForm.platformNo,
+                    platformId: this.searchDataForm.platformId,
                     productAccessCode: this.searchDataForm.productAccessCode,
                     channelAccessCode: this.searchDataForm.channelAccessCode
                 }).then(({data}) => {
@@ -336,7 +333,7 @@
                     pageSize: 10,
                     bankCode: this.searchDataForm.bankCode,
                     cardType: this.searchDataForm.cardType,
-                    platformCode: this.searchDataForm.platformNo,
+                    platformId: this.searchDataForm.platformId,
                     productAccessCode: this.searchDataForm.productAccessCode,
                     channelAccessCode: this.searchDataForm.channelAccessCode
                 })
@@ -366,7 +363,7 @@
                     this.$message.warning('卡类型不能为空！');
                     return false;
                 }
-                if (!this.addDataForm.platformCode) {
+                if (!this.addDataForm.platformId) {
                     this.$message.warning('平台名称不能为空！');
                     return false;
                 }
@@ -375,7 +372,7 @@
                     productAccessCode: this.addDataForm.productAccessCode,
                     channelAccessCode: this.addDataForm.channelAccessCode,
                     cardType: this.addDataForm.cardType,
-                    platformCode: this.addDataForm.platformCode,
+                    platformId: this.addDataForm.platformId,
                     amountMax: this.addDataForm.amountMax,
                     amountMin: this.addDataForm.amountMin,
                     remark: this.addDataForm.remark
@@ -394,7 +391,7 @@
                 this.editDataForm.productAccessCode = row.productAccessCode;
                 this.editDataForm.channelAccessCode = row.channelAccessCode;
                 this.editDataForm.cardType = row.cardType;
-                this.editDataForm.platformCode = row.platformCode;
+                this.editDataForm.platformId = row.platformId;
                 this.editDataForm.remark = row.remark;
             },
             cancelEdit() {
@@ -418,7 +415,7 @@
                     this.$message.warning('卡类型不能为空！');
                     return false;
                 }
-                if (!this.editDataForm.platformCode) {
+                if (!this.editDataForm.platformId) {
                     this.$message.warning('平台名称不能为空！');
                     return false;
                 }
@@ -428,7 +425,7 @@
                     productAccessCode: this.editDataForm.productAccessCode,
                     channelAccessCode: this.editDataForm.channelAccessCode,
                     cardType: this.editDataForm.cardType,
-                    platformCode: this.editDataForm.platformCode,
+                    platformId: this.editDataForm.platformId,
                     remark: this.editDataForm.remark
                 }).then((data) => {
                     vm.$message.success(data.message);

@@ -1,6 +1,6 @@
 <template>
     <div class="login-wrap">
-        <canvas></canvas>
+        <canvas id="canvas"></canvas>
         <div class="ms-title">双乾支付系统管理后台</div>
         <div class="ms-login">
             <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="0px" class="demo-ruleForm">
@@ -73,253 +73,6 @@
             }
         },
         methods: {
-            getCanvas() {
-                let FastRandom = function () {
-                    this.getNextFloat = function () {
-                        return Math.random();
-                    };
-                };
-                let ParticleWave = function () {
-                    let me = this;
-
-                    let config = {
-                        colors: {
-                            background: 0x000000,
-                            particle: 0x477cc2
-                        },
-                        alpha: {
-                            particle: 1
-                        },
-                        particleCount: 30000
-                    };
-
-                    let TAU = Math.PI * 2;
-
-                    let random = new FastRandom();
-
-                    let particle;
-                    let particleFillStyle;
-                    let particleColorRGB = new Float32Array(3);
-
-                    let smoothGradient;
-                    let waterGradient;
-
-                    let canvas;
-                    let engine;
-
-                    let width;
-                    let height;
-
-                    let particleWaveWalker = 0;
-                    let randomWalker = 0;
-
-                    let requestTick = function () {
-                        window.requestAnimationFrame(tick);
-                    };
-
-                    let initParticle = function () {
-                        particle = new Float32Array(config.particleCount * 2);
-
-                        eachParticle(function (x, z) {
-                            particle[x] = random.getNextFloat();
-                            particle[z] = random.getNextFloat();
-                        });
-                    };
-
-                    let initCanvas = function () {
-                        let cs = document.getElementsByTagName('canvas');
-
-                        canvas = cs[0];
-                        engine = canvas.getContext('2d');
-
-                        width = window.innerWidth;
-                        height = window.innerHeight;
-
-                        canvas.setAttribute('width', width);
-                        canvas.setAttribute('height', height);
-                    };
-
-                    let initParticleColor = function () {
-                        particleColorRGB[0] = config.colors.particle >> 16 & 0xff;
-                        particleColorRGB[1] = config.colors.particle >> 8 & 0xff;
-                        particleColorRGB[2] = config.colors.particle & 0xff;
-
-                        particleFillStyle = 'rgb(' + particleColorRGB[0] + ',' + particleColorRGB[1] + ',' + particleColorRGB[2] + ')';
-                    };
-
-                    let initSmoothGradient = function () {
-                        smoothGradient = engine.createLinearGradient(
-                            width / 2,
-                            0,
-                            width / 2,
-                            height
-                        );
-
-                        smoothGradient.addColorStop(0.25, 'rgba(0, 0, 0, 0)');
-
-                        smoothGradient.addColorStop(0.45, 'rgba(0, 0, 0, 0.9)');
-                        smoothGradient.addColorStop(0.5, 'rgba(0, 0, 0, 1)');
-                        smoothGradient.addColorStop(0.55, 'rgba(0, 0, 0, 0.9)');
-
-                        smoothGradient.addColorStop(0.75, 'rgba(0, 0, 0, 0)');
-                    };
-
-                    let initWaterGradient = function () {
-                        waterGradient = engine.createLinearGradient(
-                            width / 2,
-                            height / 2,
-                            width / 2,
-                            height
-                        );
-
-                        waterGradient.addColorStop(0, 'rgba(0, 0, 30, 0)');
-                        waterGradient.addColorStop(1, 'rgba(30, 0, 60, 0.5)');
-                    };
-
-                    let init = function () {
-                        initCanvas();
-                        initParticle();
-                        initParticleColor();
-                        initSmoothGradient();
-                        initWaterGradient();
-                    };
-
-                    let eachParticle = function (cb) {
-                        for (let i = 0; i < particle.length; i += 2) {
-                            cb(i, i + 1);
-                        }
-                    };
-
-                    let renderParticle = function () {
-                        randomWalker += (Math.random() - 0.5) * 0.1;
-
-                        particleWaveWalker += 0.03;
-
-                        let radius = {
-                            min: 1,
-                            add: 5
-                        };
-
-                        let midY = height / 2;
-                        let midX = width / 2;
-
-                        let spreadX = 5;
-                        let spreadZ = 0.0;
-
-                        let modZ = 0.0;
-
-                        let addX = 0;
-                        let addY = 0;
-
-                        let p = {
-                            x: 0.0,
-                            y: 0.0,
-                            r: 0.0
-                        };
-
-                        engine.fillStyle = particleFillStyle;
-                        // engine.beginPath();
-
-                        let waveControl = 10;
-
-                        for (let i = 0, xIndex, zIndex; i < particle.length; i += 2) {
-
-                            xIndex = i;
-                            zIndex = i + 1;
-
-                            particle[zIndex] += 0.003;
-
-                            if (particle[zIndex] > 1) {
-                                particle[zIndex] = 0;
-                                particle[xIndex] = random.getNextFloat();
-                            }
-
-                            if (particle[zIndex] < 0.3) {
-                                continue;
-                            }
-
-                            modZ = Math.pow(particle[zIndex], 2);
-                            spreadZ = 1 + (spreadX - 1) * modZ;
-
-                            //bottom
-
-                            addX = (0.5 - particle[xIndex]) * width * spreadZ;
-                            addY = midY * modZ * (1 + 3 / waveControl);
-
-                            p.x = midX + addX;
-                            p.y = midY + addY;
-                            p.r = radius.min + modZ * radius.add;
-
-                            p.y += Math.sin(particle[xIndex] * 50 + particleWaveWalker) * addY / waveControl;
-                            p.y += Math.cos(particle[zIndex] * 10 + particleWaveWalker) * addY / waveControl;
-
-                            p.y -= Math.cos(particle[zIndex] + particle[xIndex] * 10 + particleWaveWalker) * addY / waveControl;
-
-                            p.y -= Math.cos(particle[xIndex] * 50 + particleWaveWalker) * addY / waveControl;
-                            p.y -= Math.sin(particle[zIndex] * 10 + particleWaveWalker) * addY / waveControl;
-
-                            if (p.x < 0 || p.x > width) {
-                                continue;
-                            }
-
-                            engine.fillRect(p.x, p.y, p.r, p.r);
-
-                            // engine.moveTo(p.x, p.y);
-                            // engine.arc(p.x, p.y, p.r, 0, TAU);
-
-                            //top
-                            // p.y = height - p.y;
-                            //
-                            // engine.moveTo(p.x, p.y);
-                            // engine.arc(p.x, p.y, p.r, 0, TAU);
-                        }
-
-                        engine.fillStyle = particleFillStyle;
-
-                        // engine.closePath();
-                        // engine.fill();
-                    };
-
-                    let colorIntToHexString = function (color) {
-                        let s = color.toString(16);
-
-                        return '0'.repeat(6 - s.length) + s;
-                    };
-
-                    let clear = function () {
-                        engine.fillStyle = '#' + colorIntToHexString(config.colors.background);
-                        engine.fillRect(0, 0, width, height);
-                    };
-
-                    let drawSmooth = function () {
-                        engine.fillStyle = smoothGradient;
-                        engine.fillRect(0, 0, width, height);
-                    };
-
-                    let drawWater = function () {
-                        engine.fillStyle = waterGradient;
-                        engine.fillRect(0, height / 2, width, height / 2);
-                    };
-
-                    let tick = function () {
-                        clear();
-
-                        drawWater();
-                        renderParticle();
-                        drawSmooth();
-
-                        requestTick();
-                    };
-
-                    this.run = function () {
-                        init();
-                        tick();
-                    };
-                };
-
-                let pw = new ParticleWave();
-                pw.run();
-            },
             // 提交表单
             submitForm(formName) {
                 let vm = this;
@@ -353,13 +106,135 @@
             },
             // 点击更换验证码
             changeImgUrl() {
-                this.$httpGet('/admin/utils/getCaptcha', {})
+                this.$httpGet('/admin/utils/getCaptcha?' + new Date().getTime(), {})
                     .then(({data}) => {
                         this.imgUrl = data;
                     }).catch((data) => {
                     console.log(data);
                 })
-            }
+            },
+            getCanvas() {
+                class Circle {
+                    //创建对象
+                    //以一个圆为对象
+                    //设置随机的 x，y坐标，r半径，_mx，_my移动的距离
+                    //this.r是创建圆的半径，参数越大半径越大
+                    //this._mx,this._my是移动的距离，参数越大移动
+                    constructor(x, y) {
+                        this.x = x;
+                        this.y = y;
+                        this.r = Math.random() * 10;
+                        this._mx = Math.random();
+                        this._my = Math.random();
+
+                    }
+
+                    //canvas 画圆和画直线
+                    //画圆就是正常的用canvas画一个圆
+                    //画直线是两个圆连线，为了避免直线过多，给圆圈距离设置了一个值，距离很远的圆圈，就不做连线处理
+                    drawCircle(ctx) {
+                        ctx.beginPath();
+                        //arc() 方法使用一个中心点和半径，为一个画布的当前子路径添加一条弧。
+                        ctx.arc(this.x, this.y, this.r, 0, 360)
+                        ctx.closePath();
+                        ctx.fillStyle = 'rgba(204, 204, 204, 0.3)';
+                        ctx.fill();
+                    }
+
+                    drawLine(ctx, _circle) {
+                        let dx = this.x - _circle.x;
+                        let dy = this.y - _circle.y;
+                        let d = Math.sqrt(dx * dx + dy * dy)
+                        if (d < 150) {
+                            ctx.beginPath();
+                            //开始一条路径，移动到位置 this.x,this.y。创建到达位置 _circle.x,_circle.y 的一条线：
+                            ctx.moveTo(this.x, this.y); //起始点
+                            ctx.lineTo(_circle.x, _circle.y); //终点
+                            ctx.closePath();
+                            ctx.strokeStyle = 'rgba(204, 204, 204, 0.3)';
+                            ctx.stroke();
+                        }
+                    }
+
+                    // 圆圈移动
+                    // 圆圈移动的距离必须在屏幕范围内
+                    move(w, h) {
+                        this._mx = (this.x < w && this.x > 0) ? this._mx : (-this._mx);
+                        this._my = (this.y < h && this.y > 0) ? this._my : (-this._my);
+                        this.x += this._mx / 2;
+                        this.y += this._my / 2;
+                    }
+                }
+
+                //鼠标点画圆闪烁变动
+                class currentCirle extends Circle {
+                    constructor(x, y) {
+                        super(x, y)
+                    }
+
+                    drawCircle(ctx) {
+                        ctx.beginPath();
+                        //注释内容为鼠标焦点的地方圆圈半径变化
+                        //this.r = (this.r < 14 && this.r > 1) ? this.r + (Math.random() * 2 - 1) : 2;
+                        this.r = 8;
+                        ctx.arc(this.x, this.y, this.r, 0, 360);
+                        ctx.closePath();
+                        //ctx.fillStyle = 'rgba(0,0,0,' + (parseInt(Math.random() * 100) / 100) + ')'
+                        ctx.fillStyle = 'rgba(255, 77, 54, 0.6)'
+                        ctx.fill();
+
+                    }
+                }
+
+                //更新页面用requestAnimationFrame替代setTimeout
+                // window.requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
+
+                let canvas = document.getElementById('canvas');
+                let ctx = canvas.getContext('2d');
+                let w = canvas.width = canvas.offsetWidth;
+                let h = canvas.height = canvas.offsetHeight;
+                let circles = [];
+                let current_circle = new currentCirle(0, 0)
+
+                let draw = function () {
+                    ctx.clearRect(0, 0, w, h);
+                    for (let i = 0; i < circles.length; i++) {
+                        circles[i].move(w, h);
+                        circles[i].drawCircle(ctx);
+                        for (let j = i + 1; j < circles.length; j++) {
+                            circles[i].drawLine(ctx, circles[j])
+                        }
+                    }
+                    if (current_circle.x) {
+                        current_circle.drawCircle(ctx);
+                        for (let k = 1; k < circles.length; k++) {
+                            current_circle.drawLine(ctx, circles[k])
+                        }
+                    }
+                    // requestAnimationFrame(draw)
+                    setTimeout(draw, 10)
+                };
+
+                let init = function (num) {
+                    for (let i = 0; i < num; i++) {
+                        circles.push(new Circle(Math.random() * w, Math.random() * h));
+                    }
+                    draw();
+                };
+
+                window.addEventListener('load', init(60));
+
+                window.onmousemove = function (e) {
+                    e = e || window.event;
+                    current_circle.x = e.clientX;
+                    current_circle.y = e.clientY;
+                };
+
+                window.onmouseout = function () {
+                    current_circle.x = null;
+                    current_circle.y = null;
+                }
+            },
         },
         mounted() {
             this.getCanvas();
@@ -369,6 +244,11 @@
 </script>
 
 <style scoped>
+    canvas {
+        display: block;
+        width: 100%;
+        height: 100%;
+    }
 
     .login-wrap {
         position: relative;

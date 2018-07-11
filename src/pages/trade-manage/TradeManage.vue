@@ -86,13 +86,13 @@
                 </div>
                 <div style="margin: 0px 20px 10px 0;">
                     <span>平台名称：</span>
-                    <el-select clearable style="width: 150px;" v-model="searchDataForm.platformNo"
+                    <el-select clearable style="width: 150px;" v-model="searchDataForm.platformId"
                                placeholder="请选择平台名称">
                         <el-option
                             v-for="item in platformIdList"
-                            :key="item.platformNo"
+                            :key="item.id"
                             :label="item.platformName"
-                            :value="item.platformNo">
+                            :value="item.id">
                         </el-option>
                     </el-select>
                 </div>
@@ -106,62 +106,38 @@
             <el-table :data="getDataList" border style="width: 100%;">
                 <el-table-column show-overflow-tooltip prop="merchantCode" label="商户号">
                 </el-table-column>
+                <el-table-column show-overflow-tooltip prop="merchantName" label="商户名称">
+                </el-table-column>
                 <el-table-column show-overflow-tooltip prop="merchantOrderNo" label="商户订单号">
                 </el-table-column>
                 <el-table-column show-overflow-tooltip prop="orderNo" label="双乾流水号">
                 </el-table-column>
                 <el-table-column prop="tradeState" label="交易状态">
                     <template slot-scope="scope">
-                        <span v-if="scope.row.tradeState==0">失败</span>
-                        <span v-if="scope.row.tradeState==1">成功</span>
-                        <span v-if="scope.row.tradeState==2">待处理</span>
-                        <span v-if="scope.row.tradeState==3">取消</span>
-                        <span v-if="scope.row.tradeState==4">待确认</span>
-                        <span v-if="scope.row.tradeState==5">未返回</span>
-                        <span v-if="scope.row.tradeState==8">异常</span>
+                        <span v-if="scope.row.tradeState==item.id" v-for="item in tradeStateList">{{ item.name }}</span>
                     </template>
                 </el-table-column>
                 <el-table-column show-overflow-tooltip prop="tradeTime" label="交易时间" :formatter="tradeTimeForMatter">
                 </el-table-column>
-                <el-table-column show-overflow-tooltip prop="tradeAmount" label="交易金额">
+                <el-table-column show-overflow-tooltip prop="tradeAmount" label="交易金额（元）">
                 </el-table-column>
                 <el-table-column show-overflow-tooltip prop="tradeRate" label="交易费率">
                 </el-table-column>
-                <el-table-column show-overflow-tooltip prop="tradeFee" label="交易手续费">
-                </el-table-column>
-                <el-table-column show-overflow-tooltip prop="bankOrderNo" label="银行订单号">
-                </el-table-column>
-                <el-table-column show-overflow-tooltip prop="bankReturnTime" label="银行返回时间"
-                                 :formatter="bankReturnTimeForMatter">
-                </el-table-column>
-                <el-table-column show-overflow-tooltip prop="upplementTime" label="补单时间"
-                                 :formatter="upPlementTimeForMatter">
-                </el-table-column>
-                <el-table-column show-overflow-tooltip prop="channelName" label="银行支付通道">
-                </el-table-column>
-                <el-table-column show-overflow-tooltip prop="bankCode" label="银行编码">
+                <el-table-column show-overflow-tooltip prop="tradeFee" label="交易手续费（元）">
                 </el-table-column>
                 <el-table-column show-overflow-tooltip prop="payType" label="支付类型">
                     <template slot-scope="scope">
-                        <span v-if="scope.row.payType==0">个人网银</span>
-                        <span v-if="scope.row.payType==1">企业网银</span>
-                        <span v-if="scope.row.payType==2">快捷支付</span>
-                        <span v-if="scope.row.payType==3">认证支付</span>
-                        <span v-if="scope.row.payType==4">代扣</span>
-                        <span v-if="scope.row.payType==5">微信支付</span>
-                        <span v-if="scope.row.payType==6">支付宝支付</span>
+                        <span v-if="scope.row.payType==item.id" v-for="item in payTypeList">{{ item.name }}</span>
                     </template>
                 </el-table-column>
-                <el-table-column show-overflow-tooltip prop="saleCode" label="业务员code">
-                </el-table-column>
-                <el-table-column show-overflow-tooltip prop="platformNo" label="平台名称">
+                <el-table-column show-overflow-tooltip prop="platformId" label="平台名称">
                     <template slot-scope="scope">
-                        <span v-if="scope.row.platformNo==item.platformNo" v-for="item in platformIdList">{{ item.platformName }}</span>
+                        <span v-if="scope.row.platformId==item.platformId" v-for="item in platformIdList">{{ item.platformName }}</span>
                     </template>
                 </el-table-column>
                 <el-table-column align="center" label="操作" width="100px">
                     <template v-if="getDataList.length > 0" slot-scope="scope">
-                        <el-button @click="handleDetail(scope.row)" type="primary" icon="el-icon-delete" size="small">
+                        <el-button @click="handleDetail(scope.row)" type="primary" icon="el-icon-view" size="small">
                             查看
                         </el-button>
                     </template>
@@ -272,7 +248,7 @@
                 let tradeState = this.searchDataForm.tradeState ? this.searchDataForm.tradeState : "";
                 let payType = this.searchDataForm.payType ? this.searchDataForm.payType : "";
                 let constchannelAccessCode = this.searchDataForm.channelAccessCode ? this.searchDataForm.channelAccessCode : "";
-                const platformNo = this.searchDataForm.platformNo ? this.searchDataForm.platformNo : "";
+                const platformId = this.searchDataForm.platformId ? this.searchDataForm.platformId : "";
                 window.location.href = API_BASE
                     + "/admin/epay/tradeInfo/exportTradeInfoList?"
                     + "merchantCode=" + merchantCode
@@ -285,22 +261,12 @@
                     + "&tradeState=" + tradeState
                     + "&payType=" + payType
                     + "&constchannelAccessCode=" + constchannelAccessCode
-                    + "&platformNo=" + platformNo;
+                    + "&platformId=" + platformId;
             },
             tradeTimeForMatter(row, column) {
                 let tradeTime = row.tradeTime;
                 if (tradeTime)
                     return this.$moment(tradeTime).format('YYYY-MM-DD HH:mm:ss');
-            },
-            bankReturnTimeForMatter(row, column) {
-                let bankReturnTime = row.bankReturnTime;
-                if (bankReturnTime)
-                    return this.$moment(bankReturnTime).format('YYYY-MM-DD HH:mm:ss');
-            },
-            upPlementTimeForMatter(row, column) {
-                let upplementTime = row.upplementTime;
-                if (upplementTime)
-                    return this.$moment(upplementTime).format('YYYY-MM-DD HH:mm:ss');
             },
             handleDetail(row) {
                 this.$router.push({name: 'trade-detail', params: {id: row.id}});
@@ -326,7 +292,7 @@
                     tradeState: this.searchDataForm.tradeState,
                     payType: this.searchDataForm.payType,
                     channelAccessCode: this.searchDataForm.channelAccessCode,
-                    platformNo: this.searchDataForm.platformNo
+                    platformId: this.searchDataForm.platformId
                 }).then(({data}) => {
                     vm.getDataList = data.list;
                     vm.total = data.total;
@@ -351,7 +317,7 @@
                     tradeState: this.searchDataForm.tradeState,
                     payType: this.searchDataForm.payType,
                     channelAccessCode: this.searchDataForm.channelAccessCode,
-                    platformNo: this.searchDataForm.platformNo
+                    platformId: this.searchDataForm.platformId
                 })
             },
             // 银行支付通道

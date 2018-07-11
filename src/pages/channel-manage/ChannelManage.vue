@@ -78,13 +78,13 @@
             <div class="form-content" style="margin: 0 auto;width: 90%;">
                 <el-form ref="addDataForm" :model="addDataForm" label-width="150px">
                     <el-form-item label="通道名称：">
-                        <el-input clearable v-model.trim="addDataForm.channelName"></el-input>
+                        <el-input clearable v-model.trim="addDataForm.channelName" placeholder="通道名称"></el-input>
                     </el-form-item>
                     <el-form-item label="通道接入码：">
-                        <el-input clearable v-model.trim="addDataForm.channelAccessCode"></el-input>
+                        <el-input clearable v-model.trim="addDataForm.channelAccessCode" placeholder="通道接入码"></el-input>
                     </el-form-item>
                     <el-form-item label="通道接入请求地址：">
-                        <el-input clearable v-model.trim="addDataForm.bankUrl"></el-input>
+                        <el-input clearable v-model.trim="addDataForm.bankUrl" placeholder="通道接入请求地址"></el-input>
                     </el-form-item>
                     <el-form-item label="商户号：">
                         <el-input type="number" v-model.trim="addDataForm.unionMerNo" maxlength="20"
@@ -139,13 +139,13 @@
             <div class="form-content" style="margin: 0 auto;width: 90%;">
                 <el-form ref="editDataForm" :model="editDataForm" label-width="150px">
                     <el-form-item label="通道名称：">
-                        <el-input clearable v-model.trim="editDataForm.channelName"></el-input>
+                        <el-input clearable v-model.trim="editDataForm.channelName" placeholder="通道名称"></el-input>
                     </el-form-item>
                     <el-form-item label="通道接入码：">
-                        <el-input clearable v-model.trim="editDataForm.channelAccessCode"></el-input>
+                        <el-input clearable v-model.trim="editDataForm.channelAccessCode" placeholder="通道接入码"></el-input>
                     </el-form-item>
                     <el-form-item label="通道接入请求地址：">
-                        <el-input clearable v-model.trim="editDataForm.bankUrl"></el-input>
+                        <el-input clearable v-model.trim="editDataForm.bankUrl" placeholder="通道接入请求地址"></el-input>
                     </el-form-item>
                     <el-form-item label="商户号：">
                         <el-input type="number" v-model.trim="editDataForm.unionMerNo" maxlength="20"

@@ -18,7 +18,7 @@
                 </el-table-column>
                 <el-table-column prop="url" label="URL">
                 </el-table-column>
-                <el-table-column prop="icon" label="ICON">
+                <el-table-column prop="icon-font" label="ICON">
                 </el-table-column>
             </el-table>
             <el-row style="margin: 50px auto">

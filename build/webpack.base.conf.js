@@ -4,6 +4,11 @@ const utils = require('./utils')
 const config = require('../config')
 const vueLoaderConfig = require('./vue-loader.conf')
 
+// 增加HappyPack插件
+const HappyPack = require('happypack')
+const os = require('os')
+const happyThreadPool = HappyPack.ThreadPool({size: os.cpus().length})
+
 function resolve(dir) {
     return path.join(__dirname, '..', dir)
 }
@@ -21,6 +26,21 @@ module.exports = {
             ? config.dev.assetsPublicPath
             : config.build.assetsPublicPath
     },
+    // 增加HappyPack插件
+    plugins: [
+        new HappyPack({
+            //用id来标识 happypack处理那里类文件
+            id: 'happyBabel',
+            //如何处理  用法和loader 的配置一样
+            loaders: [{
+                loader: 'babel-loader?cacheDirectory=true',
+            }],
+            //共享进程池
+            threadPool: happyThreadPool,
+            //允许 HappyPack 输出日志
+            verbose: true,
+        })
+    ],
     resolve: {
         extensions: ['.js', '.vue', '.json'],
         alias: {
@@ -38,9 +58,20 @@ module.exports = {
             },
             {
                 test: /\.js$/,
-                loader: 'babel-loader',
-                include: [resolve('src'), resolve('test')]
+                //把对.js 的文件处理交给id为happyBabel 的HappyPack 的实例执行
+                loader: 'happypack/loader?id=happyBabel',
+                //排除node_modules 目录下的文件
+                exclude: /node_modules/,
+                include: [resolve('src')],
             },
+            // 修改引入loader
+            /*{
+                test: /\.js$/,
+                loader: 'babel-loader',
+                // 增加新的HappyPack构建loader
+                // loader: 'happypack/loader?id=happy-babel-js',
+                include: [resolve('src'), resolve('test')]
+            },*/
             {
                 test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
                 loader: 'url-loader',

@@ -15,13 +15,11 @@ function setUser(state, user) {
 export default {
     state: {
         user: JSON.parse(window.localStorage.getItem('user')),
-        loginType: window.localStorage.getItem('loginType'),
-        pageLoading: false
+        loginType: window.localStorage.getItem('loginType')
     },
     getters: {
         user: (state) => state.user,
-        loginType: (state) => state.loginType,
-        pageLoading: state => state.pageLoading
+        loginType: (state) => state.loginType
     },
     mutations: {
         [USER_SIGN_IN](state, user) {
@@ -35,11 +33,7 @@ export default {
         },
         [USER_UPDATE](state, user) {
             setUser(state, user)
-        },
-
-        [PAGE_LOADING_UPDATE](state, isShow) {
-            state.pageLoading = isShow
-        },
+        }
     },
     actions: {
         userSignIn: ({commit}, user) => {
@@ -50,9 +44,6 @@ export default {
         },
         userUpdate: ({commit}, user) => {
             commit(USER_UPDATE, user)
-        },
-        pageLoadingUpdate: ({commit}, isShow) => {
-            commit(PAGE_LOADING_UPDATE, isShow)
         }
     }
 }

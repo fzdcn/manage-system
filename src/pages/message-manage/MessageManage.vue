@@ -77,7 +77,7 @@
             <div class="form-content" style="margin: 0 auto;width: 90%;">
                 <el-form ref="addDataForm" :model="addDataForm" label-width="120px">
                     <el-form-item label="渠道模板号：">
-                        <el-input clearable v-model.trim="addDataForm.templateCode"></el-input>
+                        <el-input clearable v-model.trim="addDataForm.templateCode" placeholder="渠道模板号"></el-input>
                     </el-form-item>
                     <el-form-item label="平台标识：">
                         <el-select clearable v-model="addDataForm.platformId" placeholder="请选择平台标识">
@@ -100,13 +100,13 @@
                         </el-select>
                     </el-form-item>
                     <el-form-item label="短信说明：">
-                        <el-input clearable v-model.trim="addDataForm.explain"></el-input>
+                        <el-input clearable v-model.trim="addDataForm.explain" placeholder="短信说明"></el-input>
                     </el-form-item>
                     <el-form-item label="短信模板内容：">
-                        <el-input clearable type="textarea" v-model.trim="addDataForm.content"></el-input>
+                        <el-input clearable type="textarea" v-model.trim="addDataForm.content" placeholder="短信模板内容"></el-input>
                     </el-form-item>
                     <el-form-item label="系统备注：">
-                        <el-input clearable type="textarea" v-model.trim="addDataForm.sysRemark"></el-input>
+                        <el-input clearable type="textarea" v-model.trim="addDataForm.sysRemark" placeholder="系统备注"></el-input>
                     </el-form-item>
                 </el-form>
             </div>
@@ -164,7 +164,7 @@
             <div class="form-content" style="margin: 0 auto;width: 90%;">
                 <el-form ref="editDataForm" :model="editDataForm" label-width="120px">
                     <el-form-item label="渠道模板号：">
-                        <el-input clearable v-model.trim="editDataForm.templateCode"></el-input>
+                        <el-input clearable v-model.trim="editDataForm.templateCode" placeholder="渠道模板号"></el-input>
                     </el-form-item>
                     <el-form-item label="平台标识：">
                         <el-select clearable v-model="editDataForm.platformId" placeholder="请选择平台标识">
@@ -187,13 +187,13 @@
                         </el-select>
                     </el-form-item>
                     <el-form-item label="短信说明：">
-                        <el-input clearable v-model.trim="editDataForm.explain"></el-input>
+                        <el-input clearable v-model.trim="editDataForm.explain" placeholder="短信说明"></el-input>
                     </el-form-item>
                     <el-form-item label="短信模板内容：">
-                        <el-input clearable type="textarea" v-model.trim="editDataForm.content"></el-input>
+                        <el-input clearable type="textarea" v-model.trim="editDataForm.content" placeholder="短信模板内容"></el-input>
                     </el-form-item>
                     <el-form-item label="系统备注：">
-                        <el-input clearable type="textarea" v-model.trim="editDataForm.sysRemark"></el-input>
+                        <el-input clearable type="textarea" v-model.trim="editDataForm.sysRemark" placeholder="系统备注"></el-input>
                     </el-form-item>
                 </el-form>
             </div>
@@ -293,21 +293,14 @@
                 let formData = new FormData();
                 formData.append("file", file);
                 formData.append("platformId", vm.fileDataForm.platformId);
-                this.$axios.post('/admin/sms/importSmsTemplate', formData)
-                    .then(({data}) => {
+                this.$uploadHttpPost('/admin/sms/importSmsTemplate', formData, true)
+                    .then((data) => {
                         if (data.code == '00') {
                             vm.$message.success(data.message);
                             vm.cancelFile();
                             vm.getData();
                         } else if (data.code == '01') {
-                            vm.$message.error(data.message);
                             vm.cancelFile();
-                        } else if (data.code == '401') {
-                            vm.$message.warning(data.message);
-                            vm.$router.replace({
-                                path: '/login',
-                                query: {redirect: vm.$router.currentRoute.fullPath}
-                            })
                         }
                     }).catch((data) => {
                     vm.$message.error("上传失败");

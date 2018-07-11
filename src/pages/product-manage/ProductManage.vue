@@ -70,10 +70,10 @@
             <div class="form-content" style="margin: 0 auto;width: 90%;">
                 <el-form ref="addDataForm" :model="addDataForm" label-width="150px">
                     <el-form-item label="产品名称：">
-                        <el-input clearable v-model.trim="addDataForm.productName"></el-input>
+                        <el-input clearable v-model.trim="addDataForm.productName" placeholder="产品名称"></el-input>
                     </el-form-item>
                     <el-form-item label="产品接入码：">
-                        <el-input clearable v-model.trim="addDataForm.productAccessCode"></el-input>
+                        <el-input clearable v-model.trim="addDataForm.productAccessCode" placeholder="产品接入码"></el-input>
                     </el-form-item>
                     <el-form-item label="产品状态：">
                         <el-select clearable v-model="addDataForm.productState" placeholder="使用状态">
@@ -124,10 +124,10 @@
             <div class="form-content" style="margin: 0 auto;width: 90%;">
                 <el-form ref="editDataForm" :model="editDataForm" label-width="150px">
                     <el-form-item label="产品名称：">
-                        <el-input clearable v-model.trim="editDataForm.productName"></el-input>
+                        <el-input clearable v-model.trim="editDataForm.productName" placeholder="产品名称"></el-input>
                     </el-form-item>
                     <el-form-item label="产品接入码：">
-                        <el-input clearable v-model.trim="editDataForm.productAccessCode"></el-input>
+                        <el-input clearable v-model.trim="editDataForm.productAccessCode" placeholder="产品接入码"></el-input>
                     </el-form-item>
                     <el-form-item label="产品状态：">
                         <el-select clearable v-model="editDataForm.productState" placeholder="产品状态">

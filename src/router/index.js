@@ -80,13 +80,13 @@ const routes = [
             {
                 path: '/message-record-manage',
                 name: 'message-record-manage',
-                component: resolve => require(['../pages/message-manage/messageRecordManage.vue'], resolve),
+                component: resolve => require(['../pages/message-manage/MessageRecordManage.vue'], resolve),
                 meta: {title: '短信记录管理', permission: false},
             },
             {
                 path: '/platform-information-manage',
                 name: 'platform-information-manage',
-                component: resolve => require(['../pages/platform-information-manage/platformInformationManage.vue'], resolve),
+                component: resolve => require(['../pages/platform-information-manage/PlatformInformationManage.vue'], resolve),
                 meta: {title: '平台信息管理', permission: false},
             },
             {
@@ -124,6 +124,12 @@ const routes = [
                 name: 'bank-info-manage',
                 component: resolve => require(['../pages/system-manage/bank-info-manage/BankInfoManage.vue'], resolve),
                 meta: {title: '银行管理', permission: false},
+            },
+            {
+                path: '/icon-font',
+                name: 'icon-font',
+                component: resolve => require(['../pages/icon-font/IconFont.vue'], resolve),
+                meta: {title: 'icon-font', permission: false},
             },
             {
                 // 权限页面
@@ -170,7 +176,6 @@ let router = new Router({
 
 //使用钩子函数对路由进行权限跳转
 router.beforeEach(({meta, name, fullPath, path}, from, next) => {
-    store.dispatch('pageLoadingUpdate', true);
     // let {permission = true} = meta;
     let role = store.getters.loginType;
     if (!role && path !== '/login') {
@@ -191,7 +196,6 @@ router.beforeEach(({meta, name, fullPath, path}, from, next) => {
 });
 
 router.afterEach(() => {
-    store.dispatch('pageLoadingUpdate', false)
 })
 
 export default router

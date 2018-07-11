@@ -51,7 +51,7 @@
                                 <i class="el-icon-goods grid-con-icon"></i>
                                 <div class="grid-cont-right">
                                     <count-to class="card-panel-num grid-num" :decimals="2" :startVal="0"
-                                              :endVal="AllSuccessPayMoney"
+                                              :endVal="allSuccessPayMoney"
                                               :duration="3000"></count-to>
                                     <div>历史交易成功总金额(元)</div>
                                 </div>
@@ -63,7 +63,7 @@
         </el-row>
         <el-row>
             <el-card shadow="hover" :body-style="{padding: '20px',height:'500px'}">
-                <e-charts></e-charts>
+                <e-charts v-if="flag" :week-trade-amount-list="weekTradeAmount"></e-charts>
             </el-card>
         </el-row>
     </div>
@@ -82,48 +82,34 @@
         },
         data() {
             return {
+                flag: false,
                 username: JSON.parse(localStorage.getItem('user')).username,
                 managerLevel: JSON.parse(localStorage.getItem('user')).roleName,
                 loginDate: JSON.parse(localStorage.getItem('user')).loginDate,
                 phone: JSON.parse(localStorage.getItem('user')).phone,
                 currentDaySuccessPayMoney: 0,
                 currentDaySuccessPayNumber: 0,
-                AllSuccessPayMoney: 0
+                allSuccessPayMoney: 0,
+                weekTradeAmount: []
             }
         },
         methods: {
-            getCurrentDaySuccessPayMoney() {
+            getAllData() {
                 let vm = this;
-                this.$httpGet('/admin/epay/tradeInfo/findTodayTradeAmount', {})
+                this.$httpGet('/admin/epay/tradeInfo/findTradeNumAndAmount', {})
                     .then(({data}) => {
-                        vm.currentDaySuccessPayMoney = data;
-                    }).catch((data) => {
-                    console.log(data);
-                })
-            },
-            getCurrentDaySuccessPayNumber() {
-                let vm = this;
-                this.$httpGet('/admin/epay/tradeInfo/findTodayTradeNum', {})
-                    .then(({data}) => {
-                        vm.currentDaySuccessPayNumber = data;
-                    }).catch((data) => {
-                    console.log(data);
-                })
-            },
-            getAllSuccessPayNumber() {
-                let vm = this;
-                this.$httpGet('/admin/epay/tradeInfo/findAllTradeAmount', {})
-                    .then(({data}) => {
-                        vm.AllSuccessPayMoney = data;
+                        vm.currentDaySuccessPayMoney = data.todayTradeAmount;
+                        vm.currentDaySuccessPayNumber = data.todayTradeNum;
+                        vm.allSuccessPayMoney = data.allTradeAmount;
+                        vm.weekTradeAmount = data.weekTradeAmountList;
+                        vm.flag = true;
                     }).catch((data) => {
                     console.log(data);
                 })
             }
         },
-        mounted() {
-            this.getCurrentDaySuccessPayMoney();
-            this.getCurrentDaySuccessPayNumber();
-            this.getAllSuccessPayNumber();
+        created() {
+            this.getAllData();
         }
     }
 

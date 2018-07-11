@@ -42,7 +42,7 @@
                     <template v-if="getDataList.length > 0" slot-scope="scope">
                         <el-button @click="handleEdit(scope.row)" type="primary" icon="el-icon-edit" size="small">编辑
                         </el-button>
-                        <!--<el-button @click="handleDelete(scope.row)" type="danger" icon="el-icon-delete" size="small">-->
+                        <!--<el-button @click="handleDelete(scope.row)" type="danger" icon-font="el-icon-font-delete" size="small">-->
                         <!--删除-->
                         <!--</el-button>-->
                     </template>

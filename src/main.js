@@ -2,7 +2,6 @@ import Vue from 'vue';
 import App from './App';
 import router from './router';
 import store from './store';
-import axios from 'axios'
 import ElementUI from 'element-ui';
 // 默认主题
 import 'element-ui/lib/theme-chalk/index.css';
@@ -17,9 +16,15 @@ import moment from 'moment';
 //     return moment(value * 1000).format(formatString)
 // })
 Vue.prototype.$moment = moment;
-Vue.prototype.$axios = axios;
 Vue.use(http);
 Vue.use(ElementUI, {size: 'small'});
+
+// https://www.jianshu.com/p/1d9b42012ecb
+const isDebug_mode = process.env.NODE_ENV === 'development';
+Vue.config.debug = isDebug_mode;
+Vue.config.devtools = isDebug_mode;
+Vue.config.productionTip = isDebug_mode;
+
 new Vue({
     el: '#app',
     router,

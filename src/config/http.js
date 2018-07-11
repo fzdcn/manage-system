@@ -8,24 +8,16 @@ import router from '../router/index'
 import qs from 'qs'
 import {Loading, Message} from 'element-ui'
 
-let needLoadingRequestCount = 0
 let loading = {}
 
 // 显示loading
 function showFullScreenLoading() {
-    if (needLoadingRequestCount === 0) {
-        startLoading()
-    }
-    needLoadingRequestCount++
+    startLoading()
 }
 
 // 隐藏loading
 function tryHideFullScreenLoading() {
-    if (needLoadingRequestCount <= 0) return
-    needLoadingRequestCount--
-    if (needLoadingRequestCount === 0) {
-        endLoading()
-    }
+    endLoading()
 }
 
 // 启动loading配置
@@ -35,7 +27,7 @@ function startLoading() {
         text: '加载中……',
         background: 'rgba(0, 0, 0, 0.8)',
         fullscreen: true,
-        spinner: 'el-icon-loading'
+        spinner: 'el-icon-font-loading'
     })
 }
 
@@ -46,7 +38,6 @@ function endLoading() {
 
 axios.defaults.baseURL = API_BASE;
 axios.defaults.withCredentials = true;
-axios.defaults.headers.post['Content-Type'] = 'application/json';
 
 function bindAccessToken(params) {
     let accessToken = store.getters.accessToken
@@ -108,6 +99,7 @@ class HttpResource {
     static install(Vue) {
         Vue.prototype.$httpGet = HttpResource.httpGet;
         Vue.prototype.$httpPost = HttpResource.httpPost;
+        Vue.prototype.$uploadHttpPost = HttpResource.uploadHttpPost;
     }
 
     /**
@@ -117,18 +109,15 @@ class HttpResource {
      */
 
     static httpGet(url, params) {
-        store.dispatch('pageLoadingUpdate', true);
         showFullScreenLoading();
         bindAccessToken(params)
         return new Promise((resolve, reject) => {
             axios.get(url, {params: params})
                 .then(({data}) => {
                     resolveResponse(data, resolve)
-                    store.dispatch('pageLoadingUpdate', false)
                     tryHideFullScreenLoading()
                 }, (data) => {
                     rejectResponse(data, reject)
-                    store.dispatch('pageLoadingUpdate', false)
                     tryHideFullScreenLoading()
                 })
         })
@@ -144,7 +133,6 @@ class HttpResource {
         if (!isFormData) {
             params = qs.stringify(params);
         }
-        store.dispatch('pageLoadingUpdate', true)
         showFullScreenLoading()
         bindAccessToken(params)
         return new Promise((resolve, reject) => {
@@ -154,11 +142,29 @@ class HttpResource {
                 }
             }).then(({data}) => {
                 resolveResponse(data, resolve)
-                store.dispatch('pageLoadingUpdate', false)
                 tryHideFullScreenLoading()
             }, (data) => {
                 rejectResponse(data, reject)
-                store.dispatch('pageLoadingUpdate', false)
+                tryHideFullScreenLoading()
+            })
+        })
+    }
+
+    static uploadHttpPost(url, params, isFormData) {
+        if (!isFormData) {
+            params = qs.stringify(params);
+        }
+        showFullScreenLoading()
+        return new Promise((resolve, reject) => {
+            axios.post(url, params, {
+                headers: {
+                    "Content-Type": isFormData ? "application/x-www-form-urlencoded;charset=UTF-8" : "application/json"
+                }
+            }).then(({data}) => {
+                resolveResponse(data, resolve)
+                tryHideFullScreenLoading()
+            }, (data) => {
+                rejectResponse(data, reject)
                 tryHideFullScreenLoading()
             })
         })
