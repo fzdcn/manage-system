@@ -4,26 +4,33 @@
             <div class="add" style="margin-bottom: 30px;">
                 <el-button type="primary" size="medium" icon="el-icon-plus" @click="add">增加</el-button>
             </div>
-
             <div class="handle-box" style="margin-bottom: 20px;display: flex;flex-flow: row wrap;">
                 <div style="margin: 0px 20px 10px 0;">
-                    <span>平台名称：</span>
-                    <el-input style="width: 150px;" class="username" v-model.trim="searchDataForm.platformName"
-                              clearable placeholder="">
-                    </el-input>
+                    <div style="margin: 0px 20px 10px 0;">
+                        <span>平台id：</span>
+                        <el-select clearable style="width: 150px;" v-model="searchDataForm.platformId"
+                                   placeholder="平台id">
+                            <el-option
+                                v-for="item in platformIdList"
+                                :key="item.id"
+                                :label="item.platformName"
+                                :value="item.id">
+                            </el-option>
+                        </el-select>
+                    </div>
                 </div>
 
                 <div style="margin: 0px 20px 10px 0;">
                     <span>平台IP：</span>
                     <el-input style="width: 150px;" class="username" v-model.trim="searchDataForm.platformIp"
-                              clearable placeholder="">
+                              clearable placeholder="平台IP">
                     </el-input>
                 </div>
 
                 <div style="margin: 0px 20px 10px 0;">
                     <span>商户IP：</span>
                     <el-input style="width: 150px;" class="username" v-model.trim="searchDataForm.merchantIp"
-                              clearable placeholder="">
+                              clearable placeholder="商户IP">
                     </el-input>
                 </div>
 
@@ -44,14 +51,21 @@
             </div>
 
             <el-table :data="getDataList" border style="width: 100%;text-align: center;">
-                <el-table-column show-overflow-tooltip prop="platformName" label="平台名称" header-align="center"/>
-                <el-table-column show-overflow-tooltip prop="platformIp" label="平台IP" header-align="center"/>
-                <el-table-column show-overflow-tooltip prop="merchantIp" label="商户IP" header-align="center"/>
+                <el-table-column show-overflow-tooltip prop="platformId" label="平台名称" header-align="center">
+                    <template slot-scope="scope">
+                        <span v-if="scope.row.platformId==item.id" v-for="item in platformIdList">{{ item.platformName }}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column show-overflow-tooltip prop="platformIp" label="平台IP" header-align="center">
+                </el-table-column>
+                <el-table-column show-overflow-tooltip prop="merchantIp" label="商户IP" header-align="center">
+                </el-table-column>
                 <el-table-column show-overflow-tooltip prop="type" label="类型" header-align="center">
                     <template slot-scope="scope">
-                        <span v-if="scope.row.type==1">黑名单</span>
-                        <span v-if="scope.row.type==2">白名单</span>
+                        <span v-if="scope.row.type==item.type" v-for="item in typeList">{{ item.name }}</span>
                     </template>
+                </el-table-column>
+                <el-table-column show-overflow-tooltip prop="remark" label="备注" header-align="center">
                 </el-table-column>
                 <el-table-column label="操作" width="200px" align="center">
                     <template v-if="getDataList.length > 0" slot-scope="scope">
@@ -76,17 +90,16 @@
             <div class="form-content" style="margin: 0 auto;width: 90%;">
                 <el-form ref="addDataForm" :model="addDataForm" label-width="120px">
                     <el-form-item label="平台名称：">
-                        <el-select clearable v-model="addDataForm.platformNo"
+                        <el-select clearable v-model="addDataForm.platformId"
                                    placeholder="平台名称">
                             <el-option
                                 v-for="item in platformIdList"
-                                :key="item.platformNo"
+                                :key="item.id"
                                 :label="item.platformName"
-                                :value="item.platformNo">
+                                :value="item.id">
                             </el-option>
                         </el-select>
                     </el-form-item>
-
                     <el-form-item label="平台IP：">
                         <el-input clearable v-model.trim="addDataForm.platformIp" placeholder="ip格式应该位xxx.xxx.xxx.xxx">
                         </el-input>
@@ -105,6 +118,10 @@
                             </el-option>
                         </el-select>
                     </el-form-item>
+                    <el-form-item label="备注：">
+                        <el-input type="textarea" clearable v-model.trim="addDataForm.remark" placeholder="i备注">
+                        </el-input>
+                    </el-form-item>
                 </el-form>
             </div>
             <span slot="footer" class="dialog-footer">
@@ -118,12 +135,12 @@
             <div class="form-content" style="margin: 0 auto;width: 90%;">
                 <el-form ref="ditDataForm" :model="editDataForm" label-width="120px">
                     <el-form-item label="平台名称：">
-                        <el-select clearable v-model="editDataForm.platformNo" placeholder="平台名称">
+                        <el-select clearable v-model="editDataForm.platformId" placeholder="平台名称">
                             <el-option
                                 v-for="item in platformIdList"
-                                :key="item.platformNo"
+                                :key="item.id"
                                 :label="item.platformName"
-                                :value="item.platformNo">
+                                :value="item.id">
                             </el-option>
                         </el-select>
                     </el-form-item>
@@ -148,6 +165,10 @@
                                 :value="item.type">
                             </el-option>
                         </el-select>
+                    </el-form-item>
+                    <el-form-item label="备注：">
+                        <el-input type="textarea" clearable v-model.trim="editDataForm.remark" placeholder="i备注">
+                        </el-input>
                     </el-form-item>
                 </el-form>
             </div>
@@ -176,6 +197,8 @@
                 isShowEdit: false,
                 // 增加
                 addDataForm: {},
+                // 获取平台名称
+                platformNameObject: {},
                 searchDataForm: {
                     platformIp: "",
                     merchantIp: "",
@@ -194,10 +217,11 @@
                 // 编辑
                 editDataForm: {
                     id: "",
-                    platformNo: "",
+                    platformId: "",
                     platformIp: "",
                     merchantIp: "",
-                    type: ""
+                    type: "",
+                    remark: ""
                 },
                 // 平台列表
                 platformIdList: [],
@@ -219,7 +243,7 @@
                     cancelButtonText: '取消',
                     type: 'warning'
                 }).then(() => {
-                    vm.$httpGet('/admin/epay/riskInfo/deleteRisk', {
+                    vm.$httpGet('/admin/riskInfo/deleteRisk', {
                         id: row.id
                     }).then((data) => {
                         vm.$message.success(data.message);
@@ -246,12 +270,12 @@
             },
             getData() {
                 let vm = this;
-                this.$httpGet('/admin/epay/riskInfo/listRisk', {
+                this.$httpGet('/admin/riskInfo/listRisk', {
                     pageNo: this.cur_page,
                     pageSize: 10,
                     platformIp: this.searchDataForm.platformIp,
                     merchantIp: this.searchDataForm.merchantIp,
-                    platformName: this.searchDataForm.platformName,
+                    platformId: this.searchDataForm.platformId,
                     type: this.searchDataForm.type
                 }).then(({data}) => {
                     vm.getDataList = data.list;
@@ -270,7 +294,7 @@
             },
             submitAdd() {
                 let vm = this;
-                if (!this.addDataForm.platformNo) {
+                if (!this.addDataForm.platformId) {
                     this.$message.warning('平台名称不能为空！');
                     return false;
                 }
@@ -294,19 +318,12 @@
                     this.$message.warning('类型不能为空！');
                     return false;
                 }
-
-                // 获取平台名称
-                let object = {};
-                object = this.platformIdList.find((item => {
-                    return item.platformNo == this.addDataForm.platformNo;
-                }));
-
-                this.$httpPost('/admin/epay/riskInfo/insertRisk', {
-                    platformNo: this.addDataForm.platformNo,
-                    platformName: object.platformName,
+                this.$httpPost('/admin/riskInfo/insertRisk', {
+                    platformId: this.addDataForm.platformId,
                     merchantIp: this.addDataForm.merchantIp,
                     platformIp: this.addDataForm.platformIp,
-                    type: this.addDataForm.type
+                    type: this.addDataForm.type,
+                    remark: this.addDataForm.remark
                 }).then((data) => {
                     vm.$message.success(data.message);
                     vm.cancelAdd();
@@ -318,17 +335,18 @@
             handleEdit(row) {
                 this.isShowEdit = true;
                 this.editDataForm.id = row.id;
-                this.editDataForm.platformNo = row.platformNo;
+                this.editDataForm.platformId = row.platformId;
                 this.editDataForm.merchantIp = row.merchantIp;
                 this.editDataForm.platformIp = row.platformIp;
                 this.editDataForm.type = row.type;
+                this.editDataForm.remark = row.remark;
             },
             cancelEdit() {
                 this.isShowEdit = false;
             },
             submitEdit() {
                 let vm = this;
-                if (!this.editDataForm.platformNo) {
+                if (!this.editDataForm.platformId) {
                     this.$message.warning('平台名称不能为空！');
                     return false;
                 }
@@ -353,19 +371,13 @@
                     return false;
                 }
 
-                // 取平台名称
-                let object = {};
-                object = this.platformIdList.find((item => {
-                    return item.platformNo == this.editDataForm.platformNo;
-                }));
-
-                this.$httpPost('/admin/epay/riskInfo/updateRisk', {
+                this.$httpPost('/admin/riskInfo/updateRisk', {
                     id: this.editDataForm.id,
-                    platformNo: this.editDataForm.platformNo,
-                    platformName: object.platformName,
+                    platformId: this.editDataForm.platformId,
                     merchantIp: this.editDataForm.merchantIp,
                     platformIp: this.editDataForm.platformIp,
-                    type: this.editDataForm.type
+                    type: this.editDataForm.type,
+                    remark: this.editDataForm.remark
                 }).then((data) => {
                     vm.$message.success(data.message);
                     vm.cancelEdit();
@@ -374,11 +386,10 @@
                     console.log(data)
                 })
             }
-        }
-        ,
+        },
         created() {
-            this.getData();
             this.getPlatFormList();
+            this.getData();
 
         }
     }

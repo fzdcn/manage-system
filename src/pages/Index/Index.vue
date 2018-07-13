@@ -6,7 +6,8 @@
                     <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col">
                         <el-card shadow="hover" :body-style="{padding: '20px'}">
                             <div class="grid-content grid-con-3" style="height: 150px">
-                                <pan-thumb width="120px" height="120px" border-radius="50%" image="static/img/img.jpg">
+                                <pan-thumb width="120px" height="120px" border-radius="50%"
+                                           image="/static/img/head.png">
                                     {{managerLevel}}
                                 </pan-thumb>
                                 <div class="grid-cont-right">
@@ -22,7 +23,7 @@
                     <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col">
                         <el-card shadow="hover" :body-style="{padding: '20px'}">
                             <div class="grid-content grid-con-1">
-                                <i class="el-icon-view grid-con-icon"></i>
+                                <i class="iconfont icon-jiao-yi-one grid-con-icon"></i>
                                 <div class="grid-cont-right">
                                     <count-to class="card-panel-num grid-num" :decimals="2" :startVal="0"
                                               :endVal="currentDaySuccessPayMoney"

@@ -114,10 +114,16 @@ const routes = [
                 meta: {title: '交易信息列表', permission: false},
             },
             {
-                path: '/trade-manage/trade-detail/:id',
-                name: 'trade-detail',
-                component: resolve => require(['../pages/trade-manage/TradeDetail.vue'], resolve),
-                meta: {title: '交易信息详情', permission: false},
+                path: '/subscription-information',
+                name: 'subscription-information',
+                component: resolve => require(['../pages/trade-manage/SubscriptionInformation.vue'], resolve),
+                meta: {title: '签约信息列表', permission: false},
+            },
+            {
+                path: '/refund-information',
+                name: 'refund-information',
+                component: resolve => require(['../pages/trade-manage/RefundInformation.vue'], resolve),
+                meta: {title: '退款信息列表', permission: false},
             },
             {
                 path: '/bank-info-manage',

@@ -5,6 +5,8 @@
                 <el-button type="primary" size="medium" icon="el-icon-plus" @click="add">增加</el-button>
             </div>
             <el-table :data="getDataList" border style="width: 100%;">
+                <el-table-column show-overflow-tooltip prop="code" label="编号">
+                </el-table-column>
                 <el-table-column show-overflow-tooltip prop="name" label="名字">
                 </el-table-column>
                 <el-table-column show-overflow-tooltip prop="phone" label="电话">
