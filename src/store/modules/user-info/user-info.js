@@ -1,8 +1,7 @@
 import {
     USER_SIGN_IN,
     USER_SIGN_OUT,
-    USER_UPDATE,
-    PAGE_LOADING_UPDATE
+    USER_UPDATE
 } from '../mutation-type'
 
 function setUser(state, user) {
@@ -36,13 +35,19 @@ export default {
         }
     },
     actions: {
-        userSignIn: ({commit}, user) => {
+        userSignIn: ({
+            commit
+        }, user) => {
             commit(USER_SIGN_IN, user)
         },
-        userSignOut: ({commit}) => {
+        userSignOut: ({
+            commit
+        }) => {
             commit(USER_SIGN_OUT)
         },
-        userUpdate: ({commit}, user) => {
+        userUpdate: ({
+            commit
+        }, user) => {
             commit(USER_UPDATE, user)
         }
     }

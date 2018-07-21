@@ -1,55 +1,55 @@
 <template>
     <div class="table">
         <div class="container">
-            <div class="handle-box" style="margin-bottom: 20px;display: flex;flex-flow: row wrap;">
-                <div style="margin: 0px 20px 10px 0;">
+            <div class="handle-box clearfix" style="margin-bottom: 20px;">
+                <div style="margin: 0px 20px 10px 0;float: left;">
                     <span>姓名：</span>
                     <el-input style="width: 150px;" class="username" v-model.trim="searchDataForm.customerName" clearable placeholder="姓名">
                     </el-input>
                 </div>
-                <div style="margin: 0px 20px 10px 0;">
+                <div style="margin: 0px 20px 10px 0;float: left;">
                     <span>证件号：</span>
                     <el-input style="width: 150px;" class="username" v-model.trim="searchDataForm.idNo" clearable placeholder="证件号">
                     </el-input>
                 </div>
-                <div style="margin: 0px 20px 10px 0;">
+                <div style="margin: 0px 20px 10px 0;float: left;">
                     <span>卡号：</span>
                     <el-input style="width: 150px;" class="username" v-model.trim="searchDataForm.cardNo" clearable placeholder="卡号">
                     </el-input>
                 </div>
-                <div style="margin: 0px 20px 10px 0;">
+                <div style="margin: 0px 20px 10px 0;float: left;">
                     <span>手机号：</span>
                     <el-input style="width: 150px;" class="username" v-model.trim="searchDataForm.phoneNo" clearable placeholder="手机号">
                     </el-input>
                 </div>
-                <div style="margin: 0px 20px 10px 0;">
+                <div style="margin: 0px 20px 10px 0;float: left;">
                     <span>签约渠道：</span>
                     <el-input style="width: 150px;" class="username" v-model.trim="searchDataForm.signChannel" clearable placeholder="签约渠道">
                     </el-input>
                 </div>
-                <div style="margin: 0px 20px 10px 0;">
+                <div style="margin: 0px 20px 10px 0;float: left;">
                     <span>签约状态：</span>
                     <el-select clearable style="width: 150px;" v-model="searchDataForm.signStatus" placeholder="签约状态">
                         <el-option v-for="item in status" :key="item.id" :label="item.name" :value="item.id">
                         </el-option>
                     </el-select>
                 </div>
-                <div style="margin: 0px 20px 10px 0;">
+                <div style="margin: 0px 20px 10px 0;float: left;">
                     <span>请求流水号：</span>
                     <el-input style="width: 150px;" class="username" v-model.trim="searchDataForm.reqOrderNo" clearable placeholder="请求流水号">
                     </el-input>
                 </div>
-                <div style="margin: 0px 20px 10px 0;">
+                <div style="margin: 0px 20px 10px 0;float: left;">
                     <span>签约开始时间：</span>
                     <el-date-picker type="datetime" style="width: 185px;" class="username" v-model.trim="searchDataForm.startTime" clearable placeholder="签约开始时间">
                     </el-date-picker>
                 </div>
-                <div style="margin: 0px 20px 10px 0;">
+                <div style="margin: 0px 20px 10px 0;float: left;">
                     <span>签约结束时间：</span>
                     <el-date-picker type="datetime" style="width: 185px;" class="username" v-model.trim="searchDataForm.endTime" clearable placeholder="签约结束时间">
                     </el-date-picker>
                 </div>
-                <div>
+                <div style="float: left;">
                     <el-button type="primary" icon="el-icon-search" @click="handleCurrentChange(1)">搜索</el-button>
                 </div>
             </div>
@@ -179,123 +179,123 @@ export default {
             // 签约状态
             status: [
                 {
-                    id: "0",
-                    name: "失败"
+                    id: '0',
+                    name: '失败'
                 },
                 {
-                    id: "1",
-                    name: "已认证"
+                    id: '1',
+                    name: '已认证'
                 },
                 {
-                    id: "2",
-                    name: "已签约"
+                    id: '2',
+                    name: '已签约'
                 },
                 {
-                    id: "3",
-                    name: "已解约"
+                    id: '3',
+                    name: '已解约'
                 }
             ],
             // 证件类型
             idType: [
                 {
-                    id: "01",
-                    name: "身份证"
+                    id: '01',
+                    name: '身份证'
                 }
             ],
             // 卡类型
             cardType: [
                 {
-                    id: "00",
-                    name: "借记卡"
+                    id: '00',
+                    name: '借记卡'
                 },
                 {
-                    id: "01",
-                    name: "贷记卡"
+                    id: '01',
+                    name: '贷记卡'
                 }
             ]
-        };
+        }
     },
     methods: {
         // 分页导航
         handleCurrentChange(val) {
-            this.cur_page = val;
-            this.paginationShow = false;
-            this.getData();
+            this.cur_page = val
+            this.paginationShow = false
+            this.getData()
         },
         handleDetail(row) {
-            this.isShowDetail = true;
-            this.detailDataForm.customerName = row.customerName;
-            this.detailDataForm.idNo = row.idNo;
-            this.detailDataForm.idType = this.getIdType(row.idType);
-            this.detailDataForm.cardNo = row.cardNo;
-            this.detailDataForm.cardType = this.getCardType(row.cardType);
-            this.detailDataForm.bankCode = row.bankCode;
-            this.detailDataForm.phoneNo = row.phoneNo;
-            this.detailDataForm.happenTime = this.timeForMatter(row.happenTime);
-            this.detailDataForm.status = this.getStatus(row.status);
-            this.detailDataForm.signChannel = row.signChannel;
-            this.detailDataForm.businessType = row.businessType;
-            this.detailDataForm.signContractNo = row.signContractNo;
-            this.detailDataForm.reqOrderNo = row.reqOrderNo;
-            this.detailDataForm.authOrderNo = row.authOrderNo;
-            this.detailDataForm.signOrderNo = row.signOrderNo;
-            this.detailDataForm.smsKey = row.smsKey;
-            this.detailDataForm.sysRemark = row.sysRemark;
-            this.detailDataForm.remark = row.remark;
+            this.isShowDetail = true
+            this.detailDataForm.customerName = row.customerName
+            this.detailDataForm.idNo = row.idNo
+            this.detailDataForm.idType = this.getIdType(row.idType)
+            this.detailDataForm.cardNo = row.cardNo
+            this.detailDataForm.cardType = this.getCardType(row.cardType)
+            this.detailDataForm.bankCode = row.bankCode
+            this.detailDataForm.phoneNo = row.phoneNo
+            this.detailDataForm.happenTime = this.timeForMatter(row.happenTime)
+            this.detailDataForm.status = this.getStatus(row.status)
+            this.detailDataForm.signChannel = row.signChannel
+            this.detailDataForm.businessType = row.businessType
+            this.detailDataForm.signContractNo = row.signContractNo
+            this.detailDataForm.reqOrderNo = row.reqOrderNo
+            this.detailDataForm.authOrderNo = row.authOrderNo
+            this.detailDataForm.signOrderNo = row.signOrderNo
+            this.detailDataForm.smsKey = row.smsKey
+            this.detailDataForm.sysRemark = row.sysRemark
+            this.detailDataForm.remark = row.remark
         },
         cancelDetail() {
-            this.isShowDetail = false;
+            this.isShowDetail = false
         },
         getIdType(params) {
             switch (params) {
-                case "01":
-                    return "身份证";
-                    break;
+                case '01':
+                    return '身份证'
+                    break
                 default:
-                    return "暂无";
-                    break;
+                    return '暂无'
+                    break
             }
         },
         getCardType(params) {
             switch (params) {
-                case "00":
-                    return "借记卡";
-                    break;
-                case "01":
-                    return "贷记卡";
-                    break;
+                case '00':
+                    return '借记卡'
+                    break
+                case '01':
+                    return '贷记卡'
+                    break
                 default:
-                    return "暂无";
-                    break;
+                    return '暂无'
+                    break
             }
         },
         getStatus(params) {
             switch (params) {
-                case "0":
-                    return "失败";
-                    break;
-                case "1":
-                    return "已认证";
-                    break;
-                case "2":
-                    return "已签约";
-                    break;
-                case "3":
-                    return "已解约";
-                    break;
+                case '0':
+                    return '失败'
+                    break
+                case '1':
+                    return '已认证'
+                    break
+                case '2':
+                    return '已签约'
+                    break
+                case '3':
+                    return '已解约'
+                    break
                 default:
-                    return "暂无";
-                    break;
+                    return '暂无'
+                    break
             }
         },
         // 时间戳转换
         timeForMatter(timestamp) {
             if (timestamp)
-                return this.$moment(timestamp).format("YYYY-MM-DD HH:mm:ss");
+                return this.$moment(timestamp).format('YYYY-MM-DD HH:mm:ss')
         },
         getData() {
-            let vm = this;
-            this.$httpGet("/admin/realName/signInfoList", {
+            let vm = this
+            this.$httpGet('/admin/realName/signInfoList', {
                 pageNo: this.cur_page,
                 pageSize: 10,
                 customerName: this.searchDataForm.customerName,
@@ -307,34 +307,34 @@ export default {
                 reqOrderNo: this.searchDataForm.reqOrderNo,
                 startTime: this.searchDataForm.startTime
                     ? this.$moment(vm.searchDataForm.startTime).format(
-                          "YYYY-MM-DD HH:mm:ss"
+                          'YYYY-MM-DD HH:mm:ss'
                       )
-                    : "",
+                    : '',
                 endTime: this.searchDataForm.endTime
                     ? this.$moment(vm.searchDataForm.endTime).format(
-                          "YYYY-MM-DD HH:mm:ss"
+                          'YYYY-MM-DD HH:mm:ss'
                       )
-                    : ""
+                    : ''
             })
                 .then(({ data }) => {
-                    vm.getDataList = data.list;
-                    vm.total = data.total;
-                    vm.paginationShow = true;
+                    vm.getDataList = data.list
+                    vm.total = data.total
+                    vm.paginationShow = true
                 })
                 .catch(data => {
-                    console.log(data);
-                });
+                    console.log(data)
+                })
         },
         happenTimeForMatter(row, column) {
-            let happenTime = row.happenTime;
+            let happenTime = row.happenTime
             if (happenTime)
-                return this.$moment(happenTime).format("YYYY-MM-DD HH:mm:ss");
+                return this.$moment(happenTime).format('YYYY-MM-DD HH:mm:ss')
         }
     },
     created() {
-        this.getData();
+        this.getData()
     }
-};
+}
 </script>
 
 <style scoped>

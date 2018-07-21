@@ -4,18 +4,18 @@
             <div class="add" style="margin-bottom: 30px;">
                 <el-button type="primary" size="medium" icon="el-icon-plus" @click="add">增加</el-button>
             </div>
-            <div class="handle-box" style="margin-bottom: 20px;display: flex;flex-flow: row wrap;">
-                <div style="margin: 0px 20px 10px 0;">
+            <div class="handle-box clearfix" style="margin-bottom: 20px;">
+                <div style="margin: 0px 20px 10px 0;float: left;">
                     <span>通道名称：</span>
                     <el-input style="width: 150px;" class="username" v-model.trim="searchDataForm.channelName" clearable placeholder="请填写通道名称">
                     </el-input>
                 </div>
-                <div style="margin: 0px 20px 10px 0;">
+                <div style="margin: 0px 20px 10px 0;float: left;">
                     <span>通道接入码：</span>
                     <el-input style="width: 150px;" class="username" v-model.trim="searchDataForm.channelAccessCode" clearable placeholder="请填写通道接入码">
                     </el-input>
                 </div>
-                <div>
+                <div style="float: left;">
                     <el-button type="primary" icon="el-icon-search" @click="handleCurrentChange(1)">
                         搜索
                     </el-button>
@@ -101,6 +101,12 @@
                             </el-option>
                         </el-select>
                     </el-form-item>
+                    <el-form-item label="银行列表：">
+                        <el-select clearable filterable multiple collapse-tags v-model="addDataForm.bids" placeholder="银行列表">
+                            <el-option v-for="item in bankList" :key="item.id" :label="item.bankName" :value="item.id">
+                            </el-option>
+                        </el-select>
+                    </el-form-item>
                     <el-form-item label="备注：">
                         <el-input maxlength="255" type="textarea" v-model.trim="addDataForm.remark" placeholder="长度最多为255"></el-input>
                     </el-form-item>
@@ -148,6 +154,12 @@
                             </el-option>
                         </el-select>
                     </el-form-item>
+                    <el-form-item label="银行列表：">
+                        <el-select clearable filterable multiple collapse-tags v-model="editDataForm.bids" placeholder="银行列表">
+                            <el-option v-for="item in bankList" :key="item.id" :label="item.bankName" :value="item.id">
+                            </el-option>
+                        </el-select>
+                    </el-form-item>
                     <el-form-item label="备注：">
                         <el-input maxlength="255" type="textarea" v-model.trim="editDataForm.remark" placeholder="长度最多为255"></el-input>
                     </el-form-item>
@@ -177,173 +189,259 @@ export default {
             isShowEdit: false,
             searchDataForm: {},
             // 增加参数
-            addDataForm: {},
+            addDataForm: {
+                bids: []
+            },
             num: null,
             // 编辑参数
             editDataForm: {
-                id: "",
-                channelName: "",
-                channelAccessCode: "",
-                bankUrl: "",
-                unionMerNo: "",
-                acqInsCode: "",
-                localFee: "",
-                channelState: "",
-                computeMode: "",
-                remark: ""
+                id: '',
+                channelName: '',
+                channelAccessCode: '',
+                bankUrl: '',
+                unionMerNo: '',
+                acqInsCode: '',
+                localFee: '',
+                channelState: '',
+                computeMode: '',
+                bids: [],
+                remark: ''
             },
             channelStateList: [
                 {
                     id: 1,
-                    name: "开启"
+                    name: '开启'
                 },
                 {
                     id: 2,
-                    name: "关闭"
+                    name: '关闭'
                 }
             ],
             computeModeList: [
                 {
                     id: 1,
-                    name: "通用比例"
+                    name: '通用比例'
                 },
                 {
                     id: 2,
-                    name: "借贷比例"
+                    name: '借贷比例'
                 },
                 {
                     id: 3,
-                    name: "定额"
+                    name: '定额'
                 }
             ],
             otherComputeModeList: [
                 {
                     id: 3,
-                    name: "定额"
+                    name: '定额'
                 }
-            ]
-        };
+            ],
+            // 银行列表
+            bankList: []
+        }
     },
     methods: {
         localFee(row) {
             if (row.computeMode == 3) {
-                return row.localFee;
+                return row.localFee
             } else {
-                return row.localFee * 100 + "%";
+                return row.localFee * 100 + '%'
             }
         },
         dateFormatter(row) {
-            let date = row.executeTime;
-            if (date) return this.$moment(date).format("YYYY-MM-DD HH:mm:ss");
+            let date = row.executeTime
+            if (date) return this.$moment(date).format('YYYY-MM-DD HH:mm:ss')
         },
         // 分页导航
         handleCurrentChange(val) {
-            this.cur_page = val;
-            this.paginationShow = false;
-            this.getData();
+            this.cur_page = val
+            this.paginationShow = false
+            this.getData()
         },
         handleDelete(row) {
-            let vm = this;
-            this.$confirm("确认删除吗?", "删除", {
-                confirmButtonText: "确定",
-                cancelButtonText: "取消",
-                type: "warning"
+            let vm = this
+            this.$confirm('确认删除吗?', '删除', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
             })
                 .then(() => {
                     vm
-                        .$httpGet("/admin/epay/channelInfo/delete", {
+                        .$httpGet('/admin/epay/channelInfo/delete', {
                             id: row.id
                         })
                         .then(data => {
-                            vm.$message.success(data.message);
-                            vm.getData();
+                            vm.$notify.success({
+                                duration: 2000,
+                                title: '成功',
+                                message: data.message
+                            })
+                            vm.getData()
                         })
                         .catch(data => {
-                            console.log(data);
-                        });
+                            console.log(data)
+                        })
                 })
                 .catch(() => {
-                    vm.$message({
-                        type: "info",
-                        message: "已取消删除"
-                    });
-                });
+                    vm.$notify.info({
+                        duration: 2000,
+                        title: '消息',
+                        message: '已取消删除'
+                    })
+                })
+        },
+        // 获取银行列表
+        getBankList() {
+            let vm = this
+            this.$httpGet('/admin/bankInfo/option', {})
+                .then(({ data }) => {
+                    vm.bankList = data
+                })
+                .catch(data => {
+                    console.log(data)
+                })
+        },
+        // 根据当前id获取银行列表
+        findBankListByCid(row) {
+            let vm = this
+            let bids = []
+            this.$httpGet('/admin/epay/channelInfo/findBankListByCid', {
+                cid: row.id
+            })
+                .then(({ data }) => {
+                    for (let values of data) {
+                        bids.push(values.id)
+                    }
+                    vm.editDataForm.bids = [...bids]
+                })
+                .catch(data => {
+                    console.log(data)
+                })
         },
         getData() {
-            let vm = this;
-            this.$httpGet("/admin/epay/channelInfo/index", {
+            let vm = this
+            this.$httpGet('/admin/epay/channelInfo/index', {
                 pageNo: this.cur_page,
                 pageSize: 10,
                 channelName: this.searchDataForm.channelName,
                 channelAccessCode: this.searchDataForm.channelAccessCode
             })
                 .then(({ data }) => {
-                    vm.getDataList = data.list;
-                    vm.total = data.total;
-                    vm.paginationShow = true;
+                    vm.getDataList = data.list
+                    vm.total = data.total
+                    vm.paginationShow = true
                 })
                 .catch(data => {
-                    console.log(data);
-                });
+                    console.log(data)
+                })
         },
         add() {
-            this.isShowAdd = true;
+            this.isShowAdd = true
         },
         cancelAdd() {
-            this.isShowAdd = false;
-            this.addDataForm = {};
+            this.isShowAdd = false
+            this.addDataForm = {
+                bids: []
+            }
         },
         submitAdd() {
-            let vm = this;
+            let vm = this
             if (!this.addDataForm.channelName) {
-                this.$message.warning("通道名称不能为空！");
-                return false;
+                this.$notify.warning({
+                    duration: 2000,
+                    title: '警告',
+                    message: '通道名称不能为空！'
+                })
+                return false
             }
             if (!this.addDataForm.channelAccessCode) {
-                this.$message.warning("通道接入码不能为空！");
-                return false;
+                this.$notify.warning({
+                    duration: 2000,
+                    title: '警告',
+                    message: '通道接入码不能为空！'
+                })
+                return false
             }
             if (!this.addDataForm.bankUrl) {
-                this.$message.warning("通道接入请求地址不能为空！");
-                return false;
+                this.$notify.warning({
+                    duration: 2000,
+                    title: '警告',
+                    message: '通道接入请求地址不能为空！'
+                })
+                return false
             }
             if (!this.addDataForm.unionMerNo) {
-                this.$message.warning("商户号不能为空！");
-                return false;
+                this.$notify.warning({
+                    duration: 2000,
+                    title: '警告',
+                    message: '商户号不能为空！'
+                })
+                return false
             }
             if (!/^\d{1,20}$/.test(vm.addDataForm.unionMerNo)) {
-                this.$message.warning("商户号20位以内的数字！");
-                return false;
+                this.$notify.warning({
+                    duration: 2000,
+                    title: '警告',
+                    message: '商户号20位以内的数字！'
+                })
+                return false
             }
             if (!this.addDataForm.acqInsCode) {
-                this.$message.warning("机构号不能为空！");
-                return false;
+                this.$notify.warning({
+                    duration: 2000,
+                    title: '警告',
+                    message: '机构号不能为空！'
+                })
+                return false
             }
             if (!/^\d{1,10}$/.test(vm.addDataForm.acqInsCode)) {
-                this.$message.warning("机构号10位以内的数字！");
-                return false;
+                this.$notify.warning({
+                    duration: 2000,
+                    title: '警告',
+                    message: '机构号10位以内的数字！'
+                })
+                return false
             }
             if (!this.addDataForm.localFee) {
-                this.$message.warning("银行收取费率不能为空！");
-                return false;
+                this.$notify.warning({
+                    duration: 2000,
+                    title: '警告',
+                    message: '银行收取费率不能为空！'
+                })
+                return false
             }
             if (/^\-\d+\.?\d*$/.test(vm.addDataForm.localFee)) {
-                this.$message.warning("银行收取费率不能是负数");
-                return false;
+                this.$notify.warning({
+                    duration: 2000,
+                    title: '警告',
+                    message: '银行收取费率不能是负数'
+                })
+                return false
             }
             if (!/^\d{1,10}(\.\d{1,5})?$/.test(vm.addDataForm.localFee)) {
-                this.$message.warning(
-                    "银行收取费率整数最多10位，小数最多为5位！"
-                );
-                return false;
+                this.$notify.warning({
+                    duration: 2000,
+                    title: '警告',
+                    message: '银行收取费率整数最多10位，小数最多为5位！'
+                })
+                return false
             }
             if (!this.addDataForm.channelState) {
-                this.$message.warning("使用状态不能为空！");
-                return false;
+                this.$notify.warning({
+                    duration: 2000,
+                    title: '警告',
+                    message: '使用状态不能为空！'
+                })
+                return false
             }
             if (!this.addDataForm.computeMode) {
-                this.$message.warning("收费方式不能为空！");
-                return false;
+                this.$notify.warning({
+                    duration: 2000,
+                    title: '警告',
+                    message: '收费方式不能为空！'
+                })
+                return false
             }
             if (
                 (Number(this.addDataForm.localFee) >= 1 &&
@@ -351,12 +449,22 @@ export default {
                 (Number(this.addDataForm.localFee) >= 1 &&
                     this.addDataForm.computeMode == 2)
             ) {
-                this.$message.warning(
-                    "银行收取费率大于等于1时，收费方式只能是定额！"
-                );
-                return false;
+                this.$notify.warning({
+                    duration: 2000,
+                    title: '警告',
+                    message: '银行收取费率大于等于1时，收费方式只能是定额！'
+                })
+                return false
             }
-            this.$httpPost("/admin/epay/channelInfo/save", {
+            if (this.addDataForm.bids.length <= 0) {
+                this.$notify.warning({
+                    duration: 2000,
+                    title: '警告',
+                    message: '银行列表不能为空！'
+                })
+                return false
+            }
+            this.$httpPost('/admin/epay/channelInfo/save', {
                 channelName: this.addDataForm.channelName,
                 channelAccessCode: this.addDataForm.channelAccessCode,
                 bankUrl: this.addDataForm.bankUrl,
@@ -365,85 +473,136 @@ export default {
                 computeMode: this.addDataForm.computeMode,
                 remark: this.addDataForm.remark,
                 unionMerNo: this.addDataForm.unionMerNo,
-                acqInsCode: this.addDataForm.acqInsCode
+                acqInsCode: this.addDataForm.acqInsCode,
+                bids: this.addDataForm.bids
             })
                 .then(data => {
-                    vm.$message.success(data.message);
-                    vm.isShowAdd = false;
-                    vm.addDataForm = {};
-                    vm.handleCurrentChange(1);
+                    vm.$notify.success({
+                        duration: 2000,
+                        title: '成功',
+                        message: data.message
+                    })
+                    vm.cancelAdd()
+                    vm.handleCurrentChange(1)
                 })
                 .catch(data => {
-                    console.log(data);
-                });
+                    console.log(data)
+                })
         },
         handleEdit(row) {
-            this.isShowEdit = true;
-            this.editDataForm.id = row.id;
-            this.editDataForm.channelName = row.channelName;
-            this.editDataForm.channelAccessCode = row.channelAccessCode;
-            this.editDataForm.bankUrl = row.bankUrl;
-            this.editDataForm.localFee = row.localFee;
-            this.editDataForm.channelState = row.channelState;
-            this.editDataForm.computeMode = row.computeMode;
-            this.editDataForm.remark = row.remark;
-            this.editDataForm.unionMerNo = row.unionMerNo;
-            this.editDataForm.acqInsCode = row.acqInsCode;
+            this.findBankListByCid(row)
+            this.isShowEdit = true
+            this.editDataForm.id = row.id
+            this.editDataForm.channelName = row.channelName
+            this.editDataForm.channelAccessCode = row.channelAccessCode
+            this.editDataForm.bankUrl = row.bankUrl
+            this.editDataForm.localFee = row.localFee
+            this.editDataForm.channelState = row.channelState
+            this.editDataForm.computeMode = row.computeMode
+            this.editDataForm.remark = row.remark
+            this.editDataForm.unionMerNo = row.unionMerNo
+            this.editDataForm.acqInsCode = row.acqInsCode
         },
         cancelEdit() {
-            this.isShowEdit = false;
+            this.isShowEdit = false
         },
         submitEdit() {
-            let vm = this;
+            let vm = this
             if (!this.editDataForm.channelName) {
-                this.$message.warning("通道名称不能为空！");
-                return false;
+                this.$notify.warning({
+                    duration: 2000,
+                    title: '警告',
+                    message: '通道名称不能为空！'
+                })
+                return false
             }
             if (!this.editDataForm.channelAccessCode) {
-                this.$message.warning("通道接入码不能为空！");
-                return false;
+                this.$notify.warning({
+                    duration: 2000,
+                    title: '警告',
+                    message: '通道接入码不能为空！'
+                })
+                return false
             }
             if (!this.editDataForm.bankUrl) {
-                this.$message.warning("通道接入请求地址不能为空！");
-                return false;
+                this.$notify.warning({
+                    duration: 2000,
+                    title: '警告',
+                    message: '通道接入请求地址不能为空！'
+                })
+                return false
             }
             if (!this.editDataForm.unionMerNo) {
-                this.$message.warning("商户号不能为空！");
-                return false;
+                this.$notify.warning({
+                    duration: 2000,
+                    title: '警告',
+                    message: '商户号不能为空！'
+                })
+                return false
             }
             if (!/^\d{1,20}$/.test(vm.editDataForm.unionMerNo)) {
-                this.$message.warning("商户号20位以内的数字！");
-                return false;
+                this.$notify.warning({
+                    duration: 2000,
+                    title: '警告',
+                    message: '商户号20位以内的数字！'
+                })
+                return false
             }
             if (!this.editDataForm.acqInsCode) {
-                this.$message.warning("机构号不能为空！");
-                return false;
+                this.$notify.warning({
+                    duration: 2000,
+                    title: '警告',
+                    message: '机构号不能为空！'
+                })
+                return false
             }
             if (!/^\d{1,10}$/.test(vm.editDataForm.acqInsCode)) {
-                this.$message.warning("机构号10位以内的数字！");
-                return false;
+                this.$notify.warning({
+                    duration: 2000,
+                    title: '警告',
+                    message: '机构号10位以内的数字！'
+                })
+                return false
             }
             if (!this.editDataForm.localFee) {
-                this.$message.warning("银行收取费率不能为空！");
-                return false;
+                this.$notify.warning({
+                    duration: 2000,
+                    title: '警告',
+                    message: '银行收取费率不能为空！'
+                })
+                return false
             }
             if (/^\-\d+\.?\d*$/.test(vm.editDataForm.localFee)) {
-                this.$message.warning("银行收取费率不能是负数");
-                return false;
+                this.$notify.warning({
+                    duration: 2000,
+                    title: '警告',
+                    message: '银行收取费率不能是负数'
+                })
+                return false
             }
             if (!/^\d{1,10}(\.\d{1,5})?$/.test(vm.editDataForm.localFee)) {
-                this.$message.warning(
-                    "银行收取费率整数最多10位，小数最多为5位！"
-                );
-                return false;
+                this.$notify.warning({
+                    duration: 2000,
+                    title: '警告',
+                    message: '银行收取费率整数最多10位，小数最多为5位！'
+                })
+                return false
             }
             if (!this.editDataForm.channelState) {
-                this.$message.warning("使用状态不能为空！");
-                return false;
+                this.$notify.warning({
+                    duration: 2000,
+                    title: '警告',
+                    message: '使用状态不能为空！'
+                })
+                return false
             }
             if (!this.editDataForm.computeMode) {
-                this.$message.warning("收费方式不能为空！");
-                return false;
+                this.$notify.warning({
+                    duration: 2000,
+                    title: '警告',
+                    message: '收费方式不能为空！'
+                })
+                return false
             }
             if (
                 (Number(this.editDataForm.localFee) >= 1 &&
@@ -451,12 +610,22 @@ export default {
                 (Number(this.editDataForm.localFee) >= 1 &&
                     this.editDataForm.computeMode == 2)
             ) {
-                this.$message.warning(
-                    "银行收取费率大于等于1时，收费方式只能是定额！"
-                );
-                return false;
+                this.$notify.warning({
+                    duration: 2000,
+                    title: '警告',
+                    message: '银行收取费率大于等于1时，收费方式只能是定额！'
+                })
+                return false
             }
-            this.$httpPost("/admin/epay/channelInfo/update", {
+            if (this.editDataForm.bids.length <= 0) {
+                this.$notify.warning({
+                    duration: 2000,
+                    title: '警告',
+                    message: '银行列表不能为空！'
+                })
+                return false
+            }
+            this.$httpPost('/admin/epay/channelInfo/update', {
                 id: this.editDataForm.id,
                 channelName: this.editDataForm.channelName,
                 channelAccessCode: this.editDataForm.channelAccessCode,
@@ -466,22 +635,28 @@ export default {
                 computeMode: this.editDataForm.computeMode,
                 remark: this.editDataForm.remark,
                 unionMerNo: this.editDataForm.unionMerNo,
-                acqInsCode: this.editDataForm.acqInsCode
+                acqInsCode: this.editDataForm.acqInsCode,
+                bids: this.editDataForm.bids
             })
                 .then(data => {
-                    vm.$message.success(data.message);
-                    vm.cancelEdit();
-                    vm.getData();
+                    vm.$notify.success({
+                        duration: 2000,
+                        title: '成功',
+                        message: data.message
+                    })
+                    vm.cancelEdit()
+                    vm.getData()
                 })
                 .catch(data => {
-                    console.log(data);
-                });
+                    console.log(data)
+                })
         }
     },
     created() {
-        this.getData();
+        this.getBankList()
+        this.getData()
     }
-};
+}
 </script>
 
 <style scoped>

@@ -4,18 +4,18 @@
             <div class="add" style="margin-bottom: 30px;">
                 <el-button type="primary" size="medium" icon="el-icon-plus" @click="add">增加</el-button>
             </div>
-            <div class="handle-box" style="margin-bottom: 20px;display: flex;flex-flow: row wrap;">
-                <div style="margin: 0px 20px 10px 0;">
+            <div class="handle-box clearfix" style="margin-bottom: 20px;">
+                <div style="margin: 0px 20px 10px 0;float:left;">
                     <span>产品名称：</span>
                     <el-input style="width: 150px;" class="username" v-model.trim="searchDataForm.productName" clearable placeholder="请填写产品名称">
                     </el-input>
                 </div>
-                <div style="margin: 0px 20px 10px 0;">
+                <div style="margin: 0px 20px 10px 0;float:left;">
                     <span>产品接入码：</span>
                     <el-input style="width: 150px;" class="username" v-model.trim="searchDataForm.productAccessCode" clearable placeholder="请填写产品接入码">
                     </el-input>
                 </div>
-                <div>
+                <div style="float:left;">
                     <el-button type="primary" icon="el-icon-search" @click="handleCurrentChange(1)">
                         搜索
                     </el-button>
@@ -28,17 +28,14 @@
                 </el-table-column>
                 <el-table-column show-overflow-tooltip prop="productState" label="产品状态">
                     <template slot-scope="scope">
-                        <span v-if="scope.row.productState">开启</span>
-                        <span v-else>关闭</span>
+                        <span v-if="scope.row.productState==item.id" v-for="item in productStateList">{{item.name}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column show-overflow-tooltip prop="localFee" label="基础参考费率" :formatter="localFee">
                 </el-table-column>
                 <el-table-column show-overflow-tooltip prop="computeMode" label="收费方式">
                     <template slot-scope="scope">
-                        <span v-if="scope.row.computeMode == 1">通用比例</span>
-                        <span v-if="scope.row.computeMode == 2">借贷比例</span>
-                        <span v-if="scope.row.computeMode == 3">定额</span>
+                        <span v-if="scope.row.computeMode == item.id" v-for="item in computeModeList">{{item.name}}</span>
                     </template>
                 </el-table-column>
                 <el-table-column show-overflow-tooltip prop="productDesc" label="产品描述">
@@ -164,144 +161,175 @@ export default {
             num: null,
             // 编辑参数
             editDataForm: {
-                id: "",
-                productName: "",
-                productAccessCode: "",
-                bankUrl: "",
-                localFee: "",
-                productState: "",
-                computeMode: "",
-                productDesc: "",
-                remark: ""
+                id: '',
+                productName: '',
+                productAccessCode: '',
+                bankUrl: '',
+                localFee: '',
+                productState: '',
+                computeMode: '',
+                productDesc: '',
+                remark: ''
             },
             productStateList: [
                 {
                     id: 1,
-                    name: "开启"
+                    name: '开启'
                 },
                 {
                     id: 2,
-                    name: "关闭"
+                    name: '关闭'
                 }
             ],
             computeModeList: [
                 {
                     id: 1,
-                    name: "通用比例"
+                    name: '通用比例'
                 },
                 {
                     id: 2,
-                    name: "借贷比例"
+                    name: '借贷比例'
                 },
                 {
                     id: 3,
-                    name: "定额"
+                    name: '定额'
                 }
             ],
             otherComputeModeList: [
                 {
                     id: 3,
-                    name: "定额"
+                    name: '定额'
                 }
             ]
-        };
+        }
     },
     methods: {
         localFee(row) {
             if (row.computeMode == 3) {
-                return row.localFee;
+                return row.localFee
             } else {
-                return row.localFee * 100 + "%";
+                return row.localFee * 100 + '%'
             }
         },
         // 分页导航
         handleCurrentChange(val) {
-            this.cur_page = val;
-            this.paginationShow = false;
-            this.getData();
+            this.cur_page = val
+            this.paginationShow = false
+            this.getData()
         },
         handleDelete(row) {
-            let vm = this;
-            this.$confirm("确认删除吗?", "删除", {
-                confirmButtonText: "确定",
-                cancelButtonText: "取消",
-                type: "warning"
+            let vm = this
+            this.$confirm('确认删除吗?', '删除', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
             })
                 .then(() => {
                     vm
-                        .$httpGet("/admin/epay/productsInfo/delete", {
+                        .$httpGet('/admin/epay/productsInfo/delete', {
                             id: row.id
                         })
                         .then(data => {
-                            vm.$message.success(data.message);
-                            vm.getData();
+                            vm.$notify.success({
+                                duration: 2000,
+                                title: '成功',
+                                message: data.message
+                            })
+                            vm.getData()
                         })
                         .catch(data => {
-                            console.log(data);
-                        });
+                            console.log(data)
+                        })
                 })
                 .catch(() => {
-                    vm.$message({
-                        type: "info",
-                        message: "已取消删除"
-                    });
-                });
+                    vm.$notify.info({
+                        duration: 2000,
+                        title: '消息',
+                        message: '已取消删除'
+                    })
+                })
         },
         getData() {
-            let vm = this;
-            this.$httpGet("/admin/epay/productsInfo/index", {
+            let vm = this
+            this.$httpGet('/admin/epay/productsInfo/index', {
                 pageNo: this.cur_page,
                 pageSize: 10,
                 productName: this.searchDataForm.productName,
                 productAccessCode: this.searchDataForm.productAccessCode
             })
                 .then(({ data }) => {
-                    vm.getDataList = data.list;
-                    vm.total = data.total;
-                    vm.paginationShow = true;
+                    vm.getDataList = data.list
+                    vm.total = data.total
+                    vm.paginationShow = true
                 })
                 .catch(data => {
-                    console.log(data);
-                });
+                    console.log(data)
+                })
         },
         add() {
-            this.isShowAdd = true;
+            this.isShowAdd = true
         },
         cancelAdd() {
-            this.isShowAdd = false;
-            this.addDataForm = {};
+            this.isShowAdd = false
+            this.addDataForm = {}
         },
         submitAdd() {
-            let vm = this;
+            let vm = this
             if (!this.addDataForm.productName) {
-                this.$message.warning("产品名称不能为空！");
-                return false;
+                this.$notify.warning({
+                    duration: 2000,
+                    title: '警告',
+                    message: '产品名称不能为空！'
+                })
+                return false
             }
             if (!this.addDataForm.productAccessCode) {
-                this.$message.warning("产品接入码不能为空！");
-                return false;
+                this.$notify.warning({
+                    duration: 2000,
+                    title: '警告',
+                    message: '产品接入码不能为空！'
+                })
+                return false
             }
             if (!this.addDataForm.productState) {
-                this.$message.warning("产品状态不能为空！");
-                return false;
+                this.$notify.warning({
+                    duration: 2000,
+                    title: '警告',
+                    message: '产品状态不能为空！'
+                })
+                return false
             }
             if (!this.addDataForm.localFee) {
-                this.$message.warning("基础参考费率不能为空！");
-                return false;
+                this.$notify.warning({
+                    duration: 2000,
+                    title: '警告',
+                    message: '基础参考费率不能为空！'
+                })
+                return false
             }
             if (/^\-\d+\.?\d*$/.test(vm.addDataForm.localFee)) {
-                this.$message.warning("基础参考费率不能为负数！");
-                return false;
+                this.$notify.warning({
+                    duration: 2000,
+                    title: '警告',
+                    message: '基础参考费率不能为负数！'
+                })
+                return false
             }
             if (!/^\d{1,10}(\.\d{1,5})?$/.test(vm.addDataForm.localFee)) {
-                this.$message.warning(
-                    "基础参考费率整数最多10位，小数最多为5位！"
-                );
-                return false;
+                this.$notify.warning({
+                    duration: 2000,
+                    title: '警告',
+                    message: '基础参考费率整数最多10位，小数最多为5位！'
+                })
+                return false
             }
             if (!this.addDataForm.computeMode) {
-                this.$message.warning("收费方式不能为空！");
-                return false;
+                this.$notify.warning({
+                    duration: 2000,
+                    title: '警告',
+                    message: '收费方式不能为空！'
+                })
+                return false
             }
             if (
                 (Number(this.addDataForm.localFee) >= 1 &&
@@ -309,16 +337,22 @@ export default {
                 (Number(this.addDataForm.localFee) >= 1 &&
                     this.addDataForm.computeMode == 2)
             ) {
-                this.$message.warning(
-                    "银行收取费率大于等于1时，收费方式只能是定额！"
-                );
-                return false;
+                this.$notify.warning({
+                    duration: 2000,
+                    title: '警告',
+                    message: '银行收取费率大于等于1时，收费方式只能是定额！'
+                })
+                return false
             }
             if (!this.addDataForm.productDesc) {
-                this.$message.warning("产品描述不能为空！");
-                return false;
+                this.$notify.warning({
+                    duration: 2000,
+                    title: '警告',
+                    message: '产品描述不能为空！'
+                })
+                return false
             }
-            this.$httpPost("/admin/epay/productsInfo/save", {
+            this.$httpPost('/admin/epay/productsInfo/save', {
                 productName: this.addDataForm.productName,
                 productAccessCode: this.addDataForm.productAccessCode,
                 productState: this.addDataForm.productState,
@@ -328,61 +362,91 @@ export default {
                 remark: this.addDataForm.remark
             })
                 .then(data => {
-                    vm.$message.success(data.message);
-                    vm.isShowAdd = false;
-                    vm.addDataForm = {};
-                    vm.handleCurrentChange(1);
+                    vm.$notify.success({
+                        duration: 2000,
+                        title: '成功',
+                        message: data.message
+                    })
+                    vm.isShowAdd = false
+                    vm.addDataForm = {}
+                    vm.handleCurrentChange(1)
                 })
                 .catch(data => {
-                    console.log(data);
-                });
+                    console.log(data)
+                })
         },
         handleEdit(row) {
-            this.isShowEdit = true;
-            this.editDataForm.id = row.id;
-            this.editDataForm.productName = row.productName;
-            this.editDataForm.productAccessCode = row.productAccessCode;
-            this.editDataForm.bankUrl = row.bankUrl;
-            this.editDataForm.localFee = row.localFee;
-            this.editDataForm.productState = row.productState;
-            this.editDataForm.computeMode = row.computeMode;
-            this.editDataForm.productDesc = row.productDesc;
-            this.editDataForm.remark = row.remark;
+            this.isShowEdit = true
+            this.editDataForm.id = row.id
+            this.editDataForm.productName = row.productName
+            this.editDataForm.productAccessCode = row.productAccessCode
+            this.editDataForm.bankUrl = row.bankUrl
+            this.editDataForm.localFee = row.localFee
+            this.editDataForm.productState = row.productState
+            this.editDataForm.computeMode = row.computeMode
+            this.editDataForm.productDesc = row.productDesc
+            this.editDataForm.remark = row.remark
         },
         cancelEdit() {
-            this.isShowEdit = false;
+            this.isShowEdit = false
         },
         submitEdit() {
-            let vm = this;
+            let vm = this
             if (!this.editDataForm.productName) {
-                this.$message.warning("产品名称不能为空！");
-                return false;
+                this.$notify.warning({
+                    duration: 2000,
+                    title: '警告',
+                    message: '产品名称不能为空！'
+                })
+                return false
             }
             if (!this.editDataForm.productAccessCode) {
-                this.$message.warning("产品接入码不能为空！");
-                return false;
+                this.$notify.warning({
+                    duration: 2000,
+                    title: '警告',
+                    message: '产品接入码不能为空！'
+                })
+                return false
             }
             if (!this.editDataForm.productState) {
-                this.$message.warning("产品状态不能为空！");
-                return false;
+                this.$notify.warning({
+                    duration: 2000,
+                    title: '警告',
+                    message: '产品状态不能为空！'
+                })
+                return false
             }
             if (!this.editDataForm.localFee) {
-                this.$message.warning("基础参考费率不能为空！");
-                return false;
+                this.$notify.warning({
+                    duration: 2000,
+                    title: '警告',
+                    message: '基础参考费率不能为空！'
+                })
+                return false
             }
             if (/^\-\d+\.?\d*$/.test(vm.editDataForm.localFee)) {
-                this.$message.warning("基础参考费率不能为负数！");
-                return false;
+                this.$notify.warning({
+                    duration: 2000,
+                    title: '警告',
+                    message: '基础参考费率不能为负数！'
+                })
+                return false
             }
             if (!/^\d{1,10}(\.\d{1,5})?$/.test(vm.editDataForm.localFee)) {
-                this.$message.warning(
-                    "基础参考费率整数最多10位，小数最多为5位！"
-                );
-                return false;
+                this.$notify.warning({
+                    duration: 2000,
+                    title: '警告',
+                    message: '基础参考费率整数最多10位，小数最多为5位！'
+                })
+                return false
             }
             if (!this.editDataForm.computeMode) {
-                this.$message.warning("收费方式不能为空！");
-                return false;
+                this.$notify.warning({
+                    duration: 2000,
+                    title: '警告',
+                    message: '收费方式不能为空！'
+                })
+                return false
             }
             if (
                 (Number(this.editDataForm.localFee) >= 1 &&
@@ -390,16 +454,22 @@ export default {
                 (Number(this.editDataForm.localFee) >= 1 &&
                     this.editDataForm.computeMode == 2)
             ) {
-                this.$message.warning(
-                    "银行收取费率大于等于1时，收费方式只能是定额！"
-                );
-                return false;
+                this.$notify.warning({
+                    duration: 2000,
+                    title: '警告',
+                    message: '银行收取费率大于等于1时，收费方式只能是定额！'
+                })
+                return false
             }
             if (!this.editDataForm.productDesc) {
-                this.$message.warning("产品描述不能为空！");
-                return false;
+                this.$notify.warning({
+                    duration: 2000,
+                    title: '警告',
+                    message: '产品描述不能为空！'
+                })
+                return false
             }
-            this.$httpPost("/admin/epay/productsInfo/update", {
+            this.$httpPost('/admin/epay/productsInfo/update', {
                 id: this.editDataForm.id,
                 productName: this.editDataForm.productName,
                 productAccessCode: this.editDataForm.productAccessCode,
@@ -410,19 +480,23 @@ export default {
                 remark: this.editDataForm.remark
             })
                 .then(data => {
-                    vm.$message.success(data.message);
-                    vm.cancelEdit();
-                    vm.getData();
+                    vm.$notify.success({
+                        duration: 2000,
+                        title: '成功',
+                        message: data.message
+                    })
+                    vm.cancelEdit()
+                    vm.getData()
                 })
                 .catch(data => {
-                    console.log(data);
-                });
+                    console.log(data)
+                })
         }
     },
     created() {
-        this.getData();
+        this.getData()
     }
-};
+}
 </script>
 
 <style scoped>

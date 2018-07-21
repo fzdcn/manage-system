@@ -10,26 +10,26 @@
 </template>
 
 <script>
-    export default {
-        data: function () {
-            return {}
-        }
+export default {
+    data: function() {
+        return {}
     }
+}
 </script>
 
 <style scoped>
-    h1 {
-        text-align: center;
-        margin: 30px 0;
-    }
+h1 {
+    text-align: center;
+    margin: 30px 0;
+}
 
-    p {
-        line-height: 30px;
-        margin-bottom: 10px;
-        text-indent: 2em;
-    }
+p {
+    line-height: 30px;
+    margin-bottom: 10px;
+    text-indent: 2em;
+}
 
-    .logout {
-        color: #409EFF;
-    }
+.logout {
+    color: #409eff;
+}
 </style>

@@ -2,11 +2,16 @@
  * Created by Tome on 2018/5/18.
  */
 import axios from 'axios'
-import {API_BASE} from './config'
+import {
+    API_BASE
+} from './config'
 import store from '../store/index'
 import router from '../router/index'
 import qs from 'qs'
-import {Loading, Message} from 'element-ui'
+import {
+    Loading,
+    Notification
+} from 'element-ui'
 
 let loading = {}
 
@@ -51,21 +56,35 @@ function bindAccessToken(params) {
 function resolveResponse(data, resolve) {
     switch (data.code) {
         case '01':
-            Message.error('系统错误:' + data.message);
+            Notification.error({
+                duration: 2000,
+                title: "系统错误",
+                message: data.message
+            });
             break
         case '401':
-            Message.error(data.message);
-            if (router.currentRoute.name != 'login') {  //这里必须限制为非login页面
+            Notification.error({
+                duration: 2000,
+                title: "系统错误",
+                message: data.message
+            });
+            if (router.currentRoute.name != 'login') { //这里必须限制为非login页面
                 router.replace({
                     path: '/login',
-                    query: {redirect: router.currentRoute.fullPath}
+                    query: {
+                        redirect: router.currentRoute.fullPath
+                    }
                 })
             }
             store.dispatch('userSignOut');
             store.dispatch('DeleteNavigationMenu');
             break
         case '403':
-            Message.error('系统错误:' + data.message);
+            Notification.error({
+                duration: 2000,
+                title: "系统错误",
+                message: data.message
+            });
             router.replace({
                 path: '/403'
             });
@@ -80,7 +99,11 @@ function rejectResponse(data, reject) {
     if (data.response) {
         switch (data.response.status) {
             case 500:
-                Message.error('系统错误:' + data);
+                Notification.error({
+                    duration: 2000,
+                    title: "系统错误",
+                    message: data
+                });
                 /*router.replace({
                     path: '/403'
                 });*/
@@ -91,7 +114,11 @@ function rejectResponse(data, reject) {
         }
     } else {
         reject(data);
-        Message.error('系统错误:' + data.message);
+        Notification.error({
+            duration: 2000,
+            title: "系统错误",
+            message: data
+        });
     }
 }
 
@@ -112,8 +139,12 @@ class HttpResource {
         showFullScreenLoading();
         bindAccessToken(params)
         return new Promise((resolve, reject) => {
-            axios.get(url, {params: params})
-                .then(({data}) => {
+            axios.get(url, {
+                    params: params
+                })
+                .then(({
+                    data
+                }) => {
                     resolveResponse(data, resolve)
                     tryHideFullScreenLoading()
                 }, (data) => {
@@ -140,7 +171,9 @@ class HttpResource {
                 headers: {
                     "Content-Type": isFormData ? "application/json" : "application/x-www-form-urlencoded;charset=UTF-8"
                 }
-            }).then(({data}) => {
+            }).then(({
+                data
+            }) => {
                 resolveResponse(data, resolve)
                 tryHideFullScreenLoading()
             }, (data) => {
@@ -160,7 +193,9 @@ class HttpResource {
                 headers: {
                     "Content-Type": isFormData ? "application/x-www-form-urlencoded;charset=UTF-8" : "application/json"
                 }
-            }).then(({data}) => {
+            }).then(({
+                data
+            }) => {
                 resolveResponse(data, resolve)
                 tryHideFullScreenLoading()
             }, (data) => {

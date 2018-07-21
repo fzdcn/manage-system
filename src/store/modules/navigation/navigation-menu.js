@@ -1,4 +1,7 @@
-import {NAVIGATION_MEMU, DELETE_NAVIGATION_MEMU} from '../mutation-type'
+import {
+    NAVIGATION_MEMU,
+    DELETE_NAVIGATION_MEMU
+} from '../mutation-type'
 
 function setNavigationMenu(state, menu) {
     window.localStorage.setItem('menu', menu);
@@ -23,10 +26,14 @@ export default {
         }
     },
     actions: {
-        setNavigationMenu: ({commit}, menu) => {
+        setNavigationMenu: ({
+            commit
+        }, menu) => {
             commit(NAVIGATION_MEMU, menu);
         },
-        DeleteNavigationMenu: ({commit}) => {
+        DeleteNavigationMenu: ({
+            commit
+        }) => {
             commit(DELETE_NAVIGATION_MEMU);
         }
     }

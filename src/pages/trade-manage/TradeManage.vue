@@ -1,74 +1,74 @@
 <template>
     <div class="table">
         <div class="container">
-            <div class="handle-box" style="margin-bottom: 20px;display: flex;flex-flow: row wrap;">
-                <div style="margin: 0px 20px 10px 0;">
+            <div class="handle-box clearfix" style="margin-bottom: 20px;">
+                <div style="margin: 0px 20px 10px 0;float: left;">
                     <span>商户号：</span>
                     <el-input style="width: 150px;" class="username" v-model.trim="searchDataForm.merchantCode" clearable placeholder="请填写商户号">
                     </el-input>
                 </div>
-                <div style="margin: 0px 20px 10px 0;">
+                <div style="margin: 0px 20px 10px 0;float: left;">
                     <span>商户订单号：</span>
                     <el-input style="width: 150px;" class="username" v-model.trim="searchDataForm.merchantOrderNo" clearable placeholder="请填写商户订单号">
                     </el-input>
                 </div>
-                <div style="margin: 0px 20px 10px 0;">
+                <div style="margin: 0px 20px 10px 0;float: left;">
                     <span>双乾流水号：</span>
                     <el-input style="width: 150px;" class="username" v-model.trim="searchDataForm.orderNo" clearable placeholder="请填写双乾流水号">
                     </el-input>
                 </div>
-                <div style="margin: 0px 20px 10px 0;">
+                <div style="margin: 0px 20px 10px 0;float: left;">
                     <span>交易时间（始）：</span>
                     <el-date-picker type="datetime" style="width: 185px;" class="username" v-model.trim="searchDataForm.startTradeTime" clearable placeholder="请填写交易时间（始）">
                     </el-date-picker>
                 </div>
-                <div style="margin: 0px 20px 10px 0;">
+                <div style="margin: 0px 20px 10px 0;float: left;">
                     <span>交易时间（终）：</span>
                     <el-date-picker type="datetime" style="width: 185px;" class="username" v-model.trim="searchDataForm.endTradeTime" clearable placeholder="请填写交易时间（终）">
                     </el-date-picker>
                 </div>
-                <div style="margin: 0px 20px 10px 0;">
+                <div style="margin: 0px 20px 10px 0;float: left;">
                     <span>银行返回时间（始）：</span>
                     <el-date-picker type="datetime" style="width: 185px;" class="username" v-model.trim="searchDataForm.startBankReturnTime" clearable placeholder="请填写银行返回时间（始）">
                     </el-date-picker>
                 </div>
-                <div style="margin: 0px 20px 10px 0;">
+                <div style="margin: 0px 20px 10px 0;float: left;">
                     <span>银行返回时间（终）：</span>
                     <el-date-picker type="datetime" style="width: 185px;" class="username" v-model.trim="searchDataForm.endBankReturnTime" clearable placeholder="请填写银行返回时间（终）">
                     </el-date-picker>
                 </div>
-                <div style="margin: 0px 20px 10px 0;">
+                <div style="margin: 0px 20px 10px 0;float: left;">
                     <span>交易状态：</span>
                     <el-select clearable style="width: 150px;" v-model="searchDataForm.tradeState" placeholder="请选择交易状态">
                         <el-option v-for="item in tradeStateList" :key="item.id" :label="item.name" :value="item.id">
                         </el-option>
                     </el-select>
                 </div>
-                <div style="margin: 0px 20px 10px 0;">
+                <div style="margin: 0px 20px 10px 0;float: left;">
                     <span>支付类型：</span>
                     <el-select clearable style="width: 150px;" v-model="searchDataForm.payType" placeholder="请选择支付类型">
                         <el-option v-for="item in payTypeList" :key="item.id" :label="item.name" :value="item.id">
                         </el-option>
                     </el-select>
                 </div>
-                <div style="margin: 0px 20px 10px 0;">
+                <div style="margin: 0px 20px 10px 0;float: left;">
                     <span>银行支付通道：</span>
-                    <el-select clearable style="width: 150px;" v-model="searchDataForm.channelAccessCode" placeholder="请选择银行支付通道">
-                        <el-option v-for="item in channelNameList" :key="item.channelAccessCode" :label="item.channelName" :value="item.channelAccessCode">
+                    <el-select clearable style="width: 150px;" v-model="searchDataForm.channelId" placeholder="请选择银行支付通道">
+                        <el-option v-for="item in channelNameList" :key="item.id" :label="item.channelName" :value="item.id">
                         </el-option>
                     </el-select>
                 </div>
-                <div style="margin: 0px 20px 10px 0;">
+                <div style="margin: 0px 20px 10px 0;float: left;">
                     <span>平台名称：</span>
                     <el-select clearable style="width: 150px;" v-model="searchDataForm.platformId" placeholder="请选择平台名称">
                         <el-option v-for="item in platformIdList" :key="item.id" :label="item.platformName" :value="item.id">
                         </el-option>
                     </el-select>
                 </div>
-                <div>
+                <div style="float: left;">
                     <el-button type="primary" icon="el-icon-search" @click="handleCurrentChange(1)">搜索</el-button>
                 </div>
-                <div style="margin-left: 20px;">
+                <div style="margin-left: 20px;float: left;">
                     <el-button type="primary" icon="el-icon-download" @click="downLoad">下载</el-button>
                 </div>
             </div>
@@ -90,8 +90,8 @@
                 </el-table-column>
                 <el-table-column show-overflow-tooltip prop="tradeAmount" label="交易金额（元）">
                 </el-table-column>
-                <el-table-column show-overflow-tooltip prop="tradeRate" label="交易费率">
-                </el-table-column>
+                <!-- <el-table-column show-overflow-tooltip prop="tradeRate" label="交易费率">
+                </el-table-column> -->
                 <el-table-column show-overflow-tooltip prop="tradeFee" label="交易手续费（元）">
                 </el-table-column>
                 <el-table-column show-overflow-tooltip prop="payType" label="支付类型">
@@ -139,9 +139,9 @@
                     <el-form-item label="交易金额(元):">
                         <el-input :disabled="true" v-model="detailDataForm.tradeAmount"></el-input>
                     </el-form-item>
-                    <el-form-item label="交易费率:">
+                    <!-- <el-form-item label="交易费率:">
                         <el-input :disabled="true" v-model="detailDataForm.tradeRate"></el-input>
-                    </el-form-item>
+                    </el-form-item> -->
                     <el-form-item label="交易手续费(元):">
                         <el-input :disabled="true" v-model="detailDataForm.tradeFee"></el-input>
                     </el-form-item>
@@ -203,7 +203,7 @@
 </template>
 
 <script>
-import { API_BASE, DEBUG } from "../../config/config";
+import { API_BASE, DEBUG } from '../../config/config'
 
 export default {
     data() {
@@ -220,273 +220,273 @@ export default {
             // 交易状态列表
             tradeStateList: [
                 {
-                    id: "0",
-                    name: "失败"
+                    id: '0',
+                    name: '失败'
                 },
                 {
-                    id: "1",
-                    name: "成功"
+                    id: '1',
+                    name: '成功'
                 },
                 {
-                    id: "2",
-                    name: "待处理"
+                    id: '2',
+                    name: '待处理'
                 },
                 {
-                    id: "3",
-                    name: "取消"
+                    id: '3',
+                    name: '取消'
                 },
                 {
-                    id: "4",
-                    name: "待确认"
+                    id: '4',
+                    name: '待确认'
                 },
                 {
-                    id: "5",
-                    name: "未返回"
+                    id: '5',
+                    name: '未返回'
                 },
                 {
-                    id: "8",
-                    name: "异常"
+                    id: '8',
+                    name: '异常'
                 }
             ],
             // 支付类型列表
             payTypeList: [
                 {
-                    id: "0",
-                    name: "个人网银"
+                    id: '0',
+                    name: '个人网银'
                 },
                 {
-                    id: "1",
-                    name: "企业网银"
+                    id: '1',
+                    name: '企业网银'
                 },
                 {
-                    id: "2",
-                    name: "快捷支付"
+                    id: '2',
+                    name: '快捷支付'
                 },
                 {
-                    id: "3",
-                    name: "认证支付"
+                    id: '3',
+                    name: '认证支付'
                 },
                 {
-                    id: "4",
-                    name: "代扣"
+                    id: '4',
+                    name: '代扣'
                 },
                 {
-                    id: "5",
-                    name: "微信支付"
+                    id: '5',
+                    name: '微信支付'
                 },
                 {
-                    id: "6",
-                    name: "支付宝支付"
+                    id: '6',
+                    name: '支付宝支付'
                 }
             ],
             // 银行支付通道
             channelNameList: [],
             // 平台名称
             platformIdList: []
-        };
+        }
     },
     methods: {
         downLoad() {
-            let vm = this;
+            let vm = this
             let merchantCode = this.searchDataForm.merchantCode
                 ? this.searchDataForm.merchantCode
-                : "";
+                : ''
             let merchantOrderNo = this.searchDataForm.merchantOrderNo
                 ? this.searchDataForm.merchantOrderNo
-                : "";
+                : ''
             let orderNo = this.searchDataForm.orderNo
                 ? this.searchDataForm.orderNo
-                : "";
+                : ''
             let startTradeTime = this.searchDataForm.startTradeTime
                 ? this.$moment(vm.searchDataForm.startTradeTime).format(
-                      "YYYY-MM-DD HH:mm:ss"
+                      'YYYY-MM-DD HH:mm:ss'
                   )
-                : "";
+                : ''
             let endTradeTime = this.searchDataForm.endTradeTime
                 ? this.$moment(vm.searchDataForm.endTradeTime).format(
-                      "YYYY-MM-DD HH:mm:ss"
+                      'YYYY-MM-DD HH:mm:ss'
                   )
-                : "";
+                : ''
             let startBankReturnTime = this.searchDataForm.startBankReturnTime
                 ? this.$moment(vm.searchDataForm.startBankReturnTime).format(
-                      "YYYY-MM-DD HH:mm:ss"
+                      'YYYY-MM-DD HH:mm:ss'
                   )
-                : "";
+                : ''
             let endBankReturnTime = this.searchDataForm.endBankReturnTime
                 ? this.$moment(vm.searchDataForm.endBankReturnTime).format(
-                      "YYYY-MM-DD HH:mm:ss"
+                      'YYYY-MM-DD HH:mm:ss'
                   )
-                : "";
+                : ''
             let tradeState = this.searchDataForm.tradeState
                 ? this.searchDataForm.tradeState
-                : "";
+                : ''
             let payType = this.searchDataForm.payType
                 ? this.searchDataForm.payType
-                : "";
-            let constchannelAccessCode = this.searchDataForm.channelAccessCode
-                ? this.searchDataForm.channelAccessCode
-                : "";
+                : ''
+            let constchannelAccessCode = this.searchDataForm.channelId
+                ? this.searchDataForm.channelId
+                : ''
             const platformId = this.searchDataForm.platformId
                 ? this.searchDataForm.platformId
-                : "";
+                : ''
             window.location.href =
                 API_BASE +
-                "/admin/epay/tradeInfo/exportTradeInfoList?" +
-                "merchantCode=" +
+                '/admin/epay/tradeInfo/exportTradeInfoList?' +
+                'merchantCode=' +
                 merchantCode +
-                "&merchantOrderNo=" +
+                '&merchantOrderNo=' +
                 merchantOrderNo +
-                "&orderNo=" +
+                '&orderNo=' +
                 orderNo +
-                "&startTradeTime=" +
+                '&startTradeTime=' +
                 startTradeTime +
-                "&endTradeTime=" +
+                '&endTradeTime=' +
                 endTradeTime +
-                "&startBankReturnTime=" +
+                '&startBankReturnTime=' +
                 startBankReturnTime +
-                "&endBankReturnTime=" +
+                '&endBankReturnTime=' +
                 endBankReturnTime +
-                "&tradeState=" +
+                '&tradeState=' +
                 tradeState +
-                "&payType=" +
+                '&payType=' +
                 payType +
-                "&constchannelAccessCode=" +
+                '&constchannelAccessCode=' +
                 constchannelAccessCode +
-                "&platformId=" +
-                platformId;
+                '&platformId=' +
+                platformId
         },
         tradeTimeForMatter(row, column) {
-            let tradeTime = row.tradeTime;
+            let tradeTime = row.tradeTime
             if (tradeTime)
-                return this.$moment(tradeTime).format("YYYY-MM-DD HH:mm:ss");
+                return this.$moment(tradeTime).format('YYYY-MM-DD HH:mm:ss')
         },
         // 获取交易状态
         getTradeState(params) {
             switch (params) {
                 case 0:
-                    return (params = "失败");
-                    break;
+                    return (params = '失败')
+                    break
                 case 1:
-                    return (params = "成功");
-                    break;
+                    return (params = '成功')
+                    break
                 case 2:
-                    return (params = "待处理");
-                    break;
+                    return (params = '待处理')
+                    break
                 case 3:
-                    return (params = "取消");
-                    break;
+                    return (params = '取消')
+                    break
                 case 4:
-                    return (params = "待确认");
-                    break;
+                    return (params = '待确认')
+                    break
                 case 5:
-                    return (params = "未返回");
-                    break;
+                    return (params = '未返回')
+                    break
                 case 8:
-                    return (params = "异常");
-                    break;
+                    return (params = '异常')
+                    break
                 default:
-                    return "暂无";
-                    break;
+                    return '暂无'
+                    break
             }
         },
         // 支付类型
         getPayTypeList(params) {
             switch (params) {
                 case 0:
-                    return (params = "个人网银");
-                    break;
+                    return (params = '个人网银')
+                    break
                 case 1:
-                    return (params = "企业网银");
-                    break;
+                    return (params = '企业网银')
+                    break
                 case 2:
-                    return (params = "快捷支付");
-                    break;
+                    return (params = '快捷支付')
+                    break
                 case 3:
-                    return (params = "认证支付");
-                    break;
+                    return (params = '认证支付')
+                    break
                 case 4:
-                    return (params = "代扣");
-                    break;
+                    return (params = '代扣')
+                    break
                 case 5:
-                    return (params = "微信支付");
-                    break;
+                    return (params = '微信支付')
+                    break
                 case 6:
-                    return (params = "支付宝支付");
-                    break;
+                    return (params = '支付宝支付')
+                    break
                 default:
-                    return "暂无";
-                    break;
+                    return '暂无'
+                    break
             }
         },
         // 卡类型
         getCardTypeList(params) {
             switch (params) {
-                case "00":
-                    return (params = "借记卡");
-                    break;
-                case "01":
-                    return (params = "贷记卡");
-                    break;
-                case "02":
-                    return (params = "未知");
-                    break;
+                case '00':
+                    return (params = '借记卡')
+                    break
+                case '01':
+                    return (params = '贷记卡')
+                    break
+                case '02':
+                    return (params = '未知')
+                    break
                 default:
-                    return "暂无";
-                    break;
+                    return '暂无'
+                    break
             }
         },
         // 时间戳转换
         timeForMatter(timestamp) {
             if (timestamp)
-                return this.$moment(timestamp).format("YYYY-MM-DD HH:mm:ss");
+                return this.$moment(timestamp).format('YYYY-MM-DD HH:mm:ss')
         },
         handleDetail(row) {
-            this.isShowDetail = true;
-            this.detailDataForm.merchantCode = row.merchantCode;
-            this.detailDataForm.merchantName = row.merchantName;
-            this.detailDataForm.merchantOrderNo = row.merchantOrderNo;
-            this.detailDataForm.orderNo = row.orderNo;
-            this.detailDataForm.tradeState = this.getTradeState(row.tradeState);
-            this.detailDataForm.tradeTime = this.timeForMatter(row.tradeTime);
-            this.detailDataForm.tradeAmount = row.tradeAmount;
-            this.detailDataForm.tradeRate = row.tradeRate;
-            this.detailDataForm.tradeFee = row.tradeFee;
-            this.detailDataForm.bankOrderNo = row.bankOrderNo;
+            this.isShowDetail = true
+            this.detailDataForm.merchantCode = row.merchantCode
+            this.detailDataForm.merchantName = row.merchantName
+            this.detailDataForm.merchantOrderNo = row.merchantOrderNo
+            this.detailDataForm.orderNo = row.orderNo
+            this.detailDataForm.tradeState = this.getTradeState(row.tradeState)
+            this.detailDataForm.tradeTime = this.timeForMatter(row.tradeTime)
+            this.detailDataForm.tradeAmount = row.tradeAmount
+            this.detailDataForm.tradeRate = row.tradeRate
+            this.detailDataForm.tradeFee = row.tradeFee
+            this.detailDataForm.bankOrderNo = row.bankOrderNo
             this.detailDataForm.bankReturnTime = this.timeForMatter(
                 row.bankReturnTime
-            );
+            )
             this.detailDataForm.upplementTime = this.timeForMatter(
                 row.upplementTime
-            );
-            this.detailDataForm.channelName = row.channelName;
-            this.detailDataForm.channelCode = row.channelCode;
-            this.detailDataForm.bankCode = row.bankCode;
-            this.detailDataForm.payType = this.getPayTypeList(row.payType);
-            this.detailDataForm.saleCode = row.saleCode;
-            this.detailDataForm.platformId = row.platformId;
-            this.detailDataForm.platformName = row.platformName;
-            this.detailDataForm.tradeDesc = row.tradeDesc;
-            this.detailDataForm.merchantRemark = row.merchantRemark;
-            this.detailDataForm.sysRemark = row.sysRemark;
-            this.detailDataForm.merchantIp = row.merchantIp;
-            this.detailDataForm.ip = row.ip;
-            this.detailDataForm.returnUrl = row.returnUrl;
-            this.detailDataForm.notifyUrl = row.notifyUrl;
-            this.detailDataForm.bankTradeNo = row.bankTradeNo;
-            this.detailDataForm.cardType = this.getCardTypeList(row.cardType);
+            )
+            this.detailDataForm.channelName = row.channelName
+            this.detailDataForm.channelCode = row.channelCode
+            this.detailDataForm.bankCode = row.bankCode
+            this.detailDataForm.payType = this.getPayTypeList(row.payType)
+            this.detailDataForm.saleCode = row.saleCode
+            this.detailDataForm.platformId = row.platformId
+            this.detailDataForm.platformName = row.platformName
+            this.detailDataForm.tradeDesc = row.tradeDesc
+            this.detailDataForm.merchantRemark = row.merchantRemark
+            this.detailDataForm.sysRemark = row.sysRemark
+            this.detailDataForm.merchantIp = row.merchantIp
+            this.detailDataForm.ip = row.ip
+            this.detailDataForm.returnUrl = row.returnUrl
+            this.detailDataForm.notifyUrl = row.notifyUrl
+            this.detailDataForm.bankTradeNo = row.bankTradeNo
+            this.detailDataForm.cardType = this.getCardTypeList(row.cardType)
         },
         cancelDetail() {
-            this.isShowDetail = false;
+            this.isShowDetail = false
         },
         // 分页导航
         handleCurrentChange(val) {
-            this.cur_page = val;
-            this.paginationShow = false;
-            this.getData();
+            this.cur_page = val
+            this.paginationShow = false
+            this.getData()
         },
         getData() {
-            let vm = this;
-            this.$httpGet("/admin/epay/tradeInfo/index", {
+            let vm = this
+            this.$httpGet('/admin/epay/tradeInfo/index', {
                 pageNo: this.cur_page,
                 pageSize: 10,
                 merchantCode: this.searchDataForm.merchantCode,
@@ -494,42 +494,42 @@ export default {
                 orderNo: this.searchDataForm.orderNo,
                 startTradeTime: this.searchDataForm.startTradeTime
                     ? this.$moment(vm.searchDataForm.startTradeTime).format(
-                          "YYYY-MM-DD HH:mm:ss"
+                          'YYYY-MM-DD HH:mm:ss'
                       )
-                    : "",
+                    : '',
                 endTradeTime: this.searchDataForm.endTradeTime
                     ? this.$moment(vm.searchDataForm.endTradeTime).format(
-                          "YYYY-MM-DD HH:mm:ss"
+                          'YYYY-MM-DD HH:mm:ss'
                       )
-                    : "",
+                    : '',
                 startBankReturnTime: this.searchDataForm.startBankReturnTime
                     ? this.$moment(
                           vm.searchDataForm.startBankReturnTime
-                      ).format("YYYY-MM-DD HH:mm:ss")
-                    : "",
+                      ).format('YYYY-MM-DD HH:mm:ss')
+                    : '',
                 endBankReturnTime: this.searchDataForm.endBankReturnTime
                     ? this.$moment(vm.searchDataForm.endBankReturnTime).format(
-                          "YYYY-MM-DD HH:mm:ss"
+                          'YYYY-MM-DD HH:mm:ss'
                       )
-                    : "",
+                    : '',
                 tradeState: this.searchDataForm.tradeState,
                 payType: this.searchDataForm.payType,
-                channelAccessCode: this.searchDataForm.channelAccessCode,
+                channelId: this.searchDataForm.channelId,
                 platformId: this.searchDataForm.platformId
             })
                 .then(({ data }) => {
-                    vm.getDataList = data.list;
-                    vm.total = data.total;
-                    vm.paginationShow = true;
+                    vm.getDataList = data.list
+                    vm.total = data.total
+                    vm.paginationShow = true
                 })
                 .catch(data => {
-                    console.log(data);
-                });
+                    console.log(data)
+                })
         },
         // 同步
         getListData() {
-            let vm = this;
-            return this.$httpGet("/admin/epay/tradeInfo/index", {
+            let vm = this
+            return this.$httpGet('/admin/epay/tradeInfo/index', {
                 pageNo: this.cur_page,
                 pageSize: 10,
                 merchantCode: this.searchDataForm.merchantCode,
@@ -537,60 +537,60 @@ export default {
                 orderNo: this.searchDataForm.orderNo,
                 startTradeTime: this.searchDataForm.startTradeTime
                     ? this.$moment(vm.searchDataForm.startTradeTime).format(
-                          "YYYY-MM-DD HH:mm:ss"
+                          'YYYY-MM-DD HH:mm:ss'
                       )
-                    : "",
+                    : '',
                 endTradeTime: this.searchDataForm.endTradeTime
                     ? this.$moment(vm.searchDataForm.endTradeTime).format(
-                          "YYYY-MM-DD HH:mm:ss"
+                          'YYYY-MM-DD HH:mm:ss'
                       )
-                    : "",
+                    : '',
                 startBankReturnTime: this.searchDataForm.startBankReturnTime
                     ? this.$moment(
                           vm.searchDataForm.startBankReturnTime
-                      ).format("YYYY-MM-DD HH:mm:ss")
-                    : "",
+                      ).format('YYYY-MM-DD HH:mm:ss')
+                    : '',
                 endBankReturnTime: this.searchDataForm.endBankReturnTime
                     ? this.$moment(vm.searchDataForm.endBankReturnTime).format(
-                          "YYYY-MM-DD HH:mm:ss"
+                          'YYYY-MM-DD HH:mm:ss'
                       )
-                    : "",
+                    : '',
                 tradeState: this.searchDataForm.tradeState,
                 payType: this.searchDataForm.payType,
-                channelAccessCode: this.searchDataForm.channelAccessCode,
+                channelId: this.searchDataForm.channelId,
                 platformId: this.searchDataForm.platformId
-            });
+            })
         },
         // 银行支付通道
         getChannelInfoList() {
-            return this.$httpGet("/admin/epay/channelInfo/findChannelAll", {});
+            return this.$httpGet('/admin/epay/channelInfo/findChannelAll', {})
         },
         // 平台名称
         getPlatFormList() {
-            return this.$httpGet("/admin/platformInfo/option", {});
+            return this.$httpGet('/admin/platformInfo/option', {})
         },
         async getAllData() {
-            let vm = this;
+            let vm = this
             await Promise.all([
                 vm.getChannelInfoList(),
                 vm.getPlatFormList(),
                 vm.getListData()
             ])
                 .then(data => {
-                    vm.channelNameList = data[0].data;
-                    vm.platformIdList = data[1].data;
-                    vm.getDataList = data[2].data.list;
-                    vm.total = data[2].data.total;
+                    vm.channelNameList = data[0].data
+                    vm.platformIdList = data[1].data
+                    vm.getDataList = data[2].data.list
+                    vm.total = data[2].data.total
                 })
                 .catch(data => {
-                    console.log(data);
-                });
+                    console.log(data)
+                })
         }
     },
     created() {
-        this.getAllData();
+        this.getAllData()
     }
-};
+}
 </script>
 
 <style scoped>
