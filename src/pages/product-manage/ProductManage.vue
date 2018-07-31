@@ -61,30 +61,30 @@
         <el-dialog title="增加产品信息" :visible.sync="isShowAdd" :before-close="cancelAdd" width="720px" center>
             <div class="form-content" style="margin: 0 auto;width: 90%;">
                 <el-form ref="addDataForm" :model="addDataForm" label-width="150px">
-                    <el-form-item label="产品名称：">
+                    <el-form-item :rules="[{ required: true}]" label="产品名称：">
                         <el-input clearable v-model.trim="addDataForm.productName" placeholder="产品名称"></el-input>
                     </el-form-item>
-                    <el-form-item label="产品接入码：">
+                    <el-form-item :rules="[{ required: true}]" label="产品接入码：">
                         <el-input clearable v-model.trim="addDataForm.productAccessCode" placeholder="产品接入码"></el-input>
                     </el-form-item>
-                    <el-form-item label="产品状态：">
-                        <el-select clearable v-model="addDataForm.productState" placeholder="使用状态">
+                    <el-form-item :rules="[{ required: true}]" label="产品状态：">
+                        <el-select clearable v-model="addDataForm.productState" style="width: 453px;" placeholder="使用状态">
                             <el-option v-for="item in productStateList" :key="item.id" :label="item.name" :value="item.id">
                             </el-option>
                         </el-select>
                     </el-form-item>
-                    <el-form-item label="基础参考费率：">
+                    <el-form-item :rules="[{ required: true}]" label="基础参考费率：">
                         <el-input v-model.number="addDataForm.localFee" type="number" placeholder="不能为负数,整数最多10位，小数最多5位,>=1时，收费方式只能是定额"></el-input>
                     </el-form-item>
-                    <el-form-item label="收费方式：">
-                        <el-select clearable v-model="addDataForm.computeMode" placeholder="收费方式">
+                    <el-form-item :rules="[{ required: true}]" label="收费方式：">
+                        <el-select clearable v-model="addDataForm.computeMode" style="width: 453px;" placeholder="收费方式">
                             <el-option v-if="addDataForm.localFee >= 1" v-for="item in otherComputeModeList" :key="item.id" :label="item.name" :value="item.id">
                             </el-option>
                             <el-option v-else v-for="item in computeModeList" :key="item.id" :label="item.name" :value="item.id">
                             </el-option>
                         </el-select>
                     </el-form-item>
-                    <el-form-item label="产品描述：">
+                    <el-form-item :rules="[{ required: true}]" label="产品描述：">
                         <el-input maxlength="255" type="textarea" v-model.trim="addDataForm.productDesc" placeholder="长度最多为255"></el-input>
                     </el-form-item>
                     <el-form-item label="备注：">
@@ -102,30 +102,30 @@
         <el-dialog title="编辑通道信息" :visible.sync="isShowEdit" :before-close="cancelEdit" width="720px" center>
             <div class="form-content" style="margin: 0 auto;width: 90%;">
                 <el-form ref="editDataForm" :model="editDataForm" label-width="150px">
-                    <el-form-item label="产品名称：">
+                    <el-form-item :rules="[{ required: true}]" label="产品名称：">
                         <el-input clearable v-model.trim="editDataForm.productName" placeholder="产品名称"></el-input>
                     </el-form-item>
-                    <el-form-item label="产品接入码：">
+                    <el-form-item :rules="[{ required: true}]" label="产品接入码：">
                         <el-input clearable v-model.trim="editDataForm.productAccessCode" placeholder="产品接入码"></el-input>
                     </el-form-item>
-                    <el-form-item label="产品状态：">
-                        <el-select clearable v-model="editDataForm.productState" placeholder="产品状态">
+                    <el-form-item :rules="[{ required: true}]" label="产品状态：">
+                        <el-select clearable v-model="editDataForm.productState" style="width: 453px;" placeholder="产品状态">
                             <el-option v-for="item in productStateList" :key="item.id" :label="item.name" :value="item.id">
                             </el-option>
                         </el-select>
                     </el-form-item>
-                    <el-form-item label="基础参考费率：">
+                    <el-form-item :rules="[{ required: true}]" label="基础参考费率：">
                         <el-input v-model.number="editDataForm.localFee" type="number" placeholder="不能为负数,整数最多10位，小数最多5位,>=1时，收费方式只能是定额"></el-input>
                     </el-form-item>
-                    <el-form-item label="收费方式：">
-                        <el-select clearable v-model="editDataForm.computeMode" placeholder="收费方式">
+                    <el-form-item :rules="[{ required: true}]" label="收费方式：">
+                        <el-select clearable v-model="editDataForm.computeMode" style="width: 453px;" placeholder="收费方式">
                             <el-option v-if="editDataForm.localFee >= 1" v-for="item in otherComputeModeList" :key="item.id" :label="item.name" :value="item.id">
                             </el-option>
                             <el-option v-else v-for="item in computeModeList" :key="item.id" :label="item.name" :value="item.id">
                             </el-option>
                         </el-select>
                     </el-form-item>
-                    <el-form-item label="产品描述：">
+                    <el-form-item :rules="[{ required: true}]" label="产品描述：">
                         <el-input maxlength="255" type="textarea" v-model.trim="editDataForm.productDesc" placeholder="长度最多为255"></el-input>
                     </el-form-item>
                     <el-form-item label="备注：">

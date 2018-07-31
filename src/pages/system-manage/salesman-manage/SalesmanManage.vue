@@ -34,25 +34,25 @@
                 </el-table-column>
             </el-table>
             <div class="pagination" style="overflow: hidden;">
-                <el-pagination background @current-change="handleCurrentChange" layout="total, prev, pager, next, jumper" :page-size="10" :pager-count="11" :total="total">
+                <el-pagination v-if="paginationShow" background :current-page="cur_page" @current-change="handleCurrentChange" layout="total, prev, pager, next, jumper" :page-size="10" :pager-count="11" :total="total">
                 </el-pagination>
             </div>
         </div>
         <!--增加后台业务员-->
         <el-dialog title="增加后台业务员" :visible.sync="isShowAdd" :before-close="cancelAdd" width="500px" center>
             <div class="form-content" style="margin: 0 auto;width: 90%;">
-                <el-form ref="addDataForm" :model="addDataForm" label-width="100px">
-                    <el-form-item label="名字：">
+                <el-form ref="addDataForm" :model="addDataForm" label-width="110px">
+                    <el-form-item :rules="[{ required: true}]" label="名字：">
                         <el-input clearable v-model.trim="addDataForm.name" maxlength="10" placeholder="名称只能是10位以内汉字"></el-input>
                     </el-form-item>
-                    <el-form-item label="电话：">
+                    <el-form-item :rules="[{ required: true}]" label="电话：">
                         <el-input clearable v-model.trim="addDataForm.phone" placeholder="电话"></el-input>
                     </el-form-item>
-                    <el-form-item label="邮箱：">
+                    <el-form-item :rules="[{ required: true}]" label="邮箱：">
                         <el-input clearable v-model.trim="addDataForm.email" maxlength="20" placeholder="邮箱"></el-input>
                     </el-form-item>
-                    <el-form-item label="业务员类型：">
-                        <el-select clearable v-model="addDataForm.type" placeholder="业务员类型">
+                    <el-form-item :rules="[{ required: true}]" label="业务员类型：">
+                        <el-select clearable v-model="addDataForm.type" style="width: 295px;" placeholder="业务员类型">
                             <el-option v-for="item in salesmanTypeList" :key="item.type" :label="item.name" :value="item.type">
                             </el-option>
                         </el-select>
@@ -68,24 +68,24 @@
         <!--编辑后台业务员-->
         <el-dialog title="编辑后台业务员" :visible.sync="isShowEdit" :before-close="cancelEdit" width="500px" center>
             <div class="form-content" style="margin: 0 auto;width: 90%;">
-                <el-form ref="editDataForm" :model="editDataForm" label-width="100px">
-                    <el-form-item label="名字：">
+                <el-form ref="editDataForm" :model="editDataForm" label-width="110px">
+                    <el-form-item :rules="[{ required: true}]" label="名字：">
                         <el-input clearable v-model.trim="editDataForm.name" maxlength="10" placeholder="名称只能是10位以内汉字"></el-input>
                     </el-form-item>
-                    <el-form-item label="电话：">
+                    <el-form-item :rules="[{ required: true}]" label="电话：">
                         <el-input clearable v-model.trim="editDataForm.phone" placeholder="电话"></el-input>
                     </el-form-item>
-                    <el-form-item label="邮箱：">
+                    <el-form-item :rules="[{ required: true}]" label="邮箱：">
                         <el-input clearable v-model.trim="editDataForm.email" maxlength="20" placeholder="邮箱"></el-input>
                     </el-form-item>
-                    <el-form-item label="业务员类型：">
-                        <el-select clearable v-model="editDataForm.type" placeholder="业务员类型">
+                    <el-form-item :rules="[{ required: true}]" label="业务员类型：">
+                        <el-select clearable v-model="editDataForm.type" style="width: 295px;" placeholder="业务员类型">
                             <el-option v-for="item in salesmanTypeList" :key="item.type" :label="item.name" :value="item.type">
                             </el-option>
                         </el-select>
                     </el-form-item>
-                    <el-form-item label="状态：">
-                        <el-select clearable v-model="editDataForm.status" placeholder="状态">
+                    <el-form-item :rules="[{ required: true}]" label="状态：">
+                        <el-select clearable v-model="editDataForm.status" style="width: 295px;" placeholder="状态">
                             <el-option v-for="item in salesmanStatusList" :key="item.status" :label="item.name" :value="item.status">
                             </el-option>
                         </el-select>
@@ -106,16 +106,8 @@ import { regTel, regEmail } from '../../../functions/index'
 export default {
     data() {
         return {
-            getDataList: [
-                /*{
-                        "code":"00003",
-                        "name":"caolsq",
-                        "phone":"18551222611",
-                        "email":"1468947221@qq.com",
-                        "type":1,
-                        "status":1
-                    }*/
-            ],
+            paginationShow: true,
+            getDataList: [],
             // 当前页
             cur_page: 1,
             // 所有数量
@@ -161,6 +153,7 @@ export default {
         // 分页导航
         handleCurrentChange(val) {
             this.cur_page = val
+            this.paginationShow = false
             this.getData()
         },
         handleDelete(row) {
@@ -204,6 +197,7 @@ export default {
                 .then(({ data }) => {
                     vm.getDataList = data.list
                     vm.total = data.total
+                    vm.paginationShow = true
                 })
                 .catch(data => {
                     console.log(data)
@@ -294,20 +288,8 @@ export default {
                         title: '成功',
                         message: data.message
                     })
-                    vm.isShowAdd = false
-                    vm.addDataForm = {}
-                    vm
-                        .$httpGet('/admin/epay/salesman/index', {
-                            pageNo: 1,
-                            pageSize: 10
-                        })
-                        .then(({ data }) => {
-                            vm.getDataList = data.list
-                            vm.total = data.total
-                        })
-                        .catch(data => {
-                            console.log(data)
-                        })
+                    vm.cancelAdd()
+                    vm.handleCurrentChange(1)
                 })
                 .catch(data => {
                     console.log(data)

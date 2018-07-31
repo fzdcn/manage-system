@@ -41,10 +41,10 @@
         <el-dialog title="增加平台信息" :visible.sync="isShowAdd" :before-close="cancelAdd" width="500px" center>
             <div class="form-content" style="margin: 0 auto;width: 90%;">
                 <el-form ref="addDataForm" :model="addDataForm" label-width="120px">
-                    <el-form-item label="平台号：">
+                    <el-form-item :rules="[{ required: true}]" label="平台号：">
                         <el-input clearable v-model.trim="addDataForm.platformNo" placeholder="平台号"></el-input>
                     </el-form-item>
-                    <el-form-item label="平台名称：">
+                    <el-form-item :rules="[{ required: true}]" label="平台名称：">
                         <el-input clearable v-model.trim="addDataForm.platformName" placeholder="平台名称"></el-input>
                     </el-form-item>
                 </el-form>
@@ -59,19 +59,19 @@
         <el-dialog title="编辑平台信息" :visible.sync="isShowEdit" :before-close="cancelEdit" width="500px" center>
             <div class="form-content" style="margin: 0 auto;width: 90%;">
                 <el-form ref="editDataForm" :model="editDataForm" label-width="120px">
-                    <el-form-item label="平台号：">
+                    <el-form-item :rules="[{ required: true}]" label="平台号：">
                         <el-input clearable v-model.trim="editDataForm.platformNo" placeholder="平台号"></el-input>
                     </el-form-item>
-                    <el-form-item label="平台名称：">
+                    <el-form-item :rules="[{ required: true}]" label="平台名称：">
                         <el-input clearable v-model.trim="editDataForm.name" placeholder="平台名称"></el-input>
                     </el-form-item>
-                    <el-form-item label="md5Key：">
+                    <el-form-item :rules="[{ required: true}]" label="md5Key：">
                         <el-input clearable v-model.trim="editDataForm.md5Key" placeholder="md5Key"></el-input>
                     </el-form-item>
-                    <el-form-item label="公钥：">
+                    <el-form-item :rules="[{ required: true}]" label="公钥：">
                         <el-input clearable type="textarea" v-model.trim="editDataForm.publicKey" placeholder="公钥"></el-input>
                     </el-form-item>
-                    <el-form-item label="私钥：">
+                    <el-form-item :rules="[{ required: true}]" label="私钥：">
                         <el-input clearable type="textarea" v-model.trim="editDataForm.privateKey" placeholder="私钥"></el-input>
                     </el-form-item>
                 </el-form>

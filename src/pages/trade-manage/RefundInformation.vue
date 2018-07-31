@@ -1,6 +1,9 @@
 <template>
     <div class="table">
         <div class="container">
+            <div class="add" style="margin-bottom: 30px;">
+                <el-button type="primary" size="medium" icon="el-icon-plus" @click="add">增加退款申请</el-button>
+            </div>
             <div class="handle-box clearfix" style="margin-bottom: 20px;">
                 <div style="margin: 0px 20px 10px 0;float:left;">
                     <span>平台id：</span>
@@ -71,11 +74,11 @@
                 </el-table-column>
                 <el-table-column show-overflow-tooltip prop="merchantCode" label="商户号">
                 </el-table-column>
-                <el-table-column show-overflow-tooltip prop="merchantOrderNo" label="原商户订单号">
+                <el-table-column show-overflow-tooltip prop="merchantOrderNo" label="商户订单号">
                 </el-table-column>
                 <el-table-column show-overflow-tooltip prop="refundNo" label="商户退款订单号">
                 </el-table-column>
-                <el-table-column show-overflow-tooltip prop="orderNo" label="原系统订单号">
+                <el-table-column show-overflow-tooltip prop="orderNo" label="系统订单号">
                 </el-table-column>
                 <el-table-column show-overflow-tooltip prop="refundState" label="退款状态">
                     <template slot-scope="scope">
@@ -101,6 +104,57 @@
                 </el-pagination>
             </div>
         </div>
+        <!--增加-->
+        <el-dialog title="增加退款申请" :visible.sync="isShowAdd" :before-close="cancelAdd" width="720px" center>
+            <div class="form-content" style="margin: 0 auto;width: 90%;">
+                <div class="handle-box clearfix">
+                    <div style="margin: 0px 20px 10px 0;float:left;">
+                        <span>系统订单号：</span>
+                        <el-input style="width: 157px;" class="username" v-model.trim="searchDialogDataForm.orderNo" clearable placeholder="系统订单号">
+                        </el-input>
+                    </div>
+                    <div style="margin: 0px 20px 10px 0;float:left;">
+                        <span>商户订单号：</span>
+                        <el-input style="width: 157px;" class="username" v-model.trim="searchDialogDataForm.merchantOrderNo" clearable placeholder="商户订单号">
+                        </el-input>
+                    </div>
+                    <div style="float:left;">
+                        <el-button type="primary" icon="el-icon-search" @click="search">搜索</el-button>
+                    </div>
+                </div>
+                <div style="padding:15px 0;border-bottom:1px solid #409EFF;margin-bottom:20px;width: 56px;">订单信息</div>
+                <el-form v-if="addDataForm.id" ref="addDataForm" :model="addDataForm" label-width="130px">
+                    <el-form-item label="支付流水号：">
+                        <el-input :disabled="true" clearable v-model.trim="addDataForm.orderNo" placeholder="支付流水号"></el-input>
+                    </el-form-item>
+                    <el-form-item label="商户订单号：">
+                        <el-input :disabled="true" clearable v-model.trim="addDataForm.merchantOrderNo" placeholder="商户订单号"></el-input>
+                    </el-form-item>
+                    <el-form-item label="支付状态：">
+                        <el-input :disabled="true" v-model.trim="addDataForm.tradeState" placeholder="付款日期"></el-input>
+                    </el-form-item>
+                    <el-form-item label="付款日期：">
+                        <el-input :disabled="true" v-model.trim="addDataForm.tradeTime" placeholder="付款日期"></el-input>
+                    </el-form-item>
+                    <el-form-item label="交易金额(元)：">
+                        <el-input :disabled="true" v-model.trim="addDataForm.tradeAmount" placeholder="交易金额"></el-input>
+                    </el-form-item>
+                    <el-form-item label="退款状态：">
+                        <el-input :disabled="true" v-model.trim="addDataForm.refundState" placeholder="退款状态"></el-input>
+                    </el-form-item>
+                    <el-form-item :rules="[{ required: true}]" label="未退款金额(元)：">
+                        <el-input v-model.trim="addDataForm.refundAmount" placeholder="未退款金额"></el-input>
+                    </el-form-item>
+                    <el-form-item label="备注：">
+                        <el-input type="textarea" v-model.trim="addDataForm.refundRemark" placeholder="备注"></el-input>
+                    </el-form-item>
+                </el-form>
+            </div>
+            <span v-if="addDataForm.id" slot="footer" class="dialog-footer">
+                <el-button type="primary" @click="submitAdd">确 定</el-button>
+                <el-button @click="cancelAdd">取 消</el-button>
+            </span>
+        </el-dialog>
         <!--查看详情-->
         <el-dialog title="查看详情" :visible.sync="isShowDetail" :before-close="cancelDetail" width="700px" center>
             <div class="form-content" style="margin: 0 auto;width: 90%;">
@@ -159,6 +213,7 @@
 
 <script>
 import { API_BASE, DEBUG } from '../../config/config'
+import { timestampToDate } from '../../functions/index.js'
 export default {
     data() {
         return {
@@ -169,7 +224,13 @@ export default {
             // 所有数量
             total: null,
             searchDataForm: {},
+            // 是否显示增加弹框
+            isShowAdd: false,
             isShowDetail: false,
+            addDataForm: {},
+            // 增加表单弹框里面的搜索
+            searchDialogDataForm: {},
+            // 查看详情
             detailDataForm: {},
             // 平台名称
             platformIdList: [],
@@ -224,26 +285,16 @@ export default {
             let merchantOrderNo = this.searchDataForm.merchantOrderNo
                 ? this.searchDataForm.merchantOrderNo
                 : ''
-            let applyStartTime = this.searchDataForm.applyStartTime
-                ? this.$moment(vm.searchDataForm.applyStartTime).format(
-                      'YYYY-MM-DD HH:mm:ss'
-                  )
-                : ''
-            let applyEndTime = this.searchDataForm.applyEndTime
-                ? this.$moment(vm.searchDataForm.applyEndTime).format(
-                      'YYYY-MM-DD HH:mm:ss'
-                  )
-                : ''
-            let refundStartTime = this.searchDataForm.refundStartTime
-                ? this.$moment(vm.searchDataForm.refundStartTime).format(
-                      'YYYY-MM-DD HH:mm:ss'
-                  )
-                : ''
-            let refundEndTime = this.searchDataForm.refundEndTime
-                ? this.$moment(vm.searchDataForm.refundEndTime).format(
-                      'YYYY-MM-DD HH:mm:ss'
-                  )
-                : ''
+            let applyStartTime = timestampToDate(
+                this.searchDataForm.applyStartTime
+            )
+            let applyEndTime = timestampToDate(this.searchDataForm.applyEndTime)
+            let refundStartTime = timestampToDate(
+                this.searchDataForm.refundStartTime
+            )
+            let refundEndTime = timestampToDate(
+                this.searchDataForm.refundEndTime
+            )
             let refundNo = this.searchDataForm.refundNo
                 ? this.searchDataForm.refundNo
                 : ''
@@ -291,6 +342,116 @@ export default {
             this.paginationShow = false
             this.getData()
         },
+        // 支付状态 0 失败 1 成功 2 待处理 3 取消 4 待确认 5 未返回 8 异常
+        getTradeState(params) {
+            switch (params) {
+                case 0:
+                    return '失败'
+                    break
+                case 1:
+                    return '成功'
+                    break
+                case 2:
+                    return '待处理'
+                    break
+                case 3:
+                    return '取消'
+                    break
+                case 4:
+                    return '待确认'
+                    break
+                case 5:
+                    return '未返回'
+                    break
+                case 8:
+                    return '异常'
+                    break
+                default:
+                    return '暂无'
+                    break
+            }
+        },
+        // 退款状态 (1：未退款，2：部分退款，3：已全额退款)
+        getRefundState(params) {
+            switch (params) {
+                case '1':
+                    return '未退款'
+                    break
+                case '2':
+                    return '部分退款'
+                    break
+                case '3':
+                    return '已全额退款'
+                    break
+                default:
+                    return '暂无'
+                    break
+            }
+        },
+        search() {
+            let vm = this
+            this.addDataForm = {}
+            if (
+                !this.searchDialogDataForm.orderNo &&
+                !this.searchDialogDataForm.merchantOrderNo
+            ) {
+                this.$notify.warning({
+                    duration: 2000,
+                    title: '警告',
+                    message: '两个不能同时为空！'
+                })
+                return false
+            }
+            this.$httpGet('/admin/refund/findRefundTradeInfo', {
+                orderNo: this.searchDialogDataForm.orderNo,
+                merchantOrderNo: this.searchDialogDataForm.merchantOrderNo
+            })
+                .then(({ data }) => {
+                    data.tradeTime = timestampToDate(data.tradeTime)
+                    data.tradeState = this.getTradeState(data.tradeState)
+                    data.refundState = this.getRefundState(data.refundState)
+                    this.addDataForm = data
+                })
+                .catch(data => {
+                    console.log(data)
+                })
+        },
+        add() {
+            this.isShowAdd = true
+        },
+        cancelAdd() {
+            this.isShowAdd = false
+            this.searchDialogDataForm = {}
+            this.addDataForm = {}
+        },
+        submitAdd() {
+            let vm = this
+            if (!this.addDataForm.refundAmount) {
+                this.$notify.warning({
+                    duration: 2000,
+                    title: '警告',
+                    message: '退款金额不能为空！'
+                })
+                return false
+            }
+            this.$httpGet('/admin/refund/saveRefundInfo', {
+                tradeId: this.addDataForm.id,
+                refundAmount: this.addDataForm.refundAmount,
+                refundRemark: this.addDataForm.refundRemark
+            })
+                .then(data => {
+                    vm.$notify.success({
+                        duration: 2000,
+                        title: '成功',
+                        message: data.message
+                    })
+                    vm.cancelAdd()
+                    vm.handleCurrentChange(1)
+                })
+                .catch(data => {
+                    console.log(data)
+                })
+        },
         handleDetail(row) {
             this.isShowDetail = true
             this.detailDataForm.platformId = this.getPlatFormName(
@@ -303,12 +464,10 @@ export default {
             this.detailDataForm.refundState = this.getStatus(row.refundState)
             this.detailDataForm.refundAmount = row.refundAmount
             this.detailDataForm.settleState = row.settleState
-            this.detailDataForm.applyTime = this.timeForMatter(row.applyTime)
-            this.detailDataForm.refundTime = this.timeForMatter(row.refundTime)
+            this.detailDataForm.applyTime = timestampToDate(row.applyTime)
+            this.detailDataForm.refundTime = timestampToDate(row.refundTime)
             this.detailDataForm.batchNo = row.batchNo
-            this.detailDataForm.auditingTime = this.timeForMatter(
-                row.auditingTime
-            )
+            this.detailDataForm.auditingTime = timestampToDate(row.auditingTime)
             this.detailDataForm.auditingMan = row.auditingMan
             this.detailDataForm.refundReason = row.refundReason
             this.detailDataForm.remark = row.remark
@@ -335,20 +494,11 @@ export default {
                     break
             }
         },
-        // 时间戳转换
-        timeForMatter(timestamp) {
-            if (timestamp)
-                return this.$moment(timestamp).format('YYYY-MM-DD HH:mm:ss')
-        },
         applyTimeForMatter(row, column) {
-            let applyTime = row.applyTime
-            if (applyTime)
-                return this.$moment(applyTime).format('YYYY-MM-DD HH:mm:ss')
+            return timestampToDate(row.applyTime)
         },
         refundTimeForMatter(row, column) {
-            let refundTime = row.refundTime
-            if (refundTime)
-                return this.$moment(refundTime).format('YYYY-MM-DD HH:mm:ss')
+            return timestampToDate(row.refundTime)
         },
         // 同步
         getListData() {
@@ -362,26 +512,16 @@ export default {
                 refundNo: this.searchDataForm.refundNo,
                 sysOrderNo: this.searchDataForm.sysOrderNo,
                 refundState: this.searchDataForm.refundState,
-                applyStartTime: this.searchDataForm.applyStartTime
-                    ? this.$moment(vm.searchDataForm.applyStartTime).format(
-                          'YYYY-MM-DD HH:mm:ss'
-                      )
-                    : '',
-                applyEndTime: this.searchDataForm.applyEndTime
-                    ? this.$moment(vm.searchDataForm.applyEndTime).format(
-                          'YYYY-MM-DD HH:mm:ss'
-                      )
-                    : '',
-                refundStartTime: this.searchDataForm.refundStartTime
-                    ? this.$moment(vm.searchDataForm.refundStartTime).format(
-                          'YYYY-MM-DD HH:mm:ss'
-                      )
-                    : '',
-                refundEndTime: this.searchDataForm.refundEndTime
-                    ? this.$moment(vm.searchDataForm.refundEndTime).format(
-                          'YYYY-MM-DD HH:mm:ss'
-                      )
-                    : ''
+                applyStartTime: timestampToDate(
+                    this.searchDataForm.applyStartTime
+                ),
+                applyEndTime: timestampToDate(this.searchDataForm.applyEndTime),
+                refundStartTime: timestampToDate(
+                    this.searchDataForm.refundStartTime
+                ),
+                refundEndTime: timestampToDate(
+                    this.searchDataForm.refundEndTime
+                )
             })
         },
         getData() {
@@ -395,26 +535,16 @@ export default {
                 refundNo: this.searchDataForm.refundNo,
                 sysOrderNo: this.searchDataForm.sysOrderNo,
                 refundState: this.searchDataForm.refundState,
-                applyStartTime: this.searchDataForm.applyStartTime
-                    ? this.$moment(vm.searchDataForm.applyStartTime).format(
-                          'YYYY-MM-DD HH:mm:ss'
-                      )
-                    : '',
-                applyEndTime: this.searchDataForm.applyEndTime
-                    ? this.$moment(vm.searchDataForm.applyEndTime).format(
-                          'YYYY-MM-DD HH:mm:ss'
-                      )
-                    : '',
-                refundStartTime: this.searchDataForm.refundStartTime
-                    ? this.$moment(vm.searchDataForm.refundStartTime).format(
-                          'YYYY-MM-DD HH:mm:ss'
-                      )
-                    : '',
-                refundEndTime: this.searchDataForm.refundEndTime
-                    ? this.$moment(vm.searchDataForm.refundEndTime).format(
-                          'YYYY-MM-DD HH:mm:ss'
-                      )
-                    : ''
+                applyStartTime: timestampToDate(
+                    this.searchDataForm.applyStartTime
+                ),
+                applyEndTime: timestampToDate(this.searchDataForm.applyEndTime),
+                refundStartTime: timestampToDate(
+                    this.searchDataForm.refundStartTime
+                ),
+                refundEndTime: timestampToDate(
+                    this.searchDataForm.refundEndTime
+                )
             })
                 .then(({ data }) => {
                     vm.getDataList = data.list
@@ -426,9 +556,7 @@ export default {
                 })
         },
         happenTimeForMatter(row, column) {
-            let happenTime = row.happenTime
-            if (happenTime)
-                return this.$moment(happenTime).format('YYYY-MM-DD HH:mm:ss')
+            return timestampToDate(row.happenTime)
         },
         // 获取平台名称
         getPlatFormName(params) {

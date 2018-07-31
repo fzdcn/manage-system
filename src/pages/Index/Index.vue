@@ -65,7 +65,7 @@
 
 <script>
 import eCharts from '../../components/echarts/eCharts'
-import PanThumb from '../../components/pan-thumb/index'
+import PanThumb from '../../components/PanThumb/index'
 import CountTo from 'vue-count-to'
 
 export default {

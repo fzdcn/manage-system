@@ -54,19 +54,19 @@
         <el-dialog title="增加银行号" :visible.sync="isShowAdd" :before-close="cancelAdd" width="550px" center>
             <div class="form-content" style="margin: 0 auto;width: 90%;">
                 <el-form ref="addDataForm" :model="addDataForm" label-width="180px">
-                    <el-form-item label="银行名称：">
+                    <el-form-item :rules="[{ required: true}]" label="银行名称：">
                         <el-input clearable v-model.trim="addDataForm.bankName" maxlength="32" placeholder="不超过32位"></el-input>
                     </el-form-item>
-                    <el-form-item label="联行号：">
+                    <el-form-item :rules="[{ required: true}]" label="联行号：">
                         <el-input type="number" v-model.trim="addDataForm.bankNumber" maxlength="12" placeholder="12位的纯数字"></el-input>
                     </el-form-item>
-                    <el-form-item label="银行代码：">
+                    <el-form-item :rules="[{ required: true}]" label="银行代码：">
                         <el-input clearable v-model.trim="addDataForm.bankCode" maxlength="15" placeholder="不超过15位"></el-input>
                     </el-form-item>
-                    <el-form-item label="银行编号：">
+                    <el-form-item :rules="[{ required: true}]" label="银行编号：">
                         <el-input type="number" v-model.trim="addDataForm.numbers" maxlength="32" placeholder="不超过32位的纯数字"></el-input>
                     </el-form-item>
-                    <el-form-item label="收款方账户所属机构标识：">
+                    <el-form-item :rules="[{ required: true}]" label="收款方账户所属机构标识：">
                         <el-input clearable v-model.trim="addDataForm.identity" maxlength="14" placeholder="14位的大写英文字母加数字组合"></el-input>
                     </el-form-item>
                 </el-form>
@@ -81,19 +81,19 @@
         <el-dialog title="编辑银行号" :visible.sync="isShowEdit" :before-close="cancelEdit" width="550px" center>
             <div class="form-content" style="margin: 0 auto;width: 90%;">
                 <el-form ref="editDataForm" :model="editDataForm" label-width="180px">
-                    <el-form-item label="银行名称：">
+                    <el-form-item :rules="[{ required: true}]" label="银行名称：">
                         <el-input clearable v-model.trim="editDataForm.bankName" maxlength="32" placeholder="不超过32位"></el-input>
                     </el-form-item>
-                    <el-form-item label="联行号：">
+                    <el-form-item :rules="[{ required: true}]" label="联行号：">
                         <el-input type="number" v-model.trim="editDataForm.bankNumber" maxlength="12" placeholder="12位的纯数字"></el-input>
                     </el-form-item>
-                    <el-form-item label="银行代码：">
+                    <el-form-item :rules="[{ required: true}]" label="银行代码：">
                         <el-input clearable v-model.trim="editDataForm.bankCode" maxlength="15" placeholder="不超过15位"></el-input>
                     </el-form-item>
-                    <el-form-item label="银行编号：">
+                    <el-form-item :rules="[{ required: true}]" label="银行编号：">
                         <el-input type="number" v-model.trim="editDataForm.numbers" maxlength="32" placeholder="不超过32位的纯数字"></el-input>
                     </el-form-item>
-                    <el-form-item label="收款方账户所属机构标识：">
+                    <el-form-item :rules="[{ required: true}]" label="收款方账户所属机构标识：">
                         <el-input clearable v-model.trim="editDataForm.identity" maxlength="14" placeholder="14位的大写英文字母加数字组合"></el-input>
                     </el-form-item>
                 </el-form>

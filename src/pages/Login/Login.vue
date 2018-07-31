@@ -19,10 +19,8 @@
                 </div>
             </div>
             <div class="login-btn">
-                <button @click="submitForm">登&nbsp&nbsp陆</button>
-            </div>
-            <div class="login-btn">
-                <button @click="resetForm">重&nbsp&nbsp置</button>
+                <button class="fl" @click="submitForm">登&nbsp&nbsp陆</button>
+                <button class="fr" @click="resetForm">重&nbsp&nbsp置</button>
             </div>
         </div>
     </div>
@@ -182,7 +180,7 @@ export default {
                 }
             }
 
-            //更新页面用requestAnimationFrame替代setTimeout
+            //更新页面用setTimeout替代requestAnimationFrame
             // window.requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
 
             let canvas = document.getElementById('canvas')
@@ -197,15 +195,15 @@ export default {
                 for (let i = 0; i < circles.length; i++) {
                     circles[i].move(w, h)
                     circles[i].drawCircle(ctx)
-                    for (let j = i + 1; j < circles.length; j++) {
-                        circles[i].drawLine(ctx, circles[j])
-                    }
+                    // for (let j = i + 1; j < circles.length; j++) {
+                    //     circles[i].drawLine(ctx, circles[j])
+                    // }
                 }
                 if (current_circle.x) {
                     current_circle.drawCircle(ctx)
-                    for (var k = 1; k < circles.length; k++) {
-                        current_circle.drawLine(ctx, circles[k])
-                    }
+                    // for (var k = 1; k < circles.length; k++) {
+                    //     current_circle.drawLine(ctx, circles[k])
+                    // }
                 }
                 // requestAnimationFrame(draw)
                 setTimeout(draw, 10)
@@ -252,7 +250,10 @@ canvas {
     position: relative;
     width: 100%;
     height: 100%;
-    background-color: #242645;
+    /* background-color: #242645; */
+    background-image: url('../../../static/img/login-bg.png');
+    background-repeat: no-repeat;
+    background-size: cover;
 }
 
 .login {
@@ -307,21 +308,22 @@ canvas {
 }
 .login-info {
     text-align: left;
-    margin-top: 40px;
+    margin-top: 45px;
 }
 .user-name,
 .user-password,
 .verification-code {
     height: 40px;
     width: 100%;
-    padding: 10px 0;
+    padding: 15px 0;
+    text-align: center;
 }
 .user-name input,
 .user-password input {
     color: #ffffff;
-    width: 250px;
+    width: 200px;
     left: 0;
-    padding: 0px 15px 0 55px;
+    padding: 0px 15px 0 15px;
     height: 40px;
     border-radius: 30px;
     border: none;
@@ -331,9 +333,9 @@ canvas {
 }
 .verification-code input {
     color: #fff;
-    width: 100px;
+    width: 70px;
     left: 0;
-    padding: 0px 15px 0 55px;
+    padding: 0px 15px 0 15px;
     height: 40px;
     border-radius: 30px;
     border: none;
@@ -349,6 +351,7 @@ canvas {
     color: #656060;
     left: 35px;
     position: absolute;
+    margin-right: 0;
 }
 .verification-img {
     display: inline-block;
@@ -357,6 +360,7 @@ canvas {
     line-height: 40px;
     text-align: center;
     margin-left: 25px;
+    border-radius: 30px;
     cursor: pointer;
     color: #afb1be;
     font-size: 16px;
@@ -367,13 +371,13 @@ canvas {
 }
 .login-btn {
     width: 100%;
-    text-align: left;
+    text-align: center;
     height: 40px;
     line-height: 50px;
-    margin-top: 25px;
+    margin-top: 30px;
 }
 .login-btn button {
-    width: 170px;
+    width: 150px;
     text-align: center;
     height: 40px;
     line-height: 40px;

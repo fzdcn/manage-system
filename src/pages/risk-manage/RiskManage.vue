@@ -75,22 +75,22 @@
         <el-dialog title="增加风控信息" :visible.sync="isShowAdd" :before-close="cancelAdd" width="500px" center>
             <div class="form-content" style="margin: 0 auto;width: 90%;">
                 <el-form ref="addDataForm" :model="addDataForm" label-width="120px">
-                    <el-form-item label="平台名称：">
-                        <el-select clearable v-model="addDataForm.platformId" placeholder="平台名称">
+                    <el-form-item :rules="[{ required: true}]" label="平台名称：">
+                        <el-select clearable v-model="addDataForm.platformId" style="width: 285px;" placeholder="平台名称">
                             <el-option v-for="item in platformIdList" :key="item.id" :label="item.platformName" :value="item.id">
                             </el-option>
                         </el-select>
                     </el-form-item>
-                    <el-form-item label="平台IP：">
+                    <el-form-item :rules="[{ required: true}]" label="平台IP：">
                         <el-input clearable v-model.trim="addDataForm.platformIp" placeholder="ip格式应该位xxx.xxx.xxx.xxx">
                         </el-input>
                     </el-form-item>
-                    <el-form-item label="商户IP：">
+                    <el-form-item :rules="[{ required: true}]" label="商户IP：">
                         <el-input clearable v-model.trim="addDataForm.merchantIp" placeholder="ip格式应该位xxx.xxx.xxx.xxx">
                         </el-input>
                     </el-form-item>
-                    <el-form-item label="类型：">
-                        <el-select clearable v-model="addDataForm.type" placeholder="类型">
+                    <el-form-item :rules="[{ required: true}]" label="类型：">
+                        <el-select clearable v-model="addDataForm.type" style="width: 285px;" placeholder="类型">
                             <el-option v-for="item in typeList" :key="item.type" :label="item.name" :value="item.type">
                             </el-option>
                         </el-select>
@@ -111,24 +111,24 @@
         <el-dialog title="编辑风控信息" :visible.sync="isShowEdit" :before-close="cancelEdit" width="500px" center>
             <div class="form-content" style="margin: 0 auto;width: 90%;">
                 <el-form ref="ditDataForm" :model="editDataForm" label-width="120px">
-                    <el-form-item label="平台名称：">
-                        <el-select clearable v-model="editDataForm.platformId" placeholder="平台名称">
+                    <el-form-item :rules="[{ required: true}]" label="平台名称：">
+                        <el-select clearable v-model="editDataForm.platformId" style="width: 285px;" placeholder="平台名称">
                             <el-option v-for="item in platformIdList" :key="item.id" :label="item.platformName" :value="item.id">
                             </el-option>
                         </el-select>
                     </el-form-item>
 
-                    <el-form-item label="平台IP：">
+                    <el-form-item :rules="[{ required: true}]" label="平台IP：">
                         <el-input clearable v-model.trim="editDataForm.platformIp" placeholder="ip格式应该位xxx.xxx.xxx.xxx">
                         </el-input>
                     </el-form-item>
 
-                    <el-form-item label="商户IP：">
+                    <el-form-item :rules="[{ required: true}]" label="商户IP：">
                         <el-input clearable v-model.trim="editDataForm.merchantIp" placeholder="ip格式应该位xxx.xxx.xxx.xxx">
                         </el-input>
                     </el-form-item>
-                    <el-form-item label="类型：">
-                        <el-select clearable v-model="editDataForm.type" placeholder="类型">
+                    <el-form-item :rules="[{ required: true}]" label="类型：">
+                        <el-select clearable v-model="editDataForm.type" style="width: 285px;" placeholder="类型">
                             <el-option v-for="item in typeList" :key="item.type" :label="item.name" :value="item.type">
                             </el-option>
                         </el-select>

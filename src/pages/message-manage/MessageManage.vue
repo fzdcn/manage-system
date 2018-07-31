@@ -65,22 +65,22 @@
         <el-dialog title="增加短信" :visible.sync="isShowAdd" :before-close="cancelAdd" width="500px" center>
             <div class="form-content" style="margin: 0 auto;width: 90%;">
                 <el-form ref="addDataForm" :model="addDataForm" label-width="120px">
-                    <el-form-item label="渠道模板号：">
+                    <el-form-item :rules="[{ required: true}]" label="渠道模板号：">
                         <el-input clearable v-model.trim="addDataForm.templateCode" placeholder="渠道模板号"></el-input>
                     </el-form-item>
-                    <el-form-item label="平台标识：">
-                        <el-select clearable v-model="addDataForm.platformId" placeholder="请选择平台标识">
+                    <el-form-item :rules="[{ required: true}]" label="平台标识：">
+                        <el-select clearable v-model="addDataForm.platformId" style="width: 285px;" placeholder="请选择平台标识">
                             <el-option v-for="item in platformIdList" :key="item.id" :label="item.platformName" :value="item.id">
                             </el-option>
                         </el-select>
                     </el-form-item>
-                    <el-form-item label="短信通道：">
-                        <el-select clearable v-model="addDataForm.channel" placeholder="请选择短信通道">
+                    <el-form-item :rules="[{ required: true}]" label="短信通道：">
+                        <el-select clearable v-model="addDataForm.channel" style="width: 285px;" placeholder="请选择短信通道">
                             <el-option v-for="item in smsChannel" :key="item.id" :label="item.name" :value="item.id">
                             </el-option>
                         </el-select>
                     </el-form-item>
-                    <el-form-item label="短信说明：">
+                    <el-form-item :rules="[{ required: true}]" label="短信说明：">
                         <el-input clearable v-model.trim="addDataForm.explain" placeholder="短信说明"></el-input>
                     </el-form-item>
                     <el-form-item label="短信模板内容：">
@@ -99,8 +99,8 @@
         <!--上传文件-->
         <el-dialog title="上传文件" :visible.sync="isShowFile" :before-close="cancelFile" width="500px" center>
             <div class="form-content" style="margin: 0 auto;width: 90%;">
-                <el-form label-position="left" ref="fileDataForm" :model="fileDataForm" label-width="120px">
-                    <el-form-item label="平台标识：">
+                <el-form ref="fileDataForm" :model="fileDataForm" label-width="120px">
+                    <el-form-item :rules="[{ required: true}]" label="平台标识：">
                         <el-col :span="24">
                             <el-select style="width: 100%;" clearable v-model="fileDataForm.platformId" placeholder="请选择平台标识">
                                 <el-option v-for="item in platformIdList" :key="item.id" :label="item.platformName" :value="item.id">
@@ -128,22 +128,22 @@
         <el-dialog title="编辑短信" :visible.sync="isShowEdit" :before-close="cancelEdit" width="500px" center>
             <div class="form-content" style="margin: 0 auto;width: 90%;">
                 <el-form ref="editDataForm" :model="editDataForm" label-width="120px">
-                    <el-form-item label="渠道模板号：">
+                    <el-form-item :rules="[{ required: true}]" label="渠道模板号：">
                         <el-input clearable v-model.trim="editDataForm.templateCode" placeholder="渠道模板号"></el-input>
                     </el-form-item>
-                    <el-form-item label="平台标识：">
-                        <el-select clearable v-model="editDataForm.platformId" placeholder="请选择平台标识">
+                    <el-form-item :rules="[{ required: true}]" label="平台标识：">
+                        <el-select clearable v-model="editDataForm.platformId" style="width: 285px;" placeholder="请选择平台标识">
                             <el-option v-for="item in platformIdList" :key="item.id" :label="item.platformName" :value="item.id">
                             </el-option>
                         </el-select>
                     </el-form-item>
-                    <el-form-item label="短信通道：">
-                        <el-select clearable v-model="editDataForm.channel" placeholder="请选择短信通道">
+                    <el-form-item :rules="[{ required: true}]" label="短信通道：">
+                        <el-select clearable v-model="editDataForm.channel" style="width: 285px;" placeholder="请选择短信通道">
                             <el-option v-for="item in smsChannel" :key="item.id" :label="item.name" :value="item.id">
                             </el-option>
                         </el-select>
                     </el-form-item>
-                    <el-form-item label="短信说明：">
+                    <el-form-item :rules="[{ required: true}]" label="短信说明：">
                         <el-input clearable v-model.trim="editDataForm.explain" placeholder="短信说明"></el-input>
                     </el-form-item>
                     <el-form-item label="短信模板内容：">
@@ -265,7 +265,7 @@ export default {
             let formData = new FormData()
             formData.append('file', file)
             formData.append('platformId', vm.fileDataForm.platformId)
-            this.$uploadHttpPost('/admin/sms/importSmsTemplate', formData, true)
+            this.$uploadHttpPost('/admin/sms/importSmsTemplate', formData)
                 .then(data => {
                     if (data.code == '00') {
                         vm.$notify.success({

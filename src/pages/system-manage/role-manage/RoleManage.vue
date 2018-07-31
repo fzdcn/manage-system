@@ -24,7 +24,7 @@
                 </el-table-column>
             </el-table>
             <div class="pagination" style="overflow: hidden;">
-                <el-pagination background @current-change="handleCurrentChange" layout="total, prev, pager, next, jumper" :page-size="10" :pager-count="11" :total="total">
+                <el-pagination v-if="paginationShow" background :current-page="cur_page" @current-change="handleCurrentChange" layout="total, prev, pager, next, jumper" :page-size="10" :pager-count="11" :total="total">
                 </el-pagination>
             </div>
         </div>
@@ -32,7 +32,7 @@
         <el-dialog title="增加后台角色" :visible.sync="isShowAdd" :before-close="cancelAdd" width="500px" center>
             <div class="form-content" style="margin: 0 auto;width: 90%;">
                 <el-form ref="addDataForm" :model="addDataForm" label-width="100px">
-                    <el-form-item label="角色名称：">
+                    <el-form-item :rules="[{ required: true}]" label="角色名称：">
                         <el-input clearable v-model.trim="addDataForm.name" maxlength="10" placeholder="只能是10位以内英文或汉字"></el-input>
                     </el-form-item>
                 </el-form>
@@ -47,7 +47,7 @@
         <el-dialog title="编辑后台角色" :visible.sync="isShowEdit" :before-close="cancelEdit" width="500px" center>
             <div class="form-content" style="margin: 0 auto;width: 90%;">
                 <el-form ref="editDataForm" :model="editDataForm" label-width="100px">
-                    <el-form-item label="角色名称：">
+                    <el-form-item :rules="[{ required: true}]" label="角色名称：">
                         <el-input clearable v-model.trim="editDataForm.name" maxlength="10" placeholder="只能是10位以内英文或汉字"></el-input>
                     </el-form-item>
                 </el-form>
@@ -64,13 +64,8 @@
 export default {
     data() {
         return {
-            getDataList: [
-                /*{
-                        "defaultOrNo": '',
-                        "id": '',
-                        "name": ''
-                    }*/
-            ],
+            paginationShow: true,
+            getDataList: [],
             // 当前页
             cur_page: 1,
             // 所有数量
@@ -93,6 +88,7 @@ export default {
         // 分页导航
         handleCurrentChange(val) {
             this.cur_page = val
+            this.paginationShow = false
             this.getData()
         },
         handleDelete(row) {
@@ -140,6 +136,7 @@ export default {
                 .then(({ data }) => {
                     vm.getDataList = data.page.list
                     vm.total = data.page.total
+                    vm.paginationShow = true
                 })
                 .catch(data => {
                     console.log(data)
@@ -191,18 +188,7 @@ export default {
                         message: data.message
                     })
                     vm.cancelAdd()
-                    vm
-                        .$httpGet('/admin/role/index', {
-                            pageNo: 1,
-                            pageSize: 10
-                        })
-                        .then(({ data }) => {
-                            vm.getDataList = data.page.list
-                            vm.total = data.page.total
-                        })
-                        .catch(data => {
-                            console.log(data)
-                        })
+                    vm.handleCurrentChange(1)
                 })
                 .catch(data => {
                     console.log(data)

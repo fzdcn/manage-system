@@ -410,6 +410,18 @@ export default {
                 {
                     iconName: 'icon-yan-zheng-ma',
                     chineseName: '验证码'
+                },
+                {
+                    iconName: 'icon-jian-quan-one',
+                    chineseName: '鉴权'
+                },
+                {
+                    iconName: 'icon-jian-quan-two',
+                    chineseName: '鉴权'
+                },
+                {
+                    iconName: 'icon-jian-quan-three',
+                    chineseName: '鉴权'
                 }
             ]
         }

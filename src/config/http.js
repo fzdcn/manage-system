@@ -41,8 +41,14 @@ function endLoading() {
     loading.close()
 }
 
-axios.defaults.baseURL = API_BASE;
-axios.defaults.withCredentials = true;
+// axios.defaults.baseURL = API_BASE;
+// axios.defaults.withCredentials = true;
+// axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
+let config = {
+    baseURL: API_BASE,
+    withCredentials: true
+}
+const instance = axios.create(config)
 
 function bindAccessToken(params) {
     let accessToken = store.getters.accessToken
@@ -57,14 +63,14 @@ function resolveResponse(data, resolve) {
     switch (data.code) {
         case '01':
             Notification.error({
-                duration: 2000,
+                duration: 4000,
                 title: "系统错误",
                 message: data.message
             });
             break
         case '401':
             Notification.error({
-                duration: 2000,
+                duration: 4000,
                 title: "系统错误",
                 message: data.message
             });
@@ -81,7 +87,7 @@ function resolveResponse(data, resolve) {
             break
         case '403':
             Notification.error({
-                duration: 2000,
+                duration: 4000,
                 title: "系统错误",
                 message: data.message
             });
@@ -100,7 +106,7 @@ function rejectResponse(data, reject) {
         switch (data.response.status) {
             case 500:
                 Notification.error({
-                    duration: 2000,
+                    duration: 4000,
                     title: "系统错误",
                     message: data
                 });
@@ -115,7 +121,7 @@ function rejectResponse(data, reject) {
     } else {
         reject(data);
         Notification.error({
-            duration: 2000,
+            duration: 4000,
             title: "系统错误",
             message: data
         });
@@ -130,6 +136,7 @@ class HttpResource {
     }
 
     /**
+     * get请求
      * @param url
      * @param params
      * @returns {Promise}
@@ -137,9 +144,8 @@ class HttpResource {
 
     static httpGet(url, params) {
         showFullScreenLoading();
-        bindAccessToken(params)
         return new Promise((resolve, reject) => {
-            axios.get(url, {
+            instance.get(url, {
                     params: params
                 })
                 .then(({
@@ -147,7 +153,7 @@ class HttpResource {
                 }) => {
                     resolveResponse(data, resolve)
                     tryHideFullScreenLoading()
-                }, (data) => {
+                }).catch(data => {
                     rejectResponse(data, reject)
                     tryHideFullScreenLoading()
                 })
@@ -155,6 +161,7 @@ class HttpResource {
     }
 
     /**
+     * post请求
      * @param url
      * @param params
      * @returns {Promise}
@@ -164,10 +171,33 @@ class HttpResource {
         if (!isFormData) {
             params = qs.stringify(params);
         }
-        showFullScreenLoading()
-        bindAccessToken(params)
         return new Promise((resolve, reject) => {
-            axios.post(url, params, {
+            instance.post(url, params).then(({
+                data
+            }) => {
+                resolveResponse(data, resolve)
+                tryHideFullScreenLoading()
+            }).catch(data => {
+                rejectResponse(data, reject)
+                tryHideFullScreenLoading()
+            })
+        })
+    }
+
+    /**
+     * post请求，上传文件
+     * @param url
+     * @param params
+     * @returns {Promise}
+     */
+
+    static uploadHttpPost(url, params, isFormData) {
+        if (isFormData) {
+            params = qs.stringify(params);
+        }
+        showFullScreenLoading()
+        return new Promise((resolve, reject) => {
+            instance.post(url, params, {
                 headers: {
                     "Content-Type": isFormData ? "application/json" : "application/x-www-form-urlencoded;charset=UTF-8"
                 }
@@ -176,29 +206,7 @@ class HttpResource {
             }) => {
                 resolveResponse(data, resolve)
                 tryHideFullScreenLoading()
-            }, (data) => {
-                rejectResponse(data, reject)
-                tryHideFullScreenLoading()
-            })
-        })
-    }
-
-    static uploadHttpPost(url, params, isFormData) {
-        if (!isFormData) {
-            params = qs.stringify(params);
-        }
-        showFullScreenLoading()
-        return new Promise((resolve, reject) => {
-            axios.post(url, params, {
-                headers: {
-                    "Content-Type": isFormData ? "application/x-www-form-urlencoded;charset=UTF-8" : "application/json"
-                }
-            }).then(({
-                data
-            }) => {
-                resolveResponse(data, resolve)
-                tryHideFullScreenLoading()
-            }, (data) => {
+            }).catch(data => {
                 rejectResponse(data, reject)
                 tryHideFullScreenLoading()
             })

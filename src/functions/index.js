@@ -1,7 +1,7 @@
 import Vue from 'vue';
 // import Toasted from 'vue-toasted';
 import router from '../router/index';
-
+import moment from 'moment';
 // Vue.use(Toasted)
 
 /**
@@ -21,16 +21,21 @@ export function showAlert(msg, type = 'error') {
     Vue.toasted.show(msg, option);
 }
 
+// 返回上一步
 
-/**
- * 返回上一步
- */
 export function goBack() {
     if (window.history.length > 1) {
         window.history.go(-1)
     } else {
-        router.push({name: 'index'})
+        router.push({
+            name: 'index'
+        })
     }
+}
+
+// 时间戳转日期
+export function timestampToDate(timestamp) {
+    return timestamp ? moment(timestamp).format('YYYY-MM-DD HH:mm:ss') : ""
 }
 
 // 电话号码，11位数字，以1开头
@@ -58,10 +63,3 @@ export const regEmail = /^(\w-*\.*)+@(\w-?)+(\.\w{2,})+$/;
  第十八位是‘x‘
  */
 export const regIdCode = /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/;
-
-
-
-
-
-
-

@@ -28,18 +28,17 @@
                 </div>
             </div>
 
-            <el-table :data="getDataList" border style="width: 100%;text-align: center;">
-                <el-table-column show-overflow-tooltip prop="cardNoMark" label="银行卡号标识" header-align="center" />
-                <el-table-column show-overflow-tooltip prop="bankName" label="银行名称" header-align="center" />
-                <el-table-column show-overflow-tooltip prop="cardType" label="银行卡类型" header-align="center">
+            <el-table :data="getDataList" border style="width: 100%;">
+                <el-table-column show-overflow-tooltip prop="cardNoMark" label="银行卡号标识" />
+                <el-table-column show-overflow-tooltip prop="bankName" label="银行名称" />
+                <el-table-column show-overflow-tooltip prop="cardType" label="银行卡类型">
                     <template slot-scope="scope">
                         <span v-if="scope.row.cardType==item.cardType" v-for="item in cardTypeList">{{ item.name }}</span>
                     </template>
                 </el-table-column>
-                <el-table-column show-overflow-tooltip prop="cardExplain" label="银行卡说明" header-align="center" />
-                <el-table-column show-overflow-tooltip prop="bankCode" label="银行代码" header-align="center" />
-                <el-table-column show-overflow-tooltip prop="bankNumber" label="银行编号" header-align="center" />
-
+                <el-table-column show-overflow-tooltip prop="cardExplain" label="银行卡说明" />
+                <el-table-column show-overflow-tooltip prop="bankCode" label="银行代码" />
+                <el-table-column show-overflow-tooltip prop="bankNumber" label="银行编号" />
                 <el-table-column label="操作" width="200px" align="center">
                     <template v-if="getDataList.length > 0" slot-scope="scope">
                         <el-button @click="handleEdit(scope.row)" type="primary" icon="el-icon-edit" size="small">编辑
@@ -59,26 +58,26 @@
         <el-dialog title="增加银行卡识别信息" :visible.sync="isShowAdd" :before-close="cancelAdd" width="500px" center>
             <div class="form-content" style="margin: 0 auto;width: 90%;">
                 <el-form ref="addDataForm" :model="addDataForm" label-width="120px">
-                    <el-form-item label="银行卡号标识：">
+                    <el-form-item :rules="[{ required: true}]" label="银行卡号标识：">
                         <el-input type="number" v-model.trim="addDataForm.cardNoMark" maxlength="10" placeholder="不超过10位纯数字">
                         </el-input>
                     </el-form-item>
-                    <el-form-item label="银行名称：">
+                    <el-form-item :rules="[{ required: true}]" label="银行名称：">
                         <el-input clearable v-model.trim="addDataForm.bankName" maxlength="32" placeholder="不超过32位"></el-input>
                     </el-form-item>
-                    <el-form-item label="银行卡类型：">
-                        <el-select clearable v-model="addDataForm.cardType" placeholder="银行卡类型">
+                    <el-form-item :rules="[{ required: true}]" label="银行卡类型：">
+                        <el-select clearable v-model="addDataForm.cardType" style="width: 285px;" placeholder="银行卡类型">
                             <el-option v-for="item in cardTypeList" :key="item.cardType" :label="item.name" :value="item.cardType">
                             </el-option>
                         </el-select>
                     </el-form-item>
-                    <el-form-item label="银行卡说明：">
+                    <el-form-item :rules="[{ required: true}]" label="银行卡说明：">
                         <el-input clearable v-model.trim="addDataForm.cardExplain" maxlength="32" placeholder="不超过32位"></el-input>
                     </el-form-item>
-                    <el-form-item label="银行代码：">
+                    <el-form-item :rules="[{ required: true}]" label="银行代码：">
                         <el-input clearable v-model.trim="addDataForm.bankCode" maxlength="15" placeholder="不超过15位"></el-input>
                     </el-form-item>
-                    <el-form-item label="银行编号：">
+                    <el-form-item :rules="[{ required: true}]" label="银行编号：">
                         <el-input clearable v-model.trim="addDataForm.bankNumber" maxlength="32" placeholder="不超过32位"></el-input>
                     </el-form-item>
                 </el-form>
@@ -93,26 +92,26 @@
         <el-dialog title="编辑银行卡识别信息" :visible.sync="isShowEdit" :before-close="cancelEdit" width="500px" center>
             <div class="form-content" style="margin: 0 auto;width: 90%;">
                 <el-form ref="editDataForm" :model="editDataForm" label-width="120px">
-                    <el-form-item label="银行卡号标识：">
+                    <el-form-item :rules="[{ required: true}]" label="银行卡号标识：">
                         <el-input type="number" v-model.trim="editDataForm.cardNoMark" maxlength="10" placeholder="不超过10位纯数字">
                         </el-input>
                     </el-form-item>
-                    <el-form-item label="银行名称：">
+                    <el-form-item :rules="[{ required: true}]" label="银行名称：">
                         <el-input clearable v-model.trim="editDataForm.bankName" maxlength="32" placeholder="不超过32位"></el-input>
                     </el-form-item>
-                    <el-form-item label="银行卡类型：">
-                        <el-select clearable v-model="editDataForm.cardType" placeholder="银行卡类型">
+                    <el-form-item :rules="[{ required: true}]" label="银行卡类型：">
+                        <el-select clearable v-model="editDataForm.cardType" style="width: 285px;" placeholder="银行卡类型">
                             <el-option v-for="item in cardTypeList" :key="item.cardType" :label="item.name" :value="item.cardType">
                             </el-option>
                         </el-select>
                     </el-form-item>
-                    <el-form-item label="银行卡说明：">
+                    <el-form-item :rules="[{ required: true}]" label="银行卡说明：">
                         <el-input clearable v-model.trim="editDataForm.cardExplain" maxlength="32" placeholder="不超过32位"></el-input>
                     </el-form-item>
-                    <el-form-item label="银行代码：">
+                    <el-form-item :rules="[{ required: true}]" label="银行代码：">
                         <el-input clearable v-model.trim="editDataForm.bankCode" maxlength="15" placeholder="不超过15位"></el-input>
                     </el-form-item>
-                    <el-form-item label="银行编号：">
+                    <el-form-item :rules="[{ required: true}]" label="银行编号：">
                         <el-input clearable v-model.trim="editDataForm.bankNumber" maxlength="32" placeholder="不超过32位"></el-input>
                     </el-form-item>
                 </el-form>

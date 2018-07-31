@@ -164,6 +164,7 @@
 </template>
 
 <script>
+import { timestampToDate } from '../../functions/index'
 export default {
     data() {
         return {
@@ -231,7 +232,7 @@ export default {
             this.detailDataForm.cardType = this.getCardType(row.cardType)
             this.detailDataForm.bankCode = row.bankCode
             this.detailDataForm.phoneNo = row.phoneNo
-            this.detailDataForm.happenTime = this.timeForMatter(row.happenTime)
+            this.detailDataForm.happenTime = timestampToDate(row.happenTime)
             this.detailDataForm.status = this.getStatus(row.status)
             this.detailDataForm.signChannel = row.signChannel
             this.detailDataForm.businessType = row.businessType
@@ -288,11 +289,6 @@ export default {
                     break
             }
         },
-        // 时间戳转换
-        timeForMatter(timestamp) {
-            if (timestamp)
-                return this.$moment(timestamp).format('YYYY-MM-DD HH:mm:ss')
-        },
         getData() {
             let vm = this
             this.$httpGet('/admin/realName/signInfoList', {
@@ -326,9 +322,7 @@ export default {
                 })
         },
         happenTimeForMatter(row, column) {
-            let happenTime = row.happenTime
-            if (happenTime)
-                return this.$moment(happenTime).format('YYYY-MM-DD HH:mm:ss')
+            return timestampToDate(row.happenTime)
         }
     },
     created() {

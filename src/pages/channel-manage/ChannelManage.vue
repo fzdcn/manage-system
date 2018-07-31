@@ -48,6 +48,11 @@
                         <span v-if="scope.row.computeMode == item.id" v-for="item in computeModeList">{{ item.name }}</span>
                     </template>
                 </el-table-column>
+                <el-table-column show-overflow-tooltip prop="refundType" label="退款类型">
+                    <template slot-scope="scope">
+                        <span v-if="scope.row.refundType == item.id" v-for="item in refundType">{{ item.name }}</span>
+                    </template>
+                </el-table-column>
                 <el-table-column show-overflow-tooltip prop="remark" label="备注">
                 </el-table-column>
                 <el-table-column label="操作" width="200px" align="center">
@@ -69,41 +74,47 @@
         <el-dialog title="增加通道信息" :visible.sync="isShowAdd" :before-close="cancelAdd" width="720px" center>
             <div class="form-content" style="margin: 0 auto;width: 90%;">
                 <el-form ref="addDataForm" :model="addDataForm" label-width="150px">
-                    <el-form-item label="通道名称：">
+                    <el-form-item :rules="[{ required: true}]" label="通道名称：">
                         <el-input clearable v-model.trim="addDataForm.channelName" placeholder="通道名称"></el-input>
                     </el-form-item>
-                    <el-form-item label="通道接入码：">
+                    <el-form-item :rules="[{ required: true}]" label="通道接入码：">
                         <el-input clearable v-model.trim="addDataForm.channelAccessCode" placeholder="通道接入码"></el-input>
                     </el-form-item>
-                    <el-form-item label="通道接入请求地址：">
+                    <el-form-item :rules="[{ required: true}]" label="通道接入请求地址：">
                         <el-input clearable v-model.trim="addDataForm.bankUrl" placeholder="通道接入请求地址"></el-input>
                     </el-form-item>
-                    <el-form-item label="商户号：">
+                    <el-form-item :rules="[{ required: true}]" label="商户号：">
                         <el-input type="number" v-model.trim="addDataForm.unionMerNo" maxlength="20" placeholder="20位以内的数字"></el-input>
                     </el-form-item>
-                    <el-form-item label="机构号：">
+                    <el-form-item :rules="[{ required: true}]" label="机构号：">
                         <el-input type="number" v-model.trim="addDataForm.acqInsCode" maxlength="10" placeholder="10位以内的数字"></el-input>
                     </el-form-item>
-                    <el-form-item label="银行收取费率：">
+                    <el-form-item :rules="[{ required: true}]" label="银行收取费率：">
                         <el-input v-model.number="addDataForm.localFee" type="number" placeholder="不能为负数,整数最多10位，小数最多5位,>=1时，收费方式只能是定额"></el-input>
                     </el-form-item>
-                    <el-form-item label="使用状态：">
-                        <el-select clearable v-model="addDataForm.channelState" placeholder="使用状态">
+                    <el-form-item :rules="[{ required: true}]" label="使用状态：">
+                        <el-select clearable v-model="addDataForm.channelState" style="width: 453px;" placeholder="使用状态">
                             <el-option v-for="item in channelStateList" :key="item.id" :label="item.name" :value="item.id">
                             </el-option>
                         </el-select>
                     </el-form-item>
-                    <el-form-item label="收费方式：">
-                        <el-select clearable v-model="addDataForm.computeMode" placeholder="收费方式">
+                    <el-form-item :rules="[{ required: true}]" label="收费方式：">
+                        <el-select clearable v-model="addDataForm.computeMode" style="width: 453px;" placeholder="收费方式">
                             <el-option v-if="addDataForm.localFee >= 1" v-for="item in otherComputeModeList" :key="item.id" :label="item.name" :value="item.id">
                             </el-option>
                             <el-option v-else v-for="item in computeModeList" :key="item.id" :label="item.name" :value="item.id">
                             </el-option>
                         </el-select>
                     </el-form-item>
-                    <el-form-item label="银行列表：">
-                        <el-select clearable filterable multiple collapse-tags v-model="addDataForm.bids" placeholder="银行列表">
+                    <el-form-item :rules="[{ required: true}]" label="银行列表：">
+                        <el-select clearable filterable multiple collapse-tags v-model="addDataForm.bids" style="width: 453px;" placeholder="银行列表">
                             <el-option v-for="item in bankList" :key="item.id" :label="item.bankName" :value="item.id">
+                            </el-option>
+                        </el-select>
+                    </el-form-item>
+                    <el-form-item :rules="[{ required: true}]" label="退款类型：">
+                        <el-select clearable v-model="addDataForm.refundType" style="width: 453px;" placeholder="退款类型">
+                            <el-option v-for="item in refundType" :key="item.id" :label="item.name" :value="item.id">
                             </el-option>
                         </el-select>
                     </el-form-item>
@@ -122,41 +133,47 @@
         <el-dialog title="编辑通道信息" :visible.sync="isShowEdit" :before-close="cancelEdit" width="720px" center>
             <div class="form-content" style="margin: 0 auto;width: 90%;">
                 <el-form ref="editDataForm" :model="editDataForm" label-width="150px">
-                    <el-form-item label="通道名称：">
+                    <el-form-item :rules="[{ required: true}]" label="通道名称：">
                         <el-input clearable v-model.trim="editDataForm.channelName" placeholder="通道名称"></el-input>
                     </el-form-item>
-                    <el-form-item label="通道接入码：">
+                    <el-form-item :rules="[{ required: true}]" label="通道接入码：">
                         <el-input clearable v-model.trim="editDataForm.channelAccessCode" placeholder="通道接入码"></el-input>
                     </el-form-item>
-                    <el-form-item label="通道接入请求地址：">
+                    <el-form-item :rules="[{ required: true}]" label="通道接入请求地址：">
                         <el-input clearable v-model.trim="editDataForm.bankUrl" placeholder="通道接入请求地址"></el-input>
                     </el-form-item>
-                    <el-form-item label="商户号：">
+                    <el-form-item :rules="[{ required: true}]" label="商户号：">
                         <el-input type="number" v-model.trim="editDataForm.unionMerNo" maxlength="20" placeholder="20位以内的数字"></el-input>
                     </el-form-item>
-                    <el-form-item label="机构号：">
+                    <el-form-item :rules="[{ required: true}]" label="机构号：">
                         <el-input type="number" v-model.trim="editDataForm.acqInsCode" maxlength="10" placeholder="10位以内的数字"></el-input>
                     </el-form-item>
-                    <el-form-item label="银行收取费率：">
+                    <el-form-item :rules="[{ required: true}]" label="银行收取费率：">
                         <el-input v-model.number="editDataForm.localFee" type="number" placeholder="不能为负数,整数最多10位，小数最多5位,>=1时，收费方式只能是定额"></el-input>
                     </el-form-item>
-                    <el-form-item label="使用状态：">
-                        <el-select clearable v-model="editDataForm.channelState" placeholder="使用状态">
+                    <el-form-item :rules="[{ required: true}]" label="使用状态：">
+                        <el-select clearable v-model="editDataForm.channelState" style="width: 453px;" placeholder="使用状态">
                             <el-option v-for="item in channelStateList" :key="item.id" :label="item.name" :value="item.id">
                             </el-option>
                         </el-select>
                     </el-form-item>
-                    <el-form-item label="收费方式：">
-                        <el-select clearable v-model="editDataForm.computeMode" placeholder="收费方式">
+                    <el-form-item :rules="[{ required: true}]" label="收费方式：">
+                        <el-select clearable v-model="editDataForm.computeMode" style="width: 453px;" placeholder="收费方式">
                             <el-option v-if="editDataForm.localFee >= 1" v-for="item in otherComputeModeList" :key="item.id" :label="item.name" :value="item.id">
                             </el-option>
                             <el-option v-else v-for="item in computeModeList" :key="item.id" :label="item.name" :value="item.id">
                             </el-option>
                         </el-select>
                     </el-form-item>
-                    <el-form-item label="银行列表：">
-                        <el-select clearable filterable multiple collapse-tags v-model="editDataForm.bids" placeholder="银行列表">
+                    <el-form-item :rules="[{ required: true}]" label="银行列表：">
+                        <el-select clearable filterable multiple collapse-tags v-model="editDataForm.bids" style="width: 453px;" placeholder="银行列表">
                             <el-option v-for="item in bankList" :key="item.id" :label="item.bankName" :value="item.id">
+                            </el-option>
+                        </el-select>
+                    </el-form-item>
+                    <el-form-item :rules="[{ required: true}]" label="退款类型：">
+                        <el-select clearable v-model="editDataForm.refundType" style="width: 453px;" placeholder="退款类型">
+                            <el-option v-for="item in refundType" :key="item.id" :label="item.name" :value="item.id">
                             </el-option>
                         </el-select>
                     </el-form-item>
@@ -174,6 +191,7 @@
 </template>
 
 <script>
+import { timestampToDate } from '../../functions/index.js'
 export default {
     data() {
         return {
@@ -205,6 +223,7 @@ export default {
                 channelState: '',
                 computeMode: '',
                 bids: [],
+                refundType: '',
                 remark: ''
             },
             channelStateList: [
@@ -238,7 +257,22 @@ export default {
                 }
             ],
             // 银行列表
-            bankList: []
+            bankList: [],
+            // 退款类型（1:联机原路退款、2:脱机原路退款、3:手工打款）
+            refundType: [
+                {
+                    id: '1',
+                    name: '联机原路退款'
+                },
+                {
+                    id: '2',
+                    name: '脱机原路退款'
+                },
+                {
+                    id: '3',
+                    name: '手工打款'
+                }
+            ]
         }
     },
     methods: {
@@ -250,8 +284,7 @@ export default {
             }
         },
         dateFormatter(row) {
-            let date = row.executeTime
-            if (date) return this.$moment(date).format('YYYY-MM-DD HH:mm:ss')
+            return timestampToDate(row.executeTime)
         },
         // 分页导航
         handleCurrentChange(val) {
@@ -464,6 +497,14 @@ export default {
                 })
                 return false
             }
+            if (!this.addDataForm.refundType) {
+                this.$notify.warning({
+                    duration: 2000,
+                    title: '警告',
+                    message: '退款类型不能为空！'
+                })
+                return false
+            }
             this.$httpPost('/admin/epay/channelInfo/save', {
                 channelName: this.addDataForm.channelName,
                 channelAccessCode: this.addDataForm.channelAccessCode,
@@ -474,7 +515,8 @@ export default {
                 remark: this.addDataForm.remark,
                 unionMerNo: this.addDataForm.unionMerNo,
                 acqInsCode: this.addDataForm.acqInsCode,
-                bids: this.addDataForm.bids
+                bids: this.addDataForm.bids,
+                refundType: this.addDataForm.refundType
             })
                 .then(data => {
                     vm.$notify.success({
@@ -502,6 +544,7 @@ export default {
             this.editDataForm.remark = row.remark
             this.editDataForm.unionMerNo = row.unionMerNo
             this.editDataForm.acqInsCode = row.acqInsCode
+            this.editDataForm.refundType = row.refundType
         },
         cancelEdit() {
             this.isShowEdit = false
@@ -625,6 +668,14 @@ export default {
                 })
                 return false
             }
+            if (!this.editDataForm.refundType) {
+                this.$notify.warning({
+                    duration: 2000,
+                    title: '警告',
+                    message: '退款类型不能为空！'
+                })
+                return false
+            }
             this.$httpPost('/admin/epay/channelInfo/update', {
                 id: this.editDataForm.id,
                 channelName: this.editDataForm.channelName,
@@ -636,7 +687,8 @@ export default {
                 remark: this.editDataForm.remark,
                 unionMerNo: this.editDataForm.unionMerNo,
                 acqInsCode: this.editDataForm.acqInsCode,
-                bids: this.editDataForm.bids
+                bids: this.editDataForm.bids,
+                refundType: this.editDataForm.refundType
             })
                 .then(data => {
                     vm.$notify.success({

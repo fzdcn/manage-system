@@ -139,7 +139,7 @@
                     <el-form-item label="交易金额(元):">
                         <el-input :disabled="true" v-model="detailDataForm.tradeAmount"></el-input>
                     </el-form-item>
-                    <!-- <el-form-item label="交易费率:">
+                    <!-- <el-form-item  label="交易费率:">
                         <el-input :disabled="true" v-model="detailDataForm.tradeRate"></el-input>
                     </el-form-item> -->
                     <el-form-item label="交易手续费(元):">
@@ -204,6 +204,7 @@
 
 <script>
 import { API_BASE, DEBUG } from '../../config/config'
+import { timestampToDate } from '../../functions/index.js'
 
 export default {
     data() {
@@ -297,26 +298,16 @@ export default {
             let orderNo = this.searchDataForm.orderNo
                 ? this.searchDataForm.orderNo
                 : ''
-            let startTradeTime = this.searchDataForm.startTradeTime
-                ? this.$moment(vm.searchDataForm.startTradeTime).format(
-                      'YYYY-MM-DD HH:mm:ss'
-                  )
-                : ''
-            let endTradeTime = this.searchDataForm.endTradeTime
-                ? this.$moment(vm.searchDataForm.endTradeTime).format(
-                      'YYYY-MM-DD HH:mm:ss'
-                  )
-                : ''
-            let startBankReturnTime = this.searchDataForm.startBankReturnTime
-                ? this.$moment(vm.searchDataForm.startBankReturnTime).format(
-                      'YYYY-MM-DD HH:mm:ss'
-                  )
-                : ''
-            let endBankReturnTime = this.searchDataForm.endBankReturnTime
-                ? this.$moment(vm.searchDataForm.endBankReturnTime).format(
-                      'YYYY-MM-DD HH:mm:ss'
-                  )
-                : ''
+            let startTradeTime = timestampToDate(
+                this.searchDataForm.startTradeTime
+            )
+            let endTradeTime = timestampToDate(this.searchDataForm.endTradeTime)
+            let startBankReturnTime = timestampToDate(
+                this.searchDataForm.startBankReturnTime
+            )
+            let endBankReturnTime = timestampToDate(
+                this.searchDataForm.endBankReturnTime
+            )
             let tradeState = this.searchDataForm.tradeState
                 ? this.searchDataForm.tradeState
                 : ''
@@ -356,9 +347,7 @@ export default {
                 platformId
         },
         tradeTimeForMatter(row, column) {
-            let tradeTime = row.tradeTime
-            if (tradeTime)
-                return this.$moment(tradeTime).format('YYYY-MM-DD HH:mm:ss')
+            return timestampToDate(row.tradeTime)
         },
         // 获取交易状态
         getTradeState(params) {
@@ -435,11 +424,6 @@ export default {
                     break
             }
         },
-        // 时间戳转换
-        timeForMatter(timestamp) {
-            if (timestamp)
-                return this.$moment(timestamp).format('YYYY-MM-DD HH:mm:ss')
-        },
         handleDetail(row) {
             this.isShowDetail = true
             this.detailDataForm.merchantCode = row.merchantCode
@@ -447,15 +431,15 @@ export default {
             this.detailDataForm.merchantOrderNo = row.merchantOrderNo
             this.detailDataForm.orderNo = row.orderNo
             this.detailDataForm.tradeState = this.getTradeState(row.tradeState)
-            this.detailDataForm.tradeTime = this.timeForMatter(row.tradeTime)
+            this.detailDataForm.tradeTime = timestampToDate(row.tradeTime)
             this.detailDataForm.tradeAmount = row.tradeAmount
             this.detailDataForm.tradeRate = row.tradeRate
             this.detailDataForm.tradeFee = row.tradeFee
             this.detailDataForm.bankOrderNo = row.bankOrderNo
-            this.detailDataForm.bankReturnTime = this.timeForMatter(
+            this.detailDataForm.bankReturnTime = timestampToDate(
                 row.bankReturnTime
             )
-            this.detailDataForm.upplementTime = this.timeForMatter(
+            this.detailDataForm.upplementTime = timestampToDate(
                 row.upplementTime
             )
             this.detailDataForm.channelName = row.channelName
@@ -492,26 +476,16 @@ export default {
                 merchantCode: this.searchDataForm.merchantCode,
                 merchantOrderNo: this.searchDataForm.merchantOrderNo,
                 orderNo: this.searchDataForm.orderNo,
-                startTradeTime: this.searchDataForm.startTradeTime
-                    ? this.$moment(vm.searchDataForm.startTradeTime).format(
-                          'YYYY-MM-DD HH:mm:ss'
-                      )
-                    : '',
-                endTradeTime: this.searchDataForm.endTradeTime
-                    ? this.$moment(vm.searchDataForm.endTradeTime).format(
-                          'YYYY-MM-DD HH:mm:ss'
-                      )
-                    : '',
-                startBankReturnTime: this.searchDataForm.startBankReturnTime
-                    ? this.$moment(
-                          vm.searchDataForm.startBankReturnTime
-                      ).format('YYYY-MM-DD HH:mm:ss')
-                    : '',
-                endBankReturnTime: this.searchDataForm.endBankReturnTime
-                    ? this.$moment(vm.searchDataForm.endBankReturnTime).format(
-                          'YYYY-MM-DD HH:mm:ss'
-                      )
-                    : '',
+                startTradeTime: timestampToDate(
+                    this.searchDataForm.startTradeTime
+                ),
+                endTradeTime: timestampToDate(this.searchDataForm.endTradeTime),
+                startBankReturnTime: timestampToDate(
+                    this.searchDataForm.startBankReturnTime
+                ),
+                endBankReturnTime: timestampToDate(
+                    this.searchDataForm.endBankReturnTime
+                ),
                 tradeState: this.searchDataForm.tradeState,
                 payType: this.searchDataForm.payType,
                 channelId: this.searchDataForm.channelId,
@@ -535,26 +509,16 @@ export default {
                 merchantCode: this.searchDataForm.merchantCode,
                 merchantOrderNo: this.searchDataForm.merchantOrderNo,
                 orderNo: this.searchDataForm.orderNo,
-                startTradeTime: this.searchDataForm.startTradeTime
-                    ? this.$moment(vm.searchDataForm.startTradeTime).format(
-                          'YYYY-MM-DD HH:mm:ss'
-                      )
-                    : '',
-                endTradeTime: this.searchDataForm.endTradeTime
-                    ? this.$moment(vm.searchDataForm.endTradeTime).format(
-                          'YYYY-MM-DD HH:mm:ss'
-                      )
-                    : '',
-                startBankReturnTime: this.searchDataForm.startBankReturnTime
-                    ? this.$moment(
-                          vm.searchDataForm.startBankReturnTime
-                      ).format('YYYY-MM-DD HH:mm:ss')
-                    : '',
-                endBankReturnTime: this.searchDataForm.endBankReturnTime
-                    ? this.$moment(vm.searchDataForm.endBankReturnTime).format(
-                          'YYYY-MM-DD HH:mm:ss'
-                      )
-                    : '',
+                startTradeTime: timestampToDate(
+                    this.searchDataForm.startTradeTime
+                ),
+                endTradeTime: timestampToDate(this.searchDataForm.endTradeTime),
+                startBankReturnTime: timestampToDate(
+                    this.searchDataForm.startBankReturnTime
+                ),
+                endBankReturnTime: timestampToDate(
+                    this.searchDataForm.endBankReturnTime
+                ),
                 tradeState: this.searchDataForm.tradeState,
                 payType: this.searchDataForm.payType,
                 channelId: this.searchDataForm.channelId,

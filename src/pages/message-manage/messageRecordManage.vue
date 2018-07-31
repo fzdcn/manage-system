@@ -77,6 +77,7 @@
 </template>
 
 <script>
+import { timestampToDate } from '../../functions/index'
 export default {
     data() {
         return {
@@ -108,9 +109,7 @@ export default {
             this.getData()
         },
         dateFormatter(row, column) {
-            let loginDate = row.sendTime
-            if (loginDate)
-                return this.$moment(loginDate).format('YYYY-MM-DD HH:mm:ss')
+            return timestampToDate(row.sendTime)
         },
         getData() {
             let vm = this
@@ -120,16 +119,8 @@ export default {
                 smsChannel: this.searchDataForm.smsChannel,
                 phone: this.searchDataForm.phone,
                 content: this.searchDataForm.content,
-                startTime: this.searchDataForm.startTime
-                    ? this.$moment(vm.searchDataForm.startTime).format(
-                          'YYYY-MM-DD HH:mm:ss'
-                      )
-                    : '',
-                endTime: this.searchDataForm.endTime
-                    ? this.$moment(vm.searchDataForm.endTime).format(
-                          'YYYY-MM-DD HH:mm:ss'
-                      )
-                    : '',
+                startTime: timestampToDate(this.searchDataForm.startTime),
+                endTime: timestampToDate(this.searchDataForm.endTime),
                 platformId: this.searchDataForm.platformId,
                 templateCode: this.searchDataForm.templateCode
             })
@@ -151,16 +142,8 @@ export default {
                 smsChannel: this.searchDataForm.smsChannel,
                 phone: this.searchDataForm.phone,
                 content: this.searchDataForm.content,
-                startTime: this.searchDataForm.startTime
-                    ? this.$moment(vm.searchDataForm.startTime).format(
-                          'YYYY-MM-DD HH:mm:ss'
-                      )
-                    : '',
-                endTime: this.searchDataForm.endTime
-                    ? this.$moment(vm.searchDataForm.endTime).format(
-                          'YYYY-MM-DD HH:mm:ss'
-                      )
-                    : '',
+                startTime: timestampToDate(this.searchDataForm.startTime),
+                endTime: timestampToDate(this.searchDataForm.endTime),
                 platformId: this.searchDataForm.platformId,
                 templateCode: this.searchDataForm.templateCode
             })

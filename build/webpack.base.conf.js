@@ -7,7 +7,9 @@ const vueLoaderConfig = require('./vue-loader.conf')
 // 增加HappyPack插件
 const HappyPack = require('happypack')
 const os = require('os')
-const happyThreadPool = HappyPack.ThreadPool({size: os.cpus().length})
+const happyThreadPool = HappyPack.ThreadPool({
+    size: os.cpus().length
+})
 
 function resolve(dir) {
     return path.join(__dirname, '..', dir)
@@ -19,12 +21,12 @@ module.exports = {
     entry: {
         app: './src/main.js'
     },
+    // entry: ['babel-polyfill', './src/main.js'],
     output: {
         path: config.build.assetsRoot,
         filename: '[name].js',
-        publicPath: process.env.NODE_ENV === 'development'
-            ? config.dev.assetsPublicPath
-            : config.build.assetsPublicPath
+        publicPath: process.env.NODE_ENV === 'development' ?
+            config.dev.assetsPublicPath : config.build.assetsPublicPath
     },
     // 增加HappyPack插件
     plugins: [
@@ -50,8 +52,7 @@ module.exports = {
         }
     },
     module: {
-        rules: [
-            {
+        rules: [{
                 test: /\.vue$/,
                 loader: 'vue-loader',
                 options: vueLoaderConfig

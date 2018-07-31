@@ -68,26 +68,26 @@
         <el-dialog title="增加后台账户" :visible.sync="isShowAdd" :before-close="cancelAdd" width="500px" center>
             <div class="form-content" style="margin: 0 auto;width: 90%;">
                 <el-form ref="addDataForm" :model="addDataForm" label-width="100px">
-                    <el-form-item label="用户名：">
+                    <el-form-item :rules="[{ required: true}]" label="用户名：">
                         <el-input clearable v-model.trim="addDataForm.username" maxlength="15" placeholder="只能是15位以内英文或英文加数字组合"></el-input>
                     </el-form-item>
-                    <el-form-item label="密码：">
+                    <el-form-item :rules="[{ required: true}]" label="密码：">
                         <el-input clearable type="password" v-model.trim="addDataForm.password" maxlength="15" placeholder="长度不超过20位的字母数字组合"></el-input>
                     </el-form-item>
-                    <el-form-item label="确认密码：">
+                    <el-form-item :rules="[{ required: true}]" label="确认密码：">
                         <el-input clearable type="password" v-model.trim="addDataForm.confirmPassword" maxlength="15" placeholder="长度不超过20位的字母数字组合"></el-input>
                     </el-form-item>
-                    <el-form-item label="姓名：">
+                    <el-form-item :rules="[{ required: true}]" label="姓名：">
                         <el-input clearable v-model.trim="addDataForm.name" maxlength="10" placeholder="姓名只能是10位以内汉字"></el-input>
                     </el-form-item>
-                    <el-form-item label="手机号码：">
+                    <el-form-item :rules="[{ required: true}]" label="手机号码：">
                         <el-input clearable type="tel" v-model.trim="addDataForm.telephone" placeholder="请输入手机号码"></el-input>
                     </el-form-item>
-                    <el-form-item label="邮箱：">
+                    <el-form-item :rules="[{ required: true}]" label="邮箱：">
                         <el-input clearable type="email" v-model.trim="addDataForm.email" placeholder="邮箱"></el-input>
                     </el-form-item>
-                    <el-form-item label="角色：">
-                        <el-select clearable v-model="addDataForm.selectedRole" placeholder="请选择角色">
+                    <el-form-item :rules="[{ required: true}]" label="角色：">
+                        <el-select clearable v-model="addDataForm.selectedRole" style="width: 305px;" placeholder="请选择角色">
                             <el-option v-for="item in roleList" :key="item.id" :label="item.name" :value="item.id">
                             </el-option>
                         </el-select>
@@ -107,13 +107,13 @@
         <el-dialog title="修改密码" :visible.sync="isShowModify" :before-close="cancelModify" width="500px" center>
             <div class="form-content" style="margin: 0 auto;width: 90%;">
                 <el-form ref="modifyDataForm" :model="modifyDataForm" label-width="100px">
-                    <el-form-item label="用户名：">
+                    <el-form-item :rules="[{ required: true}]" label="用户名：">
                         <el-input clearable v-model.trim="modifyDataForm.username" maxlength="15" placeholder="最长15位" :disabled="true"></el-input>
                     </el-form-item>
-                    <el-form-item label="密码：">
+                    <el-form-item :rules="[{ required: true}]" label="密码：">
                         <el-input clearable type="password" v-model.trim="modifyDataForm.password" maxlength="20" placeholder="长度不超过20位的字母数字组合"></el-input>
                     </el-form-item>
-                    <el-form-item label="确认密码：">
+                    <el-form-item :rules="[{ required: true}]" label="确认密码：">
                         <el-input clearable type="password" v-model.trim="modifyDataForm.confirmPassword" maxlength="20" placeholder="长度不超过20位的字母数字组合"></el-input>
                     </el-form-item>
                 </el-form>
@@ -128,32 +128,32 @@
         <el-dialog title="编辑后台账户" :visible.sync="isShowEdit" :before-close="cancelEdit" width="500px" center>
             <div class="form-content" style="margin: 0 auto;width: 90%;">
                 <el-form ref="editDataForm" :model="editDataForm" label-width="100px">
-                    <el-form-item label="用户名：">
+                    <el-form-item :rules="[{ required: true}]" label="用户名：">
                         <el-input clearable v-model.trim="editDataForm.username" maxlength="15" placeholder="只能是15位以内英文或英文加数字组合" :disabled="true"></el-input>
                     </el-form-item>
-                    <el-form-item label="姓名：">
+                    <el-form-item :rules="[{ required: true}]" label="姓名：">
                         <el-input clearable v-model.trim="editDataForm.name" maxlength="10" placeholder="姓名只能是10位以内汉字"></el-input>
                     </el-form-item>
-                    <el-form-item label="手机号码：">
+                    <el-form-item :rules="[{ required: true}]" label="手机号码：">
                         <el-input clearable type="tel" v-model.trim="editDataForm.phone" placeholder="手机号码"></el-input>
                     </el-form-item>
-                    <el-form-item label="邮箱：">
+                    <el-form-item :rules="[{ required: true}]" label="邮箱：">
                         <el-input clearable type="email" v-model.trim="editDataForm.email" placeholder="邮箱"></el-input>
                     </el-form-item>
-                    <el-form-item label="角色：">
-                        <el-select clearable v-model="editDataForm.roleId" placeholder="角色">
+                    <el-form-item :rules="[{ required: true}]" label="角色：">
+                        <el-select clearable v-model="editDataForm.roleId" style="width: 305px;" placeholder="角色">
                             <el-option v-for="item in roleList" :key="item.id" :label="item.name" :value="item.id">
                             </el-option>
                         </el-select>
                     </el-form-item>
-                    <el-form-item label="状态：">
-                        <el-select clearable v-model="editDataForm.status" placeholder="状态">
+                    <el-form-item :rules="[{ required: true}]" label="状态：">
+                        <el-select clearable v-model="editDataForm.status" style="width: 305px;" placeholder="状态">
                             <el-option v-for="item in roleStatus" :key="item.status" :label="item.name" :value="item.status">
                             </el-option>
                         </el-select>
                     </el-form-item>
-                    <el-form-item label="锁定状态：">
-                        <el-select clearable v-model="editDataForm.lockedOrNo" placeholder="锁定状态">
+                    <el-form-item :rules="[{ required: true}]" label="锁定状态：">
+                        <el-select clearable v-model="editDataForm.lockedOrNo" style="width: 305px;" placeholder="锁定状态">
                             <el-option v-for="item in roleLockedOrNo" :key="item.lockedOrNo" :label="item.name" :value="item.lockedOrNo">
                             </el-option>
                         </el-select>
@@ -172,27 +172,12 @@
 </template>
 
 <script>
-import { regTel, regEmail } from '../../../functions/index'
-
+import { regTel, regEmail, timestampToDate } from '../../../functions/index'
 export default {
     data() {
         return {
             paginationShow: true,
-            getDataList: [
-                /*{
-                        email: "",
-                        id: '',
-                        lockedOrNo: '',
-                        name: "",
-                        passId: "",
-                        phone: "",
-                        roleId: '',
-                        roleName: "",
-                        status: '',
-                        username: "",
-                        loginDate: ""
-                    }*/
-            ],
+            getDataList: [],
             searchDataForm: {
                 username: '',
                 status: '',
@@ -256,6 +241,7 @@ export default {
         }
     },
     methods: {
+        // 同步获取角色数据
         getRoleList() {
             let vm = this
             return this.$httpGet('/admin/admin/getAdminRoleList', {})
@@ -317,6 +303,7 @@ export default {
                     console.log(data)
                 })
         },
+        // 同步获取表格初始数据
         getData() {
             return this.$httpGet('/admin/admin/index', {
                 pageNo: this.cur_page,
@@ -341,17 +328,10 @@ export default {
             }
         },
         lockedOrNoFormatter(row, column) {
-            let lockedOrNo = row.lockedOrNo
-            if (lockedOrNo) {
-                return '已被锁'
-            } else if (lockedOrNo === false) {
-                return '未被锁'
-            }
+            return row.lockedOrNo ? '已被锁' : '未被锁'
         },
         loginDateFormatter(row, column) {
-            let loginDate = row.loginDate
-            if (loginDate)
-                return this.$moment(loginDate).format('YYYY-MM-DD HH:mm:ss')
+            return timestampToDate(row.loginDate)
         },
         add() {
             this.isShowAdd = true
@@ -501,22 +481,7 @@ export default {
                         message: data.message
                     })
                     vm.cancelAdd()
-                    vm
-                        .$httpGet('/admin/admin/index', {
-                            pageNo: 1,
-                            pageSize: 10,
-                            userName: '',
-                            status: '',
-                            roleId: ''
-                        })
-                        .then(({ data }) => {
-                            vm.getDataList = data.page.list
-                            vm.total = data.page.total
-                            vm.handleCurrentChange(1)
-                        })
-                        .catch(data => {
-                            console.log(data)
-                        })
+                    vm.handleCurrentChange(1)
                 })
                 .catch(data => {
                     console.log(data)
@@ -681,7 +646,10 @@ export default {
                 })
                 return false
             }
-            if (!this.editDataForm.lockedOrNo) {
+            if (
+                this.editDataForm.lockedOrNo !== false &&
+                this.editDataForm.lockedOrNo !== true
+            ) {
                 this.$notify.warning({
                     duration: 2000,
                     title: '警告',

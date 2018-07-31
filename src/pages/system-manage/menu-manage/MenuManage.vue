@@ -3,7 +3,7 @@
         <div class="container">
             <div class="add" style="margin-bottom: 30px;">
                 <el-button type="primary" size="medium" icon="el-icon-plus" @click="add">增加</el-button>
-                <el-button type="primary" size="medium" icon="el-icon-view" @click="handleDetail">iconFont</el-button>
+                <el-button type="primary" size="medium" icon="el-icon-view" @click="handleDetail">icon-font</el-button>
             </div>
             <el-table :data="getDataList" ref="itemTable" border style="width: 100%;">
                 <el-table-column show-overflow-tooltip prop="name" label="名称">
@@ -39,26 +39,26 @@
         <el-dialog title="增加后台菜单" :visible.sync="isShowAdd" :before-close="cancelAdd" width="500px" center>
             <div class="form-content" style="margin: 0 auto;width: 90%;">
                 <el-form ref="addDataForm" :model="addDataForm" label-width="100px">
-                    <el-form-item label="菜单名：">
+                    <el-form-item :rules="[{ required: true}]" label="菜单名：">
                         <el-input clearable v-model.trim="addDataForm.name" maxlength="10" placeholder="只能是10位以内英文或汉字"></el-input>
                     </el-form-item>
                     <el-form-item label="ICON：">
                         <el-input clearable v-model.trim="addDataForm.icon" placeholder="如：el-icon-setting"></el-input>
                     </el-form-item>
-                    <el-form-item label="类型：">
-                        <el-select clearable v-model.trim="addDataForm.type" placeholder="类型">
+                    <el-form-item :rules="[{ required: true}]" label="类型：">
+                        <el-select clearable v-model.trim="addDataForm.type" style="width: 305px;" placeholder="类型">
                             <el-option v-for="item in typeList" :key="item.type" :label="item.name" :value="item.type">
                             </el-option>
                         </el-select>
                     </el-form-item>
-                    <el-form-item label="权限key：">
+                    <el-form-item :rules="[{ required: true}]" label="权限key：">
                         <el-input clearable v-model.trim="addDataForm.permission" placeholder="如common:index"></el-input>
                     </el-form-item>
-                    <el-form-item label="URL：">
+                    <el-form-item :rules="[{ required: true}]" label="URL：">
                         <el-input clearable type="tel" v-model.trim="addDataForm.url" placeholder="如:index"></el-input>
                     </el-form-item>
-                    <el-form-item label="父节点：">
-                        <el-select clearable v-model.trim="addDataForm.parentId" placeholder="请选择">
+                    <el-form-item :rules="[{ required: true}]" label="父节点：">
+                        <el-select clearable v-model.trim="addDataForm.parentId" style="width: 305px;" placeholder="请选择">
                             <el-option v-for="item in menuList" :key="item.id" :label="item.name" :value="item.id">
                                 <span v-if="item.grade == 0" style="float: left;color: blue;">{{ item.name }}</span>
                                 <span v-if="item.grade == 1" style="float: left;color: dodgerblue;">&nbsp;&nbsp;{{ item.name }}</span>
@@ -67,7 +67,7 @@
                             </el-option>
                         </el-select>
                     </el-form-item>
-                    <el-form-item label="排序：">
+                    <el-form-item :rules="[{ required: true}]" label="排序：">
                         <el-input type="number" v-model.trim="addDataForm.orders" placeholder="必须为正整数"></el-input>
                     </el-form-item>
                 </el-form>
@@ -82,26 +82,26 @@
             <div class="form-content" style="margin: 0 auto;width: 90%;">
                 <el-form ref="editDataForm" :model="editDataForm" label-width="100px">
 
-                    <el-form-item label="菜单名：">
+                    <el-form-item :rules="[{ required: true}]" label="菜单名：">
                         <el-input clearable v-model.trim="editDataForm.name" maxlength="10" placeholder="只能是10位以内英文或汉字"></el-input>
                     </el-form-item>
                     <el-form-item label="ICON：">
                         <el-input clearable v-model.trim="editDataForm.icon" placeholder="如：el-icon-setting"></el-input>
                     </el-form-item>
-                    <el-form-item label="类型：">
-                        <el-select clearable v-model.trim="editDataForm.type" placeholder="类型">
+                    <el-form-item :rules="[{ required: true}]" label="类型：">
+                        <el-select clearable v-model.trim="editDataForm.type" style="width: 305px;" placeholder="类型">
                             <el-option v-for="item in typeList" :key="item.type" :label="item.name" :value="item.type">
                             </el-option>
                         </el-select>
                     </el-form-item>
-                    <el-form-item label="权限key：">
+                    <el-form-item :rules="[{ required: true}]" label="权限key：">
                         <el-input clearable v-model.trim="editDataForm.permission" placeholder="如common:index"></el-input>
                     </el-form-item>
-                    <el-form-item label="URL：">
+                    <el-form-item :rules="[{ required: true}]" label="URL：">
                         <el-input clearable type="tel" v-model.trim="editDataForm.url" placeholder="如:index"></el-input>
                     </el-form-item>
-                    <el-form-item label="父节点：">
-                        <el-select clearable v-model.trim="editDataForm.parentId" placeholder="请选择">
+                    <el-form-item :rules="[{ required: true}]" label="父节点：">
+                        <el-select clearable v-model.trim="editDataForm.parentId" style="width: 305px;" placeholder="请选择">
                             <el-option v-for="item in menuList" :key="item.id" :label="item.name" :value="item.id">
                                 <span v-if="item.grade == 0" style="float: left;color: blue;">{{ item.name }}</span>
                                 <span v-if="item.grade == 1" style="float: left;color: dodgerblue;">&nbsp;&nbsp;{{ item.name }}</span>
@@ -110,7 +110,7 @@
                             </el-option>
                         </el-select>
                     </el-form-item>
-                    <el-form-item label="排序：">
+                    <el-form-item :rules="[{ required: true}]" label="排序：">
                         <el-input type="number" v-model.trim="editDataForm.orders" placeholder="必须为正整数"></el-input>
                     </el-form-item>
                 </el-form>
@@ -169,10 +169,7 @@ export default {
     },
     methods: {
         handleDetail() {
-            const { href } = this.$router.resolve({
-                name: 'icon-font'
-            })
-            window.open(href, '_blank')
+            this.$router.push({ name: 'icon-font' })
         },
         // 菜单列表,同步需要
         getMenuData() {

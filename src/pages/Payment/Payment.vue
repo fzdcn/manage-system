@@ -17,7 +17,7 @@
                 <el-tabs type="border-card">
                     <el-tab-pane class="tab-quick-payment" label="快捷支付">
                         <el-form ref="form" :model="form" label-width="100px">
-                            <el-form-item label="银行卡：">
+                            <el-form-item :rules="[{ required: true}]" label="银行卡：">
                                 <el-select clearable v-model="form.selectedBank" placeholder="请选择银行">
                                     <el-option v-for="item in form.bankList" :key="item.value" :label="item.label" :value="item.value">
                                         <span style="float: left">{{ item.label }}</span>
@@ -25,31 +25,31 @@
                                     </el-option>
                                 </el-select>
                             </el-form-item>
-                            <el-form-item label="银行卡号：">
+                            <el-form-item :rules="[{ required: true}]" label="银行卡号：">
                                 <el-input v-model.trim="form.bankNumber"></el-input>
                             </el-form-item>
-                            <el-form-item label="银行卡类型：">
+                            <el-form-item :rules="[{ required: true}]" label="银行卡类型：">
                                 <el-select clearable v-model="form.selectedBankCardType" placeholder="请选择">
                                     <el-option v-for="item in form.bankCardType" :key="item.value" :label="item.label" :value="item.value">
                                     </el-option>
                                 </el-select>
                             </el-form-item>
-                            <el-form-item label="开户名：">
+                            <el-form-item :rules="[{ required: true}]" label="开户名：">
                                 <el-input v-model.trim="form.accountName"></el-input>
                             </el-form-item>
-                            <el-form-item label="证件类型：">
+                            <el-form-item :rules="[{ required: true}]" label="证件类型：">
                                 <el-select clearable v-model="form.selectedCertificatesType" placeholder="请选择">
                                     <el-option v-for="item in form.certificatesType" :key="item.value" :label="item.label" :value="item.value">
                                     </el-option>
                                 </el-select>
                             </el-form-item>
-                            <el-form-item label="证件号码：">
+                            <el-form-item :rules="[{ required: true}]" label="证件号码：">
                                 <el-input v-model.trim="form.identificationNumber"></el-input>
                             </el-form-item>
-                            <el-form-item label="手机号码：">
+                            <el-form-item :rules="[{ required: true}]" label="手机号码：">
                                 <el-input v-model.trim="form.telephone"></el-input>
                             </el-form-item>
-                            <el-form-item label="验证码：">
+                            <el-form-item :rules="[{ required: true}]" label="验证码：">
                                 <el-row :gutter="50">
                                     <el-col :span="10">
                                         <el-input v-model.trim="form.verificationCode"></el-input>
@@ -60,7 +60,7 @@
                                 </el-row>
                             </el-form-item>
                             <div class="submit-button">
-                                <el-form-item>
+                                <el-form-item :rules="[{ required: true}]">
                                     <el-row :gutter="50">
                                         <el-col :span="6">
                                             <el-button size="medium" type="primary" @click="onSubmit">提交</el-button>
