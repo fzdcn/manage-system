@@ -143,24 +143,6 @@ const routes = [{
                 },
             },
             {
-                path: '/bank-number-manage',
-                name: 'bank-number-manage',
-                component: resolve => require(['../pages/system-manage/bank-number-manage/BankNumberManage.vue'], resolve),
-                meta: {
-                    title: '银行号管理',
-                    permission: false,
-                    breadcrumb: [{
-                            url: false,
-                            title: '系统设置'
-                        },
-                        {
-                            url: false,
-                            title: '银行号管理'
-                        }
-                    ]
-                },
-            },
-            {
                 path: '/bank-info-manage',
                 name: 'bank-info-manage',
                 component: resolve => require(['../pages/system-manage/bank-info-manage/BankInfoManage.vue'], resolve),
@@ -423,6 +405,16 @@ const routes = [{
                 component: resolve => require(['../pages/permission/Index.vue'], resolve),
                 meta: {
                     title: '角色管理',
+                    permission: true
+                }
+            },
+            {
+                // 商户账户页面
+                path: '/merchant-manage',
+                name: 'merchant-manage',
+                component: resolve => require(['../pages/merchant-manage/merchantAccountManage.vue'], resolve),
+                meta: {
+                    title: '商户账户管理',
                     permission: true
                 }
             }

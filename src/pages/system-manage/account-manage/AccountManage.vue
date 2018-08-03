@@ -28,7 +28,7 @@
                     <el-button type="primary" icon="el-icon-search" @click="handleCurrentChange(1)">搜索</el-button>
                 </div>
             </div>
-            <el-table :data="getDataList" border style="width: 100%;">
+            <el-table v-loading="loading" :data="getDataList" border style="width: 100%;">
                 <el-table-column show-overflow-tooltip prop="id" label="ID">
                 </el-table-column>
                 <el-table-column show-overflow-tooltip prop="username" label="用户名">
@@ -176,6 +176,7 @@ import { regTel, regEmail, timestampToDate } from '../../../functions/index'
 export default {
     data() {
         return {
+            loading: true,
             paginationShow: true,
             getDataList: [],
             searchDataForm: {
@@ -241,11 +242,6 @@ export default {
         }
     },
     methods: {
-        // 同步获取角色数据
-        getRoleList() {
-            let vm = this
-            return this.$httpGet('/admin/admin/getAdminRoleList', {})
-        },
         // 分页导航
         handleCurrentChange(val) {
             this.cur_page = val
@@ -285,7 +281,17 @@ export default {
                     })
                 })
         },
-        dataList() {
+        getRoleList() {
+            let vm = this
+            this.$httpGet('/admin/admin/getAdminRoleList', {})
+                .then(({ data }) => {
+                    vm.roleList = data
+                })
+                .catch(data => {
+                    console.log(data)
+                })
+        },
+        getData() {
             let vm = this
             this.$httpGet('/admin/admin/index', {
                 pageNo: this.cur_page,
@@ -298,20 +304,11 @@ export default {
                     vm.getDataList = data.page.list
                     vm.total = data.page.total
                     vm.paginationShow = true
+                    vm.loading = false
                 })
                 .catch(data => {
                     console.log(data)
                 })
-        },
-        // 同步获取表格初始数据
-        getData() {
-            return this.$httpGet('/admin/admin/index', {
-                pageNo: this.cur_page,
-                pageSize: 10,
-                userName: this.searchDataForm.username,
-                status: this.searchDataForm.status,
-                roleId: this.searchDataForm.role
-            })
         },
         statusFormatter(row, column) {
             let status = row.status
@@ -679,22 +676,11 @@ export default {
                 .catch(data => {
                     console.log(data)
                 })
-        },
-        async getAllData() {
-            let vm = this
-            await Promise.all([vm.getRoleList(), vm.getData()])
-                .then(data => {
-                    vm.roleList = data[0].data
-                    vm.getDataList = data[1].data.page.list
-                    vm.total = data[1].data.page.total
-                })
-                .catch(data => {
-                    console.log(data)
-                })
         }
     },
     created() {
-        this.getAllData()
+        this.getData()
+        this.getRoleList()
     }
 }
 </script>

@@ -28,7 +28,7 @@
                     <el-button type="primary" icon="el-icon-search" @click="handleCurrentChange(1)">搜索</el-button>
                 </div>
             </div>
-            <el-table :data="getDataList" border style="width: 100%;">
+            <el-table v-loading="loading" :data="getDataList" border style="width: 100%;">
                 <el-table-column show-overflow-tooltip prop="platformId" label="平台标识">
                     <template slot-scope="scope">
                         <span v-if="scope.row.platformId == item.id" v-for="(item,index) in platformIdList">{{ item.platformName }}</span>
@@ -173,6 +173,7 @@ export default {
             downLoadUrl:
                 'http://' + window.location.host + '/SMS_template.xlsx',
             paginationShow: true,
+            loading: true,
             getDataList: [],
             // 当前页
             cur_page: 1,
@@ -308,20 +309,11 @@ export default {
                     vm.getDataList = data.list
                     vm.total = data.total
                     vm.paginationShow = true
+                    vm.loading = false
                 })
                 .catch(data => {
                     console.log(data)
                 })
-        },
-        // 需要同步
-        getListData() {
-            return this.$httpGet('/admin/sms/smsTemplateList', {
-                pageNo: this.cur_page,
-                pageSize: 10,
-                templateCode: this.searchDataForm.templateCode,
-                platformId: this.searchDataForm.platformId,
-                sysTemplateCode: this.searchDataForm.sysTemplateCode
-            })
         },
         add() {
             this.isShowAdd = true
@@ -386,8 +378,7 @@ export default {
                         title: '成功',
                         message: data.message
                     })
-                    vm.isShowAdd = false
-                    vm.addDataForm = {}
+                    vm.cancelAdd()
                     vm.handleCurrentChange(1)
                 })
                 .catch(data => {
@@ -472,23 +463,19 @@ export default {
                 })
         },
         getPlatFormList() {
-            return this.$httpGet('/admin/platformInfo/option', {})
-        },
-        async getAllData() {
             let vm = this
-            await Promise.all([vm.getPlatFormList(), vm.getListData()])
-                .then(data => {
-                    vm.platformIdList = data[0].data
-                    vm.getDataList = data[1].data.list
-                    vm.total = data[1].data.total
+            this.$httpGet('/admin/platformInfo/option', {})
+                .then(({ data }) => {
+                    vm.platformIdList = data
                 })
                 .catch(data => {
                     console.log(data)
                 })
         }
     },
-    created() {
-        this.getAllData()
+    mounted() {
+        this.getData()
+        this.getPlatFormList()
     }
 }
 </script>

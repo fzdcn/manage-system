@@ -44,7 +44,7 @@
                     <el-button type="primary" icon="el-icon-search" @click="handleCurrentChange(1)">搜索</el-button>
                 </div>
             </div>
-            <el-table :data="getDataList" border style="width: 100%;">
+            <el-table v-loading="loading" :data="getDataList" border style="width: 100%;">
                 <el-table-column show-overflow-tooltip prop="id" label="编号">
                 </el-table-column>
                 <el-table-column show-overflow-tooltip prop="bankName" label="银行名称">
@@ -194,6 +194,7 @@ import { timestampToDate } from '../../functions/index.js'
 export default {
     data() {
         return {
+            loading: true,
             paginationShow: true,
             getDataList: [],
             // 当前页
@@ -275,6 +276,7 @@ export default {
                     vm.getDataList = data.list
                     vm.total = data.total
                     vm.paginationShow = true
+                    vm.loading = false
                 })
                 .catch(data => {
                     console.log(data)
@@ -700,7 +702,7 @@ export default {
                 })
         }
     },
-    created() {
+    mounted() {
         this.getData()
         this.getPlatFormList()
         this.getProductNameList()

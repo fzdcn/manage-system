@@ -14,7 +14,7 @@
                     <el-button type="primary" icon="el-icon-search" @click="handleCurrentChange(1)">搜索</el-button>
                 </div>
             </div>
-            <el-table :data="getDataList" border style="width: 100%;">
+            <el-table v-loading="loading" :data="getDataList" border style="width: 100%;">
                 <el-table-column show-overflow-tooltip prop="platformNo" label="平台号">
                 </el-table-column>
                 <el-table-column show-overflow-tooltip prop="name" label="平台名称">
@@ -88,6 +88,7 @@
 export default {
     data() {
         return {
+            loading: true,
             paginationShow: true,
             getDataList: [],
             // 当前页
@@ -124,6 +125,7 @@ export default {
                     vm.getDataList = data.list
                     vm.total = data.total
                     vm.paginationShow = true
+                    vm.loading = false
                 })
                 .catch(data => {
                     console.log(data)

@@ -72,7 +72,7 @@
                     <el-button type="primary" icon="el-icon-download" @click="downLoad">下载</el-button>
                 </div>
             </div>
-            <el-table :data="getDataList" border style="width: 100%;">
+            <el-table v-loading="loading" :data="getDataList" border style="width: 100%;">
                 <el-table-column show-overflow-tooltip prop="merchantCode" label="商户号">
                 </el-table-column>
                 <el-table-column show-overflow-tooltip prop="merchantName" label="商户名称">
@@ -209,6 +209,7 @@ import { timestampToDate } from '../../functions/index.js'
 export default {
     data() {
         return {
+            loading: true,
             paginationShow: true,
             getDataList: [],
             // 当前页
@@ -495,64 +496,39 @@ export default {
                     vm.getDataList = data.list
                     vm.total = data.total
                     vm.paginationShow = true
+                    vm.loading = false
                 })
                 .catch(data => {
                     console.log(data)
                 })
         },
-        // 同步
-        getListData() {
-            let vm = this
-            return this.$httpGet('/admin/epay/tradeInfo/index', {
-                pageNo: this.cur_page,
-                pageSize: 10,
-                merchantCode: this.searchDataForm.merchantCode,
-                merchantOrderNo: this.searchDataForm.merchantOrderNo,
-                orderNo: this.searchDataForm.orderNo,
-                startTradeTime: timestampToDate(
-                    this.searchDataForm.startTradeTime
-                ),
-                endTradeTime: timestampToDate(this.searchDataForm.endTradeTime),
-                startBankReturnTime: timestampToDate(
-                    this.searchDataForm.startBankReturnTime
-                ),
-                endBankReturnTime: timestampToDate(
-                    this.searchDataForm.endBankReturnTime
-                ),
-                tradeState: this.searchDataForm.tradeState,
-                payType: this.searchDataForm.payType,
-                channelId: this.searchDataForm.channelId,
-                platformId: this.searchDataForm.platformId
-            })
-        },
         // 银行支付通道
         getChannelInfoList() {
-            return this.$httpGet('/admin/epay/channelInfo/findChannelAll', {})
+            let vm = this
+            this.$httpGet('/admin/epay/channelInfo/findChannelAll', {})
+                .then(({ data }) => {
+                    vm.channelNameList = data
+                })
+                .catch(data => {
+                    console.log(data)
+                })
         },
         // 平台名称
         getPlatFormList() {
-            return this.$httpGet('/admin/platformInfo/option', {})
-        },
-        async getAllData() {
             let vm = this
-            await Promise.all([
-                vm.getChannelInfoList(),
-                vm.getPlatFormList(),
-                vm.getListData()
-            ])
-                .then(data => {
-                    vm.channelNameList = data[0].data
-                    vm.platformIdList = data[1].data
-                    vm.getDataList = data[2].data.list
-                    vm.total = data[2].data.total
+            this.$httpGet('/admin/platformInfo/option', {})
+                .then(({ data }) => {
+                    vm.platformIdList = data
                 })
                 .catch(data => {
                     console.log(data)
                 })
         }
     },
-    created() {
-        this.getAllData()
+    mounted() {
+        this.getData()
+        this.getPlatFormList()
+        this.getChannelInfoList()
     }
 }
 </script>

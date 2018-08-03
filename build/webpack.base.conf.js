@@ -3,6 +3,7 @@ const path = require('path')
 const utils = require('./utils')
 const config = require('../config')
 const vueLoaderConfig = require('./vue-loader.conf')
+const webpack = require("webpack")
 
 // 增加HappyPack插件
 const HappyPack = require('happypack')
@@ -41,6 +42,11 @@ module.exports = {
             threadPool: happyThreadPool,
             //允许 HappyPack 输出日志
             verbose: true,
+        }),
+        new webpack.optimize.CommonsChunkPlugin('common.js'),
+        new webpack.ProvidePlugin({
+            jQuery: "jquery",
+            $: "jquery"
         })
     ],
     resolve: {

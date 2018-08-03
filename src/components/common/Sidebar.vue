@@ -1,13 +1,12 @@
 <template>
     <div class="sidebar">
-        <el-menu @select="handleSelect" class="sidebar-el-menu" :default-active="onRoutes" :collapse="collapse"
-                 background-color="#324157"
-                 text-color="#bfcbd9" active-text-color="#20a0ff" unique-opened>
+        <el-menu @select="handleSelect" class="sidebar-el-menu" :default-active="onRoutes" :collapse="collapse" background-color="#324157" text-color="#bfcbd9" active-text-color="#20a0ff" unique-opened>
             <template v-for="item in menuItems">
                 <template v-if="item.subs">
                     <el-submenu :index="item.url" :key="item.url">
                         <template slot="title">
-                            <i :class="item.icon"></i><span slot="title">{{ item.name }}</span>
+                            <i :class="item.icon"></i>
+                            <span slot="title">{{ item.name }}</span>
                         </template>
                         <el-menu-item v-for="(subItem,i) in item.subs" :key="i" :index="subItem.url">
                             <i :class="subItem.icon"></i>
@@ -17,7 +16,8 @@
                 </template>
                 <template v-else>
                     <el-menu-item :index="item.url" :key="item.url">
-                        <i :class="item.icon"></i><span slot="title">{{ item.name }}</span>
+                        <i :class="item.icon"></i>
+                        <span slot="title">{{ item.name }}</span>
                     </el-menu-item>
                 </template>
             </template>
@@ -26,15 +26,15 @@
 </template>
 
 <script>
-    import bus from '../common/bus';
+import bus from '../common/bus'
 
-    export default {
-        data() {
-            return {
-                collapse: false,
-                menuItems: this.$store.getters.menu,
-                // 菜单列表形式
-                /*menuItems: [
+export default {
+    data() {
+        return {
+            collapse: false,
+            menuItems: this.$store.getters.menu
+            // 菜单列表形式
+            /*menuItems: [
                     {
                         "name": "首页",
                         "icon-font": "iconfont icon-font-shouye1",
@@ -83,42 +83,47 @@
                         ]
                     }
                 ]*/
-            }
-        },
-        computed: {
-            onRoutes() {
-                return this.$route.path.replace('/', '');
-            }
-        },
-        methods: {
-            handleSelect(key, keyPath) {
-                this.$router.push({name: key})
-            },
-        },
-        created() {
-            let vm = this;
-            // // 通过 Event Bus 进行组件间通信，来折叠侧边栏
-            bus.$on('collapse', msg => {
-                this.collapse = msg;
-            });
-        },
+        }
+    },
+    computed: {
+        onRoutes() {
+            return this.$route.path.replace('/', '')
+        }
+    },
+    methods: {
+        handleSelect(key, keyPath) {
+            this.$router.push({ name: key })
+        }
+    },
+    created() {
+        let vm = this
+        // 通过 Event Bus 进行组件间通信，来折叠侧边栏
+        bus.$on('collapse', msg => {
+            vm.collapse = msg
+        })
+        // 通过 Event Bus 进行组件间通信，来刷新侧边栏数据
+        bus.$on('menuItems', () => {
+            vm.menuItems = vm.$store.getters.menu
+        })
     }
+}
 </script>
 
 <style scoped>
-    .sidebar {
-        display: block;
-        position: absolute;
-        left: 0;
-        top: 70px;
-        bottom: 0;
-    }
+.sidebar {
+    display: block;
+    position: absolute;
+    left: 0;
+    top: 70px;
+    bottom: 0;
+    overflow-y: scroll;
+}
 
-    .sidebar-el-menu:not(.el-menu--collapse) {
-        width: 200px;
-    }
+.sidebar-el-menu:not(.el-menu--collapse) {
+    width: 200px;
+}
 
-    .sidebar > ul {
-        height: 100%;
-    }
+.sidebar > ul {
+    height: 100%;
+}
 </style>

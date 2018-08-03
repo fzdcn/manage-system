@@ -14,19 +14,16 @@
                         </el-select>
                     </div>
                 </div>
-
                 <div style="margin: 0px 20px 10px 0;float: left;">
                     <span>平台IP：</span>
                     <el-input style="width: 150px;" class="username" v-model.trim="searchDataForm.platformIp" clearable placeholder="平台IP">
                     </el-input>
                 </div>
-
                 <div style="margin: 0px 20px 10px 0;float: left;">
                     <span>商户IP：</span>
                     <el-input style="width: 150px;" class="username" v-model.trim="searchDataForm.merchantIp" clearable placeholder="商户IP">
                     </el-input>
                 </div>
-
                 <div style="margin: 0px 20px 10px 0;float: left;">
                     <span>类型：</span>
                     <el-select clearable style="width: 150px;" v-model="searchDataForm.type" placeholder="">
@@ -39,7 +36,7 @@
                 </div>
             </div>
 
-            <el-table :data="getDataList" border style="width: 100%;text-align: center;">
+            <el-table v-loading="loading" :data="getDataList" border style="width: 100%;text-align: center;">
                 <el-table-column show-overflow-tooltip prop="platformId" label="平台名称" header-align="center">
                     <template slot-scope="scope">
                         <span v-if="scope.row.platformId==item.id" v-for="item in platformIdList">{{ item.platformName }}</span>
@@ -151,6 +148,7 @@
 export default {
     data() {
         return {
+            loading: true,
             paginationShow: true,
             getDataList: [],
             // 当前页
@@ -258,6 +256,7 @@ export default {
                     vm.getDataList = data.list
                     vm.total = data.total
                     vm.paginationShow = true
+                    vm.loading = false
                 })
                 .catch(data => {
                     console.log(data)

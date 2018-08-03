@@ -12,8 +12,8 @@ import {
     Loading,
     Notification
 } from 'element-ui'
-
-let loading = {}
+import 'babel-polyfill';
+require("es6-promise").polyfill();
 
 // 显示loading
 function showFullScreenLoading() {
@@ -24,6 +24,7 @@ function showFullScreenLoading() {
 function tryHideFullScreenLoading() {
     endLoading()
 }
+let loading = {}
 
 // 启动loading配置
 function startLoading() {
@@ -41,9 +42,7 @@ function endLoading() {
     loading.close()
 }
 
-// axios.defaults.baseURL = API_BASE;
-// axios.defaults.withCredentials = true;
-// axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
+axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
 let config = {
     baseURL: API_BASE,
     withCredentials: true
@@ -143,21 +142,43 @@ class HttpResource {
      */
 
     static httpGet(url, params) {
-        showFullScreenLoading();
-        return new Promise((resolve, reject) => {
-            instance.get(url, {
-                    params: params
-                })
-                .then(({
-                    data
-                }) => {
-                    resolveResponse(data, resolve)
-                    tryHideFullScreenLoading()
-                }).catch(data => {
-                    rejectResponse(data, reject)
-                    tryHideFullScreenLoading()
-                })
-        })
+        if (navigator.appName == "Netscape") {
+            showFullScreenLoading();
+            return new Promise((resolve, reject) => {
+                instance.get(url, {
+                        params: params
+                    })
+                    .then(({
+                        data
+                    }) => {
+                        resolveResponse(data, resolve)
+                        tryHideFullScreenLoading()
+                    }).catch(data => {
+                        rejectResponse(data, reject)
+                        tryHideFullScreenLoading()
+                    })
+            })
+        } else {
+            return new Promise((resolve, reject) => {
+                $.ajax({
+                    type: "get",
+                    url: API_BASE + url,
+                    data: params,
+                    cache: false,
+                    dataType: "json",
+                    xhrFields: {
+                        withCredentials: true
+                    },
+                    crossDomain: true == !(document.all),
+                    success: data => {
+                        resolveResponse(data, resolve)
+                    },
+                    error: data => {
+                        rejectResponse(data, reject)
+                    }
+                });
+            })
+        }
     }
 
     /**
@@ -168,20 +189,43 @@ class HttpResource {
      */
 
     static httpPost(url, params, isFormData) {
-        if (!isFormData) {
-            params = qs.stringify(params);
-        }
-        return new Promise((resolve, reject) => {
-            instance.post(url, params).then(({
-                data
-            }) => {
-                resolveResponse(data, resolve)
-                tryHideFullScreenLoading()
-            }).catch(data => {
-                rejectResponse(data, reject)
-                tryHideFullScreenLoading()
+        if (navigator.appName == "Netscape") {
+            if (!isFormData) {
+                params = qs.stringify(params);
+            }
+            showFullScreenLoading()
+            return new Promise((resolve, reject) => {
+                instance.post(url, params).then(({
+                    data
+                }) => {
+                    resolveResponse(data, resolve)
+                    tryHideFullScreenLoading()
+                }).catch(data => {
+                    rejectResponse(data, reject)
+                    tryHideFullScreenLoading()
+                })
             })
-        })
+        } else {
+            return new Promise((resolve, reject) => {
+                $.ajax({
+                    type: "post",
+                    url: API_BASE + url,
+                    data: params,
+                    cache: false,
+                    dataType: "json",
+                    xhrFields: {
+                        withCredentials: true
+                    },
+                    crossDomain: true == !(document.all),
+                    success: data => {
+                        resolveResponse(data, resolve)
+                    },
+                    error: data => {
+                        rejectResponse(data, reject)
+                    }
+                });
+            })
+        }
     }
 
     /**
@@ -192,25 +236,46 @@ class HttpResource {
      */
 
     static uploadHttpPost(url, params, isFormData) {
-        if (isFormData) {
-            params = qs.stringify(params);
-        }
-        showFullScreenLoading()
-        return new Promise((resolve, reject) => {
-            instance.post(url, params, {
-                headers: {
-                    "Content-Type": isFormData ? "application/json" : "application/x-www-form-urlencoded;charset=UTF-8"
-                }
-            }).then(({
-                data
-            }) => {
-                resolveResponse(data, resolve)
-                tryHideFullScreenLoading()
-            }).catch(data => {
-                rejectResponse(data, reject)
-                tryHideFullScreenLoading()
+        if (navigator.appName == "Netscape") {
+            if (isFormData) {
+                params = qs.stringify(params);
+            }
+            showFullScreenLoading()
+            return new Promise((resolve, reject) => {
+                instance.post(url, params, {
+                    headers: {
+                        "Content-Type": isFormData ? "application/json" : "application/x-www-form-urlencoded;charset=UTF-8"
+                    }
+                }).then(({
+                    data
+                }) => {
+                    resolveResponse(data, resolve)
+                    tryHideFullScreenLoading()
+                }).catch(data => {
+                    rejectResponse(data, reject)
+                    tryHideFullScreenLoading()
+                })
             })
-        })
+        } else {
+            return new Promise((resolve, reject) => {
+                $.ajax({
+                    type: "post",
+                    url: API_BASE + url,
+                    cache: false,
+                    dataType: "json",
+                    xhrFields: {
+                        withCredentials: true
+                    },
+                    crossDomain: true == !(document.all),
+                    success: data => {
+                        resolveResponse(data, resolve)
+                    },
+                    error: data => {
+                        rejectResponse(data, reject)
+                    }
+                });
+            })
+        }
     }
 }
 

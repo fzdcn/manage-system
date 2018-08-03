@@ -4,7 +4,7 @@
             <div class="add" style="margin-bottom: 30px;">
                 <el-button type="primary" size="medium" icon="el-icon-plus" @click="add">增加</el-button>
             </div>
-            <el-table :data="getDataList" border style="width: 100%;">
+            <el-table v-loading="loading" :data="getDataList" border style="width: 100%;">
                 <el-table-column show-overflow-tooltip prop="id" label="ID">
                 </el-table-column>
                 <el-table-column show-overflow-tooltip prop="name" label="角色">
@@ -64,6 +64,7 @@
 export default {
     data() {
         return {
+            loading: true,
             paginationShow: true,
             getDataList: [],
             // 当前页
@@ -121,10 +122,6 @@ export default {
                         title: '消息',
                         message: '已取消删除'
                     })
-                    vm.$message({
-                        type: 'info',
-                        message: '已取消删除'
-                    })
                 })
         },
         getData() {
@@ -137,6 +134,7 @@ export default {
                     vm.getDataList = data.page.list
                     vm.total = data.page.total
                     vm.paginationShow = true
+                    vm.loading = false
                 })
                 .catch(data => {
                     console.log(data)

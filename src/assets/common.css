@@ -13,3 +13,9 @@
 .fr {
     float: right;
 }
+
+img {
+    vertical-align: middle;
+    width: 100%;
+    height: 100%;
+}

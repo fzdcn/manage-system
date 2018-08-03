@@ -21,7 +21,7 @@
                     </el-button>
                 </div>
             </div>
-            <el-table :data="getDataList" border style="width: 100%;">
+            <el-table v-loading="loading" :data="getDataList" border style="width: 100%;">
                 <el-table-column show-overflow-tooltip prop="channelName" label="通道名称">
                 </el-table-column>
                 <el-table-column show-overflow-tooltip prop="channelAccessCode" label="通道接入码">
@@ -195,6 +195,7 @@ import { timestampToDate } from '../../functions/index.js'
 export default {
     data() {
         return {
+            loading: true,
             paginationShow: true,
             getDataList: [],
             // 当前页
@@ -364,6 +365,7 @@ export default {
                     vm.getDataList = data.list
                     vm.total = data.total
                     vm.paginationShow = true
+                    vm.loading = false
                 })
                 .catch(data => {
                     console.log(data)

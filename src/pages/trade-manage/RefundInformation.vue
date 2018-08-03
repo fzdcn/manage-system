@@ -66,7 +66,7 @@
                     <el-button type="primary" icon="el-icon-download" @click="downLoad">下载</el-button>
                 </div>
             </div>
-            <el-table :data="getDataList" border style="width: 100%;">
+            <el-table v-loading="loading" :data="getDataList" border style="width: 100%;">
                 <el-table-column show-overflow-tooltip prop="platformId" label="平台名称">
                     <template slot-scope="scope">
                         <span v-if="scope.row.platformId == item.id" v-for="item in platformIdList">{{ item.platformName }}</span>
@@ -91,8 +91,16 @@
                 </el-table-column>
                 <el-table-column show-overflow-tooltip prop="refundTime" label="退款时间" :formatter="refundTimeForMatter">
                 </el-table-column>
-                <el-table-column align="center" label="操作" width="100px">
+                <el-table-column show-overflow-tooltip prop="refundType" label="退款类型">
+                    <template slot-scope="scope">
+                        <span v-if="scope.row.refundType == item.id" v-for="item in refundType">{{ item.name }}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column align="center" label="操作" width="200px">
                     <template v-if="getDataList.length > 0" slot-scope="scope">
+                        <el-button @click="handleExamine(scope.row)" type="primary" icon="el-icon-view" size="small">
+                            审核
+                        </el-button>
                         <el-button @click="handleDetail(scope.row)" type="primary" icon="el-icon-view" size="small">
                             查看
                         </el-button>
@@ -104,7 +112,7 @@
                 </el-pagination>
             </div>
         </div>
-        <!--增加-->
+        <!--增加退款申请-->
         <el-dialog title="增加退款申请" :visible.sync="isShowAdd" :before-close="cancelAdd" width="720px" center>
             <div class="form-content" style="margin: 0 auto;width: 90%;">
                 <div class="handle-box clearfix">
@@ -155,6 +163,26 @@
                 <el-button @click="cancelAdd">取 消</el-button>
             </span>
         </el-dialog>
+        <!--审核手工退款订单-->
+        <el-dialog title="审核手工退款订单" :visible.sync="isShowExamine" :before-close="cancelExamine" width="600px" center>
+            <div class="form-content" style="margin: 0 auto;width: 90%;">
+                <el-form ref="examineDataForm" :model="examineDataForm" label-width="130px">
+                    <el-form-item :rules="[{ required: true}]" label="用户姓名：">
+                        <el-input clearable v-model.trim="examineDataForm.customerName" placeholder="用户姓名"></el-input>
+                    </el-form-item>
+                    <el-form-item :rules="[{ required: true}]" label="证件号：">
+                        <el-input clearable v-model.trim="examineDataForm.idNo" placeholder="证件号"></el-input>
+                    </el-form-item>
+                    <el-form-item :rules="[{ required: true}]" label="打款账号：">
+                        <el-input v-model.trim="examineDataForm.refundCardNo" placeholder="打款账号"></el-input>
+                    </el-form-item>
+                </el-form>
+            </div>
+            <span slot="footer" class="dialog-footer">
+                <el-button type="primary" @click="submitExamine">确 定</el-button>
+                <el-button @click="cancelExamine">取 消</el-button>
+            </span>
+        </el-dialog>
         <!--查看详情-->
         <el-dialog title="查看详情" :visible.sync="isShowDetail" :before-close="cancelDetail" width="700px" center>
             <div class="form-content" style="margin: 0 auto;width: 90%;">
@@ -166,14 +194,14 @@
                     <el-form-item label="商户号：">
                         <el-input :disabled="true" v-model.trim="detailDataForm.merchantCode" placeholder="商户号"></el-input>
                     </el-form-item>
-                    <el-form-item label="原商户订单号：">
-                        <el-input :disabled="true" v-model.trim="detailDataForm.merchantOrderNo" placeholder="原商户订单号"></el-input>
+                    <el-form-item label="商户订单号：">
+                        <el-input :disabled="true" v-model.trim="detailDataForm.merchantOrderNo" placeholder="商户订单号"></el-input>
                     </el-form-item>
                     <el-form-item label="商户退款订单号：">
                         <el-input :disabled="true" v-model.trim="detailDataForm.refundNo" placeholder="商户退款订单号"></el-input>
                     </el-form-item>
-                    <el-form-item label="原系统订单号：">
-                        <el-input :disabled="true" v-model.trim="detailDataForm.orderNo" placeholder="原系统订单号"></el-input>
+                    <el-form-item label="系统订单号：">
+                        <el-input :disabled="true" v-model.trim="detailDataForm.orderNo" placeholder="系统订单号"></el-input>
                     </el-form-item>
                     <el-form-item label="退款状态：">
                         <el-input :disabled="true" v-model.trim="detailDataForm.refundState" placeholder="退款状态"></el-input>
@@ -199,6 +227,18 @@
                     <el-form-item label="审核人：">
                         <el-input :disabled="true" v-model.trim="detailDataForm.auditingMan" placeholder="审核人"></el-input>
                     </el-form-item>
+                    <el-form-item label="用户姓名：">
+                        <el-input :disabled="true" v-model.trim="detailDataForm.customerName" placeholder="用户姓名"></el-input>
+                    </el-form-item>
+                    <el-form-item label="证件号：">
+                        <el-input :disabled="true" v-model.trim="detailDataForm.idNo" placeholder="证件号"></el-input>
+                    </el-form-item>
+                    <el-form-item label="打款账号：">
+                        <el-input :disabled="true" v-model.trim="detailDataForm.refundCardNo" placeholder="打款账号"></el-input>
+                    </el-form-item>
+                    <el-form-item label="退款类型：">
+                        <el-input :disabled="true" v-model.trim="detailDataForm.refundType" placeholder="退款类型"></el-input>
+                    </el-form-item>
                     <el-form-item label="原因：">
                         <el-input :disabled="true" v-model.trim="detailDataForm.refundReason" placeholder="原因"></el-input>
                     </el-form-item>
@@ -213,10 +253,11 @@
 
 <script>
 import { API_BASE, DEBUG } from '../../config/config'
-import { timestampToDate } from '../../functions/index.js'
+import { timestampToDate, regIdCode } from '../../functions/index.js'
 export default {
     data() {
         return {
+            loading: true,
             paginationShow: true,
             getDataList: [],
             // 当前页
@@ -226,12 +267,17 @@ export default {
             searchDataForm: {},
             // 是否显示增加弹框
             isShowAdd: false,
+            // 详情弹框
             isShowDetail: false,
+            // 是否显示审核手工退款订单弹框
+            isShowExamine: false,
             addDataForm: {},
             // 增加表单弹框里面的搜索
             searchDialogDataForm: {},
             // 查看详情
             detailDataForm: {},
+            // 审核
+            examineDataForm: {},
             // 平台名称
             platformIdList: [],
             // 退款状态
@@ -269,6 +315,21 @@ export default {
                 {
                     id: '01',
                     name: '贷记卡'
+                }
+            ],
+            // 退款类型（1:联机原路退款、2:脱机原路退款、3:手工打款）
+            refundType: [
+                {
+                    id: '1',
+                    name: '联机原路退款'
+                },
+                {
+                    id: '2',
+                    name: '脱机原路退款'
+                },
+                {
+                    id: '3',
+                    name: '手工打款'
                 }
             ]
         }
@@ -388,6 +449,23 @@ export default {
                     break
             }
         },
+        // 退款类型（1:联机原路退款、2:脱机原路退款、3:手工打款）
+        getRefundType(params) {
+            switch (params) {
+                case '1':
+                    return '联机原路退款'
+                    break
+                case '2':
+                    return '脱机原路退款'
+                    break
+                case '3':
+                    return '手工打款'
+                    break
+                default:
+                    return '暂无'
+                    break
+            }
+        },
         search() {
             let vm = this
             this.addDataForm = {}
@@ -470,7 +548,119 @@ export default {
             this.detailDataForm.auditingTime = timestampToDate(row.auditingTime)
             this.detailDataForm.auditingMan = row.auditingMan
             this.detailDataForm.refundReason = row.refundReason
+            this.detailDataForm.refundType = this.getRefundType(row.refundType)
+            this.detailDataForm.customerName = row.customerName
+            this.detailDataForm.idNo = row.idNo
+            this.detailDataForm.refundCardNo = row.refundCardNo
             this.detailDataForm.remark = row.remark
+        },
+        // 审核
+        handleExamine(row) {
+            let vm = this
+            // 手工
+            if (row.refundType === '3') {
+                this.isShowExamine = true
+                this.examineDataForm.id = row.id
+            } else {
+                this.$confirm('确认审核原路退款订单吗?', '审核', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                })
+                    .then(() => {
+                        vm
+                            .$httpGet('/admin/refund/reviewOtherRefundInfo', {
+                                id: row.id
+                            })
+                            .then(data => {
+                                vm.$notify.success({
+                                    duration: 2000,
+                                    title: '成功',
+                                    message: data.message
+                                })
+                                vm.getData()
+                            })
+                            .catch(data => {
+                                console.log(data)
+                            })
+                    })
+                    .catch(() => {
+                        vm.$notify.info({
+                            duration: 2000,
+                            title: '消息',
+                            message: '已取消审核原路退款订单'
+                        })
+                    })
+            }
+        },
+        // 提交手工审核
+        submitExamine() {
+            let vm = this
+            if (!this.examineDataForm.customerName) {
+                vm.$notify.warning({
+                    duration: 2000,
+                    title: '警告',
+                    message: '用户姓名不能为空！'
+                })
+                return false
+            }
+            if (
+                !/^[\u4e00-\u9fa5]{1,10}$/.test(vm.examineDataForm.customerName)
+            ) {
+                vm.$notify.warning({
+                    duration: 2000,
+                    title: '警告',
+                    message: '用户姓名只能是十位以内汉字！'
+                })
+                return false
+            }
+            if (!this.examineDataForm.idNo) {
+                vm.$notify.warning({
+                    duration: 2000,
+                    title: '警告',
+                    message: '证件号不能为空！'
+                })
+                return false
+            }
+            if (!regIdCode.test(vm.examineDataForm.idNo)) {
+                vm.$notify.warning({
+                    duration: 2000,
+                    title: '警告',
+                    message: '证件号格式错误！'
+                })
+                return false
+            }
+            if (!this.examineDataForm.refundCardNo) {
+                vm.$notify.warning({
+                    duration: 2000,
+                    title: '警告',
+                    message: '打款账号不能为空！'
+                })
+                return false
+            }
+            this.$httpPost('/admin/refund/reviewRefundInfo', {
+                id: this.examineDataForm.id,
+                customerName: this.examineDataForm.customerName,
+                idNo: this.examineDataForm.idNo,
+                refundCardNo: this.examineDataForm.refundCardNo
+            })
+                .then(({ data }) => {
+                    vm.$notify.success({
+                        duration: 2000,
+                        title: '成功',
+                        message: data.message
+                    })
+                    vm.cancelExamine()
+                    vm.getData()
+                })
+                .catch(data => {
+                    console.log(data)
+                })
+        },
+        // 取消审核
+        cancelExamine() {
+            this.isShowExamine = false
+            this.examineDataForm = {}
         },
         cancelDetail() {
             this.isShowDetail = false
@@ -500,30 +690,6 @@ export default {
         refundTimeForMatter(row, column) {
             return timestampToDate(row.refundTime)
         },
-        // 同步
-        getListData() {
-            let vm = this
-            return this.$httpGet('/admin/refund/refundInfoList', {
-                pageNo: this.cur_page,
-                pageSize: 10,
-                platformId: this.searchDataForm.platformId,
-                merchantCode: this.searchDataForm.merchantCode,
-                merchantOrderNo: this.searchDataForm.merchantOrderNo,
-                refundNo: this.searchDataForm.refundNo,
-                sysOrderNo: this.searchDataForm.sysOrderNo,
-                refundState: this.searchDataForm.refundState,
-                applyStartTime: timestampToDate(
-                    this.searchDataForm.applyStartTime
-                ),
-                applyEndTime: timestampToDate(this.searchDataForm.applyEndTime),
-                refundStartTime: timestampToDate(
-                    this.searchDataForm.refundStartTime
-                ),
-                refundEndTime: timestampToDate(
-                    this.searchDataForm.refundEndTime
-                )
-            })
-        },
         getData() {
             let vm = this
             this.$httpGet('/admin/refund/refundInfoList', {
@@ -550,6 +716,7 @@ export default {
                     vm.getDataList = data.list
                     vm.total = data.total
                     vm.paginationShow = true
+                    vm.loading = false
                 })
                 .catch(data => {
                     console.log(data)
@@ -568,15 +735,10 @@ export default {
         },
         // 获取平台名称列表
         getPlatFormList() {
-            return this.$httpGet('/admin/platformInfo/option', {})
-        },
-        async getAllData() {
             let vm = this
-            await Promise.all([vm.getPlatFormList(), vm.getListData()])
-                .then(data => {
-                    vm.platformIdList = data[0].data
-                    vm.getDataList = data[1].data.list
-                    vm.total = data[1].data.total
+            this.$httpGet('/admin/platformInfo/option', {})
+                .then(({ data }) => {
+                    vm.platformIdList = data
                 })
                 .catch(data => {
                     console.log(data)
@@ -584,7 +746,8 @@ export default {
         }
     },
     created() {
-        this.getAllData()
+        this.getData()
+        this.getPlatFormList()
     }
 }
 </script>

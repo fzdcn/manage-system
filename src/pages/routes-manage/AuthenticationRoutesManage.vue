@@ -44,7 +44,7 @@
                     <el-button type="primary" icon="el-icon-search" @click="handleCurrentChange(1)">搜索</el-button>
                 </div>
             </div>
-            <el-table :data="getDataList" border style="width: 100%;">
+            <el-table v-loading="loading" :data="getDataList" border style="width: 100%;">
                 <el-table-column show-overflow-tooltip prop="bankId" label="银行名称">
                     <template slot-scope="scope">
                         <span v-if="scope.row.bankId==item.id" v-for="item in bankInfoList">{{item.bankName}}</span>
@@ -188,6 +188,7 @@
 export default {
     data() {
         return {
+            loading: true,
             paginationShow: true,
             getDataList: [],
             // 当前页
@@ -279,6 +280,7 @@ export default {
                     vm.getDataList = data.list
                     vm.total = data.total
                     vm.paginationShow = true
+                    vm.loading = false
                 })
                 .catch(data => {
                     console.log(data)
@@ -459,7 +461,7 @@ export default {
         // 产品名称
         getProductNameList() {
             let vm = this
-            return this.$httpGet('/admin/epay/productsInfo/findProductAll', {})
+            this.$httpGet('/admin/epay/productsInfo/findProductAll', {})
                 .then(({ data }) => {
                     vm.productNameList = data
                 })
@@ -470,7 +472,7 @@ export default {
         // 银行信息下拉列表
         getBankInfoList() {
             let vm = this
-            return this.$httpGet('/admin/bankInfo/option', {})
+            this.$httpGet('/admin/bankInfo/option', {})
                 .then(({ data }) => {
                     vm.bankInfoList = data
                 })
@@ -479,11 +481,11 @@ export default {
                 })
         }
     },
-    created() {
+    mounted() {
+        this.getData()
         this.getAuthChannel()
         this.getProductNameList()
         this.getBankInfoList()
-        this.getData()
     }
 }
 </script>

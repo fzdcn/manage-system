@@ -2,25 +2,28 @@
     <div class="login-wrap">
         <canvas id="canvas"></canvas>
         <div class="login">
-            <div class="ms-title">双乾支付系统管理后台</div>
-            <div class="login-info">
+            <div class="ms-title">
+                <img src="../../../static/img/head.png" alt="">
+                <span>双乾支付系统管理后台</span>
+            </div>
+            <div class="login-info clearfix">
                 <div class="user-name">
                     <i ref="userNameIcon" class="iconfont icon-zhang-hu"></i>
-                    <input type="text" @keyup.enter="submitForm" v-model.trim="ruleForm.username" @focus="$refs.userNameIcon.style.color='#fff'" @blur="$refs.userNameIcon.style.color='#656060'" placeholder="请输入用户名">
+                    <input type="text" @keyup.enter="submitForm" v-model.trim="ruleForm.username" @focus="$refs.userNameIcon.style.color='#656060'" @blur="$refs.userNameIcon.style.color='#e6e6e6'" placeholder="请输入用户名">
                 </div>
                 <div class="user-password">
                     <i ref="userPasswordIcon" class="iconfont icon-password"></i>
-                    <input type="password" @keyup.enter="submitForm" v-model.trim="ruleForm.password" @focus="$refs.userPasswordIcon.style.color='#fff'" @blur="$refs.userPasswordIcon.style.color='#656060'" placeholder="请输入密码">
+                    <input type="password" @keyup.enter="submitForm" v-model.trim="ruleForm.password" @focus="$refs.userPasswordIcon.style.color='#656060'" @blur="$refs.userPasswordIcon.style.color='#e6e6e6'" placeholder="请输入密码">
                 </div>
                 <div class="verification-code">
                     <i ref="verificationCode" class="iconfont icon-yan-zheng-ma"></i>
-                    <input type="text" @keyup.enter="submitForm" v-model.trim="ruleForm.verificationCode" @focus="$refs.verificationCode.style.color='#fff'" @blur="$refs.verificationCode.style.color='#656060'" placeholder="验证码">
+                    <input type="text" @keyup.enter="submitForm" v-model.trim="ruleForm.verificationCode" @focus="$refs.verificationCode.style.color='#656060'" @blur="$refs.verificationCode.style.color='#e6e6e6'" placeholder="验证码">
                     <span class="verification-img" @click="changeImgUrl">{{imgUrl ? imgUrl :'错误'}}</span>
                 </div>
-            </div>
-            <div class="login-btn">
-                <button class="fl" @click="submitForm">登&nbsp&nbsp陆</button>
-                <button class="fr" @click="resetForm">重&nbsp&nbsp置</button>
+                <div class="login-btn clearfix">
+                    <button class="fl" @click="submitForm">登&nbsp&nbsp陆</button>
+                    <button class="fr" @click="resetForm">重&nbsp&nbsp置</button>
+                </div>
             </div>
         </div>
     </div>
@@ -233,8 +236,8 @@ export default {
         }
     },
     mounted() {
-        this.getCanvas()
         this.changeImgUrl()
+        this.getCanvas()
     }
 }
 </script>
@@ -250,16 +253,15 @@ canvas {
     position: relative;
     width: 100%;
     height: 100%;
-    /* background-color: #242645; */
+    background-color: #ffffff;
     background-image: url('../../../static/img/login-bg.png');
     background-repeat: no-repeat;
-    background-size: cover;
 }
 
 .login {
     position: absolute;
-    width: 320px;
-    height: 430px;
+    width: 800px;
+    height: 600px;
     left: 0;
     right: 0;
     top: 0;
@@ -267,48 +269,14 @@ canvas {
     margin: auto;
     opacity: 1;
     padding: 40px 20px;
-    box-shadow: -15px 15px 15px rgba(13, 16, 22, 0.4);
-    -webkit-transition-property: -webkit-transform, opacity, box-shadow, top,
-        left;
-    transition-property: transform, opacity, box-shadow, top, left;
-    -webkit-transition-duration: 0.5s;
-    transition-duration: 0.5s;
-    -webkit-transform-origin: 161px 100%;
-    -ms-transform-origin: 161px 100%;
-    transform-origin: 161px 100%;
-    -webkit-transform: rotateX(0deg);
-    transform: rotateX(0deg);
-    background: #35394a;
-    /* Old browsers */
-    /* FF3.6+ */
-    background: -webkit-gradient(
-        linear,
-        left bottom,
-        right top,
-        color-stop(0%, #35394a),
-        color-stop(100%, rgb(0, 0, 0))
-    );
-    /* Chrome,Safari4+ */
-    background: -webkit-linear-gradient(
-        230deg,
-        rgba(53, 57, 74, 0) 0%,
-        rgb(0, 0, 0) 100%
-    );
-    /* Chrome10+,Safari5.1+ */
-    /* Opera 11.10+ */
-    /* IE10+ */
-    background: linear-gradient(
-        230deg,
-        rgba(53, 57, 74, 0) 0%,
-        rgb(0, 0, 0) 100%
-    );
-    /* W3C */
-    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='rgba(53, 57, 74, 0)', endColorstr='rgb(0, 0, 0)',GradientType=1 );
-    /* IE6-9 fallback on horizontal gradient */
+    box-shadow: 0px 1px 7px 0px rgba(76, 61, 39, 0.16);
+    background: rgba(255, 255, 255, 1);
 }
 .login-info {
-    text-align: left;
-    margin-top: 45px;
+    position: relative;
+    text-align: center;
+    margin: 45px auto 0 auto;
+    width: 336px;
 }
 .user-name,
 .user-password,
@@ -320,25 +288,23 @@ canvas {
 }
 .user-name input,
 .user-password input {
-    color: #ffffff;
-    width: 200px;
+    color: #656060;
+    width: 279px;
     left: 0;
-    padding: 0px 15px 0 15px;
+    padding: 0px 15px 0 40px;
     height: 40px;
-    border-radius: 30px;
-    border: none;
+    border: solid 1px #e6e6e6;
     outline: none;
     font-size: 16px;
     background: rgba(57, 61, 82, 0);
 }
 .verification-code input {
-    color: #fff;
-    width: 70px;
-    left: 0;
-    padding: 0px 15px 0 15px;
+    float: left;
+    color: #656060;
+    width: 120px;
+    padding: 0px 15px 0 40px;
     height: 40px;
-    border-radius: 30px;
-    border: none;
+    border: solid 1px #e6e6e6;
     outline: none;
     font-size: 16px;
     background: rgba(57, 61, 82, 0);
@@ -347,27 +313,25 @@ canvas {
 .user-password i,
 .verification-code i {
     font-size: 20px;
-    margin-top: 9px;
-    color: #656060;
-    left: 35px;
+    margin-top: 10px;
+    left: 10px;
+    color: #e6e6e6;
     position: absolute;
     margin-right: 0;
 }
 .verification-img {
-    display: inline-block;
+    float: right;
     width: 100px;
     height: 40px;
+    color: #b29873;
     line-height: 40px;
     text-align: center;
-    margin-left: 25px;
-    border-radius: 30px;
     cursor: pointer;
-    color: #afb1be;
     font-size: 16px;
     background: rgba(57, 61, 82, 0.1);
 }
 .verification-img:hover {
-    color: #fff;
+    color: #656060;
 }
 .login-btn {
     width: 100%;
@@ -377,15 +341,15 @@ canvas {
     margin-top: 30px;
 }
 .login-btn button {
+    height: 50px;
     width: 150px;
+    background-color: #b29873;
+    border-radius: 5px;
     text-align: center;
-    height: 40px;
-    line-height: 40px;
-    font-size: 16px;
+    line-height: 50px;
+    font-size: 18px;
     border: none;
-    background: rgba(57, 61, 82, 0.1);
-    border-radius: 30px;
-    color: #afb1be;
+    color: #ffffff;
     cursor: pointer;
     outline: none;
 }
@@ -393,27 +357,40 @@ canvas {
     color: #fff;
     background-color: rgba(57, 61, 82, 0.2);
 }
+
+/*placeholder字体颜色*/
 ::-webkit-input-placeholder {
-    color: #afb1be;
+    /* WebKit browsers */
+    color: #e6e6e6;
 }
 :-moz-placeholder {
-    /* Firefox 18- */
-
-    color: #afb1be;
+    /* Mozilla Firefox 4 to 18 */
+    color: #e6e6e6;
 }
-
 ::-moz-placeholder {
-    /* Firefox 19+ */
-
-    color: #afb1be;
+    /* Mozilla Firefox 19+ */
+    color: #e6e6e6;
+    opacity: 1;
 }
-
 :-ms-input-placeholder {
-    color: #afb1be;
+    /* Internet Explorer 10+ */
+    color: #e6e6e6 !important;
+}
+input:-webkit-autofill {
+    /* 谷歌浏览器-文本框边框阴影遮住了背景颜色浅黄*/
+    -webkit-box-shadow: 0 0 0 1000px #ffffff inset !important;
 }
 .ms-title {
+    width: 100%;
     text-align: center;
-    font-size: 30px;
-    color: #fff;
+    font-size: 28px;
+    color: #b29873;
+    height: 50px;
+    line-height: 50px;
+    margin: 70px auto 0 auto;
+}
+.ms-title img {
+    height: 50px;
+    width: 50px;
 }
 </style>

@@ -62,7 +62,7 @@
                     <el-button type="primary" icon="el-icon-search" @click="handleCurrentChange(1)">搜索</el-button>
                 </div>
             </div>
-            <el-table :data="getDataList" border style="width: 100%;">
+            <el-table v-loading="loading" :data="getDataList" border style="width: 100%;">
                 <el-table-column show-overflow-tooltip prop="platformId" label="平台名称">
                     <template slot-scope="scope">
                         <span v-if="scope.row.platformId == item.id" v-for="item in platformIdList">{{ item.platformName }}</span>
@@ -193,6 +193,7 @@ import { timestampToDate } from '../../functions/index.js'
 export default {
     data() {
         return {
+            loading: true,
             paginationShow: true,
             getDataList: [],
             // 当前页
@@ -455,6 +456,7 @@ export default {
                     vm.getDataList = data.list
                     vm.total = data.total
                     vm.paginationShow = true
+                    vm.loading = false
                 })
                 .catch(data => {
                     console.log(data)
@@ -475,9 +477,9 @@ export default {
                 })
         }
     },
-    created() {
-        this.getPlatFormList()
+    mounted() {
         this.getData()
+        this.getPlatFormList()
     }
 }
 </script>

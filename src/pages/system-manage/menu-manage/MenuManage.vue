@@ -5,7 +5,7 @@
                 <el-button type="primary" size="medium" icon="el-icon-plus" @click="add">增加</el-button>
                 <el-button type="primary" size="medium" icon="el-icon-view" @click="handleDetail">icon-font</el-button>
             </div>
-            <el-table :data="getDataList" ref="itemTable" border style="width: 100%;">
+            <el-table v-loading="loading" :data="getDataList" ref="itemTable" border style="width: 100%;">
                 <el-table-column show-overflow-tooltip prop="name" label="名称">
                     <template slot-scope="scope">
                         <span v-if="scope.row.grade == 1" style="color: dodgerblue">{{ scope.row.name }}</span>
@@ -129,20 +129,8 @@ export default {
         return {
             isShowAdd: false,
             isShowEdit: false,
-            getDataList: [
-                /*{
-                        grade: "",
-                        id: "",
-                        list: "",
-                        name: "",
-                        orders: "",
-                        parentId: "",
-                        permission: "",
-                        rid: "",
-                        type: "",
-                        url: ""
-                    }*/
-            ],
+            loading: true,
+            getDataList: [],
             addDataForm: {},
             typeList: [
                 {
@@ -171,21 +159,19 @@ export default {
         handleDetail() {
             this.$router.push({ name: 'icon-font' })
         },
-        // 菜单列表,同步需要
-        getMenuData() {
-            return this.$httpGet('/admin/permission/index', {})
-        },
-        // 菜单列表,不需要同步
+        // 菜单列表
         getMenuDataList() {
+            let vm = this
             this.$httpGet('/admin/permission/index', {})
                 .then(({ data }) => {
                     vm.getDataList = data
+                    vm.loading = false
                 })
                 .catch(data => {
                     console.log(data)
                 })
         },
-        // 增加的下拉菜单，不需要同步
+        // 增加的下拉菜单
         getMenu() {
             let vm = this
             this.$httpGet('/admin/permission/getSuperPermissionList', {})
@@ -198,7 +184,14 @@ export default {
         },
         // 增加的下拉菜单，同步需要
         getMenuList() {
-            return this.$httpGet('/admin/permission/getSuperPermissionList', {})
+            let vm = this
+            this.$httpGet('/admin/permission/getSuperPermissionList', {})
+                .then(({ data }) => {
+                    vm.menuList = data
+                })
+                .catch(data => {
+                    console.log(data)
+                })
         },
         handleEdit(row) {
             this.isShowEdit = true
@@ -434,21 +427,11 @@ export default {
         cancelAdd() {
             this.isShowAdd = false
             this.addDataForm = {}
-        },
-        async getAllData() {
-            let vm = this
-            await Promise.all([vm.getMenuList(), vm.getMenuData()])
-                .then(data => {
-                    vm.menuList = data[0].data
-                    vm.getDataList = data[1].data
-                })
-                .catch(data => {
-                    console.log(data)
-                })
         }
     },
     mounted() {
-        this.getAllData()
+        this.getMenuDataList()
+        this.getMenuList()
     }
 }
 </script>

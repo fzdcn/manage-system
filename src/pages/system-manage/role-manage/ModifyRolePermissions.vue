@@ -1,31 +1,6 @@
 <template>
     <div class="table">
         <div class="container">
-            <!--<el-table :data="getDataList" ref="itemTable" border style="width: 100%;"
-                      @selection-change="handleSelectionAllChange" @select="handleSelectionChange"
-                      @select-all="handleSelectionChange">
-                <el-table-column type="selection" width="55">
-                </el-table-column>
-                <el-table-column prop="name" label="菜单">
-                    <template slot-scope="scope">
-                        <span v-if="scope.row.grade == 1"
-                              style="color: dodgerblue">{{ scope.row.name }}</span>
-                        <span v-if="scope.row.grade == 2" style="color: cadetblue">&nbsp;&nbsp;&nbsp;&nbsp;{{ scope.row.name }}</span>
-                        <span v-if="scope.row.grade == 3" style="color: lightskyblue">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ scope.row.name }}</span>
-                    </template>
-                </el-table-column>
-                <el-table-column prop="permission" label="权限key">
-                </el-table-column>
-                <el-table-column prop="url" label="URL">
-                </el-table-column>
-                <el-table-column prop="icon-font" label="ICON">
-                </el-table-column>
-            </el-table>
-            <el-row style="margin: 50px auto">
-                <el-button @click="submitAdd" size="medium" type="success">提交</el-button>
-                <el-button @click="cancelAdd" size="medium" type="primary">返回</el-button>
-            </el-row>-->
-
             <el-tree :data="getData" show-checkbox node-key="id" ref="tree" highlight-current :default-expand-all="true" :default-checked-keys="defaultSelectedMenu" :props="defaultProps">
             </el-tree>
             <el-row style="margin: 50px auto">
@@ -38,7 +13,7 @@
 
 <script>
 import { goBack } from '../../../functions/index'
-
+import bus from '../../../components/common/bus'
 export default {
     data() {
         return {
@@ -143,25 +118,6 @@ export default {
         cancelAdd() {
             goBack()
         },
-
-        submitAdd() {
-            let vm = this
-            this.$httpPost('/admin/role/assignUpdate', {
-                id: this.$route.params.id,
-                pids: this.pids.join(',')
-            })
-                .then(data => {
-                    vm.$notify.success({
-                        duration: 2000,
-                        title: '成功',
-                        message: data.message
-                    })
-                    vm.getMenuList()
-                })
-                .catch(data => {
-                    console.log(data)
-                })
-        },
         submit() {
             let vm = this
             // 半选中的Keys
@@ -210,10 +166,10 @@ export default {
                         'setNavigationMenu',
                         JSON.stringify(data[0].subs)
                     )
+                    // 更新菜单
+                    bus.$emit('menuItems')
                     setTimeout(() => {
-                        window.location.href =
-                            window.location.origin + '/#/role-manage'
-                        location.reload()
+                        goBack()
                     }, 1000)
                 })
                 .catch(data => {
@@ -235,35 +191,9 @@ export default {
             for (let i = 0; i < val.length; i++) {
                 this.pids.push(val[i].id)
             }
-        },
-        getPermissionsData() {
-            let vm = this
-            this.pids = []
-            this.$httpGet('/admin/role/assign', {
-                id: this.$route.params.id
-            })
-                .then(({ data }) => {
-                    let i = 0
-                    for (let values of data) {
-                        values['index'] = i++
-                    }
-                    vm.getDataList = data
-                    vm.$nextTick(() => {
-                        vm.getDataList.forEach(item => {
-                            if (item.rid) {
-                                vm.pids.push(item.id)
-                                vm.$refs.itemTable.toggleRowSelection(item)
-                            }
-                        })
-                    })
-                })
-                .catch(data => {
-                    console.log(data)
-                })
         }
     },
     mounted() {
-        // this.getPermissionsData();
         this.getDefaultSelectedMenuList()
     }
 }

@@ -6,6 +6,8 @@ import ElementUI from 'element-ui';
 import './assets/common.css'
 // 默认主题
 import 'element-ui/lib/theme-chalk/index.css';
+// 切换主题颜色
+// import '../static/css/theme-green/element-variables.scss'
 // 浅绿色主题
 // import '../static/css/theme-green/index.css';
 import 'babel-polyfill';
@@ -13,6 +15,7 @@ require("es6-promise").polyfill();
 import './assets/iconfont/iconfont.css';
 import http from './config/http';
 import moment from 'moment';
+import $ from 'jquery'
 
 Vue.filter('moment', function (value, formatString = 'YYYY-MM-DD HH:mm:ss') {
     return moment(value * 1000).format(formatString)

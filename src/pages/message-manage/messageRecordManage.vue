@@ -46,7 +46,7 @@
                     </el-button>
                 </div>
             </div>
-            <el-table :data="getDataList" border style="width: 100%;">
+            <el-table v-loading="loading" :data="getDataList" border style="width: 100%;">
                 <el-table-column show-overflow-tooltip prop="platformId" label="平台名称">
                     <template slot-scope="scope">
                         <span v-if="scope.row.platformId == item.id" v-for="(item,index) in platformIdList">{{ item.platformName }}</span>
@@ -81,6 +81,7 @@ import { timestampToDate } from '../../functions/index'
 export default {
     data() {
         return {
+            loading: true,
             paginationShow: true,
             getDataList: [],
             // 当前页
@@ -128,45 +129,27 @@ export default {
                     vm.getDataList = data.list
                     vm.total = data.total
                     vm.paginationShow = true
+                    vm.loading = false
                 })
                 .catch(data => {
                     console.log(data)
                 })
         },
-        // 获取同步数据
-        getListData() {
-            let vm = this
-            return this.$httpGet('/admin/sms/smsRecordList', {
-                pageNo: this.cur_page,
-                pageSize: 10,
-                smsChannel: this.searchDataForm.smsChannel,
-                phone: this.searchDataForm.phone,
-                content: this.searchDataForm.content,
-                startTime: timestampToDate(this.searchDataForm.startTime),
-                endTime: timestampToDate(this.searchDataForm.endTime),
-                platformId: this.searchDataForm.platformId,
-                templateCode: this.searchDataForm.templateCode
-            })
-        },
         // 平台类型
         getPlatFormList() {
-            return this.$httpGet('/admin/platformInfo/option', {})
-        },
-        async getAllData() {
             let vm = this
-            await Promise.all([vm.getPlatFormList(), vm.getListData()])
-                .then(data => {
-                    vm.platformIdList = data[0].data
-                    vm.getDataList = data[1].data.list
-                    vm.total = data[1].data.total
+            this.$httpGet('/admin/platformInfo/option', {})
+                .then(({ data }) => {
+                    vm.platformIdList = data
                 })
                 .catch(data => {
                     console.log(data)
                 })
         }
     },
-    created() {
-        this.getAllData()
+    mounted() {
+        this.getData()
+        this.getPlatFormList()
     }
 }
 </script>
